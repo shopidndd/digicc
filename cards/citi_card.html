@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citibank Digital Card</title>
+  <link rel="stylesheet" href="../css/card-styles.css">
+  <style>
+    .card-front {
+      background: linear-gradient(135deg, #003087 0%, #005566 100%);
+      color: #fff;
+    }
+    
+    .card-back {
+      background: #fff;
+      color: #333;
+    }
+  </style>
+</head>
+<body class="citi-card">
+  <div class="card-container">
+    <div class="card flip-enabled">
+      <div class="card-front">
+        <div class="card-logo">Citibank</div>
+        <div class="chip"></div>
+        <div class="card-number">4321 8765 1234 5678</div>
+        <div class="card-details">
+          <div class="name">Jane Smith</div>
+          <div class="expiry">03/28</div>
+        </div>
+      </div>
+      <div class="card-back">
+        <div class="magnetic-strip"></div>
+        <div class="signature-strip">
+          <div class="signature">Jane Smith</div>
+          <div class="cvv">789</div>
+        </div>
+        <div class="card-details">
+          <div class="info">For customer service: 1800 601 601</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const card = document.querySelector('.card');
+    let isFlipped = false;
+    
+    // Handle mouse move effect
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 25;
+      const rotateY = (centerX - x) / 25;
+      
+      if (!isFlipped) {
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
+    });
+    
+    // Reset on mouse leave
+    card.addEventListener('mouseleave', () => {
+      if (!isFlipped) {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      }
+    });
+    
+    // Toggle flip on click
+    card.addEventListener('click', () => {
+      isFlipped = !isFlipped;
+      if (isFlipped) {
+        card.classList.add('flipped');
+      } else {
+        card.classList.remove('flipped');
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      }
+    });
+    
+    // Get URL parameters for dynamic card data
+    function updateCardFromParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cardNumber = urlParams.get('number');
+      const name = urlParams.get('name');
+      const expiry = urlParams.get('expiry') || urlParams.get('exp');
+      const cvv = urlParams.get('cvv');
+      
+      if (cardNumber) document.querySelector('.card-number').textContent = cardNumber;
+      if (name) {
+        document.querySelector('.name').textContent = name;
+        document.querySelector('.signature').textContent = name;
+      }
+      if (expiry) document.querySelector('.expiry').textContent = expiry;
+      if (cvv) document.querySelector('.cvv').textContent = cvv;
+    }
+    
+    document.addEventListener('DOMContentLoaded', updateCardFromParams);
+  </script>
+</body>
+</html>
