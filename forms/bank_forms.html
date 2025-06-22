@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enter Card Details</title>
+  <style>
+    :root {
+      --primary: #dbdbdb;
+      --bg: #1c1c1e;
+      --text: #f5f5f7;
+      --subtext: #a1a1aa;
+      --highlight: #e69778;
+      --card-radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      background: #2c2c2e;
+      border: 1px solid #444;
+      border-radius: 8px;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    input::placeholder {
+      color: var(--subtext);
+    }
+
+    footer {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--subtext);
+      font-size: 0.8rem;
+    }
+
+    .button {
+      background: var(--highlight);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .button:hover {
+      background-color: #d6765f;
+    }
+
+    .links {
+      margin-top: auto;
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .links a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .error {
+      color: #e00000;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      display: none;
+    }
+
+    input.invalid {
+      border-color: #e00000;
+    }
+
+    @media (max-width: 430px) {
+      .container {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Enter Card Details</h1>
+
+    <form id="cardForm">
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+        <div class="error" id="cardNumberError">Please enter a valid card number</div>
+      </div>
+
+      <div class="form-group">
+        <label for="cardName">Cardholder Name</label>
+        <input type="text" id="cardName" placeholder="Full Name">
+        <div class="error" id="cardNameError">Please enter cardholder name</div>
+      </div>
+
+      <div class="form-group">
+        <label for="expiryDate">Expiry Date</label>
+        <input type="text" id="expiryDate" placeholder="MM/YY">
+        <div class="error" id="expiryDateError">Please enter a valid expiry date</div>
+      </div>
+
+      <div class="form-group">
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" placeholder="123">
+        <div class="error" id="cvvError">Please enter a valid CVV</div>
+      </div>
+
+      <button type="submit" class="button">Submit</button>
+    </form>
+
+    <div class="links">
+      <a href="westpac.html">Westpac</a>
+      <a href="commbank.html">CommBank</a>
+      <a href="citibank.html">Citibank</a>
+    </div>
+  </div>
+  <footer>
+    AusGen - Digital Card Generator
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('cardForm');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const cardNumber = document.getElementById('cardNumber');
+        const cardName = document.getElementById('cardName');
+        const expiryDate = document.getElementById('expiryDate');
+        const cvv = document.getElementById('cvv');
+
+        let isValid = true;
+
+        // Validate Card Number
+        if (!/^\d{16}$/.test(cardNumber.value.replace(/\s/g, ''))) {
+          showError(cardNumber, 'cardNumberError');
+          isValid = false;
+        } else {
+          clearError(cardNumber, 'cardNumberError');
+        }
+
+        // Validate Name
+        if (!cardName.value.trim()) {
+          showError(cardName, 'cardNameError');
+          isValid = false;
+        } else {
+          clearError(cardName, 'cardNameError');
+        }
+
+        // Validate Expiry Date
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate.value)) {
+          showError(expiryDate, 'expiryDateError');
+          isValid = false;
+        } else {
+          clearError(expiryDate, 'expiryDateError');
+        }
+
+        // Validate CVV
+        if (!/^\d{3,4}$/.test(cvv.value)) {
+          showError(cvv, 'cvvError');
+          isValid = false;
+        } else {
+          clearError(cvv, 'cvvError');
+        }
+
+        if (isValid) {
+          const banks = ['westpac', 'commbank', 'citibank'];
+          banks.forEach(bank => {
+            localStorage.setItem(`${bank}_name`, cardName.value.toUpperCase());
+            localStorage.setItem(`${bank}_number`, cardNumber.value);
+            localStorage.setItem(`${bank}_expiry`, expiryDate.value);
+            localStorage.setItem(`${bank}_cvv`, cvv.value);
+          });
+
+          alert("Card details saved! Choose your card on the next screen.");
+          window.location.href = "citibank.html"; // Or redirect to card choice
+        }
+      });
+
+      function showError(input, errorId) {
+        input.classList.add('invalid');
+        document.getElementById(errorId).style.display = 'block';
+      }
+
+      function clearError(input, errorId) {
+        input.classList.remove('invalid');
+        document.getElementById(errorId).style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

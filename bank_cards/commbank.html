@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Citibank Card</title>
+  <title>Commbank Card</title>
   <style>
     :root {
       --citi-blue: #153491;
@@ -51,7 +51,7 @@
     }
 
     .card {
-      background-image: url('/Users/adminadmin/cc/images/citi_visa.png');
+      background-image: url('/Users/adminadmin/cc/images/commbank.png');
     background-size: cover;
       background-position: center;
       border-radius: var(--radius);
@@ -66,7 +66,7 @@
     .card-number {
       font-size: 1.5rem;
       text-align: left;
-        margin-top: 3rem;
+        margin-top: 5rem;
       letter-spacing: 1px;
       margin-bottom: 1rem;
     }
@@ -85,6 +85,8 @@
     .card-exp {
       font-size: 0.85rem;
       margin-top: 0.6rem;
+      padding-bottom: 1rem;
+      
 
     }
 
@@ -190,7 +192,6 @@
     <!-- Card Display -->
     <div class="section">
       <div class="card">
-        <div class="card-label">PLATINUM</div>
         <div class="card-number" id="cardNumber">4556 7378 9012 3456</div>
         <div class="card-name" id="cardName">MR ALEX WILSON</div>
         <div class="card-exp" id="cardExp">EXPIRY ••/••<br>CVC •••</div>
@@ -241,10 +242,10 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get card details from localStorage or use defaults
-      const cardName = localStorage.getItem('citibank_name') || 'MR ALEX WILSON';
-      const cardNumber = localStorage.getItem('citibank_number') || '4556 7378 9012 3456';
-      const cardExpiry = localStorage.getItem('citibank_expiry') || '••/••';
-      const cardCvv = localStorage.getItem('citibank_cvv') || '•••';
+      const cardName = localStorage.getItem('Commbank_name') || 'MR ALEX WILSON';
+      const cardNumber = localStorage.getItem('Commbank_number') || '4556 7378 9012 3456';
+      const cardExpiry = localStorage.getItem('Commbank_expiry') || '••/••';
+      const cardCvv = localStorage.getItem('Commbank_cvv') || '•••';
       
       // Update card display
       document.getElementById('cardName').textContent = cardName;
