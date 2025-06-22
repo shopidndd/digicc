@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Digital Wallet</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+  <style>
+    :root {
+      --base: #65d3ee;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: #f0f4f9;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--base);
+      padding: 0.75rem;
+      width: 100%;
+      max-width: 100%;
+      font-size: clamp(1rem, 5vw, 1.25rem);
+      font-weight: 600;
+      text-align: center;
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .template-selection {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      width: 100%;
+      justify-items: center;
+    }
+
+    .template {
+      width: 90px;
+      height: 54px;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      touch-action: none;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .template:hover, .template:focus {
+      border-color: var(--base);
+      transform: scale(1.1);
+    }
+
+    @media (min-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+
+      header, .template-selection {
+        max-width: 400px;
+      }
+
+      .template {
+        width: 100px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <header>Digital Wallet</header>
+    <div class="template-selection" role="radiogroup" aria-label="Select card type">
+      <a href="forms/comm_form.html" class="template" style="background-image: url('images/comm_master_front.png')" role="radio" aria-label="Commonwealth Bank Card"></a>
+      <a href="forms/ing_form.html" class="template" style="background-image: url('images/ing.png')" role="radio" aria-label="ING Bank Card"></a>    
+      <a href="forms/citi_form.html" class="template" style="background-image: url('images/citi_mastercard.png')" role="radio" aria-label="Citibank Card"></a>
+      <a href="forms/medicare_form.html" class="template" style="background-image: url('images/medicare.png')" role="radio" aria-label="Medicare Card"></a>
+    </div>
+  </body>
+  </html>

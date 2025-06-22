@@ -2,98 +2,262 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Digital Wallet</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AusGen</title>
   <style>
     :root {
-      --base: #65d3ee;
+      --primary: #0f2235;
+      --bg: #1c1c1e;
+      --text: #f5f5f7;
+      --subtext: #a1a1aa;
+      --highlight: #e69778;
+      --card-radius: 16px;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      background: #f0f4f9;
-      overscroll-behavior: none;
-      touch-action: manipulation;
     }
 
     body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 430px;
+      width: 100%;
+      background: var(--bg);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0.5rem;
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--base);
-      padding: 0.75rem;
-      width: 100%;
-      max-width: 100%;
-      font-size: clamp(1rem, 5vw, 1.25rem);
-      font-weight: 600;
+      justify-content: center;
       text-align: center;
-      border-radius: 0.75rem;
-      margin-bottom: 0.75rem;
+      padding: 2rem;
+      box-shadow: 0 0 30px rgba(10, 132, 255, 0.1);
     }
 
-    .template-selection {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      width: 100%;
-      justify-items: center;
-    }
+    .logo {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(145deg, #1d1e2d, #1a1a1a);
+        border-radius: 20%;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+        position: relative;
+        overflow: hidden;
+        filter: grayscale(20%) contrast(110%);
+        }
 
-    .template {
-      width: 90px;
-      height: 54px;
-      background-size: cover;
-      background-position: center;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      cursor: pointer;
-      touch-action: none;
-      transition: border-color 0.2s, transform 0.2s;
-    }
+        .logo-icon {
+        font-size: 50px;
+        color: #aaa;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.05));
+        font-family: monospace;
+        transform: scale(1.05) rotate(-2deg);
+        }
 
-    .template:hover, .template:focus {
-      border-color: var(--base);
-      transform: scale(1.1);
-    }
-
-    @media (min-width: 480px) {
-      body {
-        padding: 1rem;
-      }
-
-      header, .template-selection {
-        max-width: 400px;
-      }
-
-      .template {
-        width: 100px;
+        .logo::after {
+        content: "";
+        position: absolute;
+        width: 60px;
         height: 60px;
+        background: #212124;
+        border-radius: 50%;
+        bottom: -20px;
+        right: -20px;
+        filter: blur(2px);
+        }
+
+        .logo::before {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+        top: -10px;
+        left: -10px;
+        filter: blur(1px);
+        }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s forwards;
+      animation-delay: 0.2s;
+    }
+
+    p {
+      color: var(--subtext);
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+      max-width: 280px;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s forwards;
+      animation-delay: 0.4s;
+    }
+
+    .enter-button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s, background-color 0.3s;
+      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.4);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s forwards;
+      animation-delay: 0.6s;
+    }
+
+    .enter-button:hover {
+      background-color: #cc4e00;
+      transform: translateY(-3px);
+    }
+
+    .enter-button:active {
+      transform: translateY(0);
+    }
+
+    .card-visual {
+      position: absolute;
+      width: 70px;
+      height: 45px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    .card-1 {
+      background: #aaa205;
+      top: 35%;
+      left: 30%;
+      transform: rotate(-15deg);
+      animation-delay: 0.8s;
+      z-index: 1;
+    }
+
+    .card-2 {
+      background: #4c4c4c;
+      top: 30%;
+      left: 38%;
+      transform: rotate(5deg);
+      animation-delay: 1s;
+      z-index: 2;
+    }
+
+    .card-3 {
+      background: #727272;
+      top: 40%;
+      left: 45%;
+      transform: rotate(20deg);
+      animation-delay: 1.2s;
+      z-index: 3;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .card-visual {
+      animation-name: fadeIn, float;
+      animation-duration: 1s, 3s;
+      animation-fill-mode: forwards, infinite;
+      animation-delay: var(--delay, 0.8s), var(--float-delay, 1.8s);
+      animation-timing-function: ease, ease-in-out;
+      animation-direction: normal, alternate;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(var(--rotate));
+      }
+      100% {
+        transform: translateY(-10px) rotate(var(--rotate));
+      }
+    }
+
+    .card-1 {
+      --rotate: -15deg;
+      --delay: 0.8s;
+      --float-delay: 1.8s;
+    }
+
+    .card-2 {
+      --rotate: 5deg;
+      --delay: 1s;
+      --float-delay: 2s;
+    }
+
+    .card-3 {
+      --rotate: 20deg;
+      --delay: 1.2s;
+      --float-delay: 2.2s;
+    }
+
+    @media (max-width: 430px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      p {
+        font-size: 1rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .logo {
+        width: 100px;
+        height: 100px;
+      }
+
+      .logo-icon {
+        font-size: 50px;
       }
     }
   </style>
 </head>
 <body>
-    <header>Digital Wallet</header>
-    <div class="template-selection" role="radiogroup" aria-label="Select card type">
-      <a href="forms/comm_form.html" class="template" style="background-image: url('images/comm_master_front.png')" role="radio" aria-label="Commonwealth Bank Card"></a>
-      <a href="forms/ing_form.html" class="template" style="background-image: url('images/ing.png')" role="radio" aria-label="ING Bank Card"></a>    
-      <a href="forms/citi_form.html" class="template" style="background-image: url('images/citi_mastercard.png')" role="radio" aria-label="Citibank Card"></a>
-      <a href="forms/medicare_form.html" class="template" style="background-image: url('images/medicare.png')" role="radio" aria-label="Medicare Card"></a>
+  <div class="container">
+    <div class="logo">
+      <div class="card-visual card-1"></div>
+      <div class="card-visual card-2"></div>
+      <div class="card-visual card-3"></div>
     </div>
-  </body>
-  </html>
+
+    <h1>AusGen</h1>
+    <p>Digital Card Generator</p>
+
+
+    <button class="enter-button" onclick="location.href='select.html'">Enter App</button>
+  </div>
+</body>
+</html>

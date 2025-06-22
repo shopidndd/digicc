@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enter Card Details</title>
+  <style>
+        :root {
+      --primary: #dbdbdb;
+      --bg: #1c1c1e;
+      --text: #f5f5f7;
+      --subtext: #a1a1aa;
+      --highlight: #e69778;
+      --card-radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 20px;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    
+    .bank-selector {
+      margin-bottom: 2rem;
+      
+    }
+    
+    .bank-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 0.5rem;
+    }
+    
+    .bank-option {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .bank-option.selected {
+      border-color: var(--primary);
+      background: var(--highlight);
+      font-style: black;
+    }
+    
+    .preview {
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: var(--card-radius);
+      position: relative;
+      height: 200px;
+      color: white;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .westpac-preview {
+      background: #e00000;
+    }
+    
+    .commbank-preview {
+      background: linear-gradient(to right, #ffef77, #ffcc00);
+      color: black;
+    }
+    
+    .citibank-preview {
+      background: #153491;
+    }
+    
+    .preview-number {
+      position: absolute;
+      right: 1rem;
+      top: 4rem;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+    
+    .preview-name {
+      position: absolute;
+      bottom: 3rem;
+      left: 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .preview-expiry {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1rem;
+      font-size: 0.85rem;
+    }
+    
+    .button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .button:hover {
+      background-color: #0055b3;
+    }
+    
+    .links {
+      margin-top: auto;
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .links a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    @media (max-width: 430px) {
+      .container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.3rem;
+      }
+      
+      .preview {
+        height: 180px;
+      }
+    }
+    
+    /* Error message style */
+    .error {
+      color: #e00000;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      display: none;
+    }
+    
+    input.invalid {
+      border-color: #e00000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Enter Card Details</h1>
+    
+    <div class="bank-selector">
+      <label>Choose your bank:</label>
+      <div class="bank-options">
+        <div class="bank-option selected" data-bank="westpac">Westpac</div>
+        <div class="bank-option" data-bank="commbank">CommBank</div>
+        <div class="bank-option" data-bank="citibank">Citibank</div>
+      </div>
+    </div>
+    
+    
+    <form id="cardForm">
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456">
+        <div class="error" id="cardNumberError">Please enter a valid card number</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="cardName">Cardholder Name</label>
+        <input type="text" id="cardName" placeholder="Full Name">
+        <div class="error" id="cardNameError">Please enter cardholder name</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="expiryDate">Expiry Date</label>
+        <input type="text" id="expiryDate" placeholder="MM/YY">
+        <div class="error" id="expiryDateError">Please enter a valid expiry date</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" placeholder="123">
+        <div class="error" id="cvvError">Please enter a valid CVV</div>
+      </div>
+      
+      <button type="submit" class="button">Submit</button>
+    </form>
+    
+    <div class="links">
+      <a href="westpac.html">Westpac</a>
+      <a href="commbank.html">CommBank</a>
+      <a href="citibank.html">Citibank</a>
+    </div>
+  </div>
+  
+  <!-- Card selection modal overlay -->
+  <div id="cardSelectionModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; flex-direction: column;">
+    <div style="background: white; padding: 20px; border-radius: 16px; width: 90%; max-width: 400px;">
+      <h2 style="text-align: center; margin-top: 0;">Choose a Card</h2>
+      <p style="text-align: center; margin-bottom: 20px; color: #666;">Your card details have been saved. Select which card to view:</p>
+      
+      <div style="display: flex; gap: 10px; flex-direction: column;">
+        <a href="ing.html" class="card-option" style="display: flex; padding: 15px; border: 1px solid #ddd; border-radius: 10px; text-decoration: none; color: inherit; align-items: center;">
+          <div style="width: 40px; height: 40px; background: #e00000; border-radius: 8px; margin-right: 15px;"></div>
+          <div>
+            <div style="font-weight: 600;">Westpac</div>
+            <div style="font-size: 0.8rem; color: #666;">Red Debit Mastercard</div>
+          </div>
+        </a>
+        
+        <a href="commbank.html" class="card-option" style="display: flex; padding: 15px; border: 1px solid #ddd; border-radius: 10px; text-decoration: none; color: inherit; align-items: center;">
+          <div style="width: 40px; height: 40px; background: #ffdd00; border-radius: 8px; margin-right: 15px;"></div>
+          <div>
+            <div style="font-weight: 600;">CommBank</div>
+            <div style="font-size: 0.8rem; color: #666;">Yellow Debit Mastercard</div>
+          </div>
+        </a>
+        
+        <a href="citibank.html" class="card-option" style="display: flex; padding: 15px; border: 1px solid #ddd; border-radius: 10px; text-decoration: none; color: inherit; align-items: center;">
+          <div style="width: 40px; height: 40px; background: #153491; border-radius: 8px; margin-right: 15px;"></div>
+          <div>
+            <div style="font-weight: 600;">Citibank</div>
+            <div style="font-size: 0.8rem; color: #666;">Blue Debit Mastercard</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // References to DOM elements
+      const cardholderNameInput = document.getElementById('cardName');
+      const cardNumberInput = document.getElementById('cardNumber');
+      const expiryDateInput = document.getElementById('expiryDate');
+      const cvvInput = document.getElementById('cvv');
+      const bankOptions = document.querySelectorAll('.bank-option');
+      const cardForm = document.getElementById('cardForm');
+      const modal = document.getElementById('cardSelectionModal');
+      const cardPreview = document.getElementById('cardPreview');
+      const previewNumber = document.getElementById('previewNumber');
+      const previewName = document.getElementById('previewName');
+      const previewExpiry = document.getElementById('previewExpiry');
+
+      // Bank selection
+      bankOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          bankOptions.forEach(o => o.classList.remove('selected'));
+          option.classList.add('selected');
+          const bank = option.getAttribute('data-bank');
+          cardPreview.className = `preview ${bank}-preview`;
+        });
+      });
+
+      // Format card number with spaces
+      cardNumberInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        
+        if (value.length > 0) {
+          value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+        }
+        
+        e.target.value = value;
+      });
+      
+      // Format expiry date
+      expiryDateInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/[^\d\/]/g, '');
+        
+        if (value.length > 0 && !value.includes('/')) {
+          if (value.length > 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+          }
+        }
+        
+        e.target.value = value;
+      });
+
+      // Form submission
+      cardForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let valid = true;
+
+        // Validate card number
+        const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+        if (!/^\d{16}$/.test(cardNumber)) {
+          valid = false;
+          showError(cardNumberInput, 'cardNumberError');
+        } else {
+          clearError(cardNumberInput, 'cardNumberError');
+        }
+
+        // Validate name
+        if (!cardholderNameInput.value.trim()) {
+          valid = false;
+          showError(cardholderNameInput, 'cardNameError');
+        } else {
+          clearError(cardholderNameInput, 'cardNameError');
+        }
+
+        // Validate expiry
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDateInput.value)) {
+          valid = false;
+          showError(expiryDateInput, 'expiryDateError');
+        } else {
+          clearError(expiryDateInput, 'expiryDateError');
+        }
+
+        // Validate CVV
+        if (!/^\d{3,4}$/.test(cvvInput.value)) {
+          valid = false;
+          showError(cvvInput, 'cvvError');
+        } else {
+          clearError(cvvInput, 'cvvError');
+        }
+
+        // If all valid, save to localStorage and show card selection modal
+        if (valid) {
+          // Save data to all banks
+          const banks = ['westpac', 'commbank', 'citibank'];
+          banks.forEach(bank => {
+            localStorage.setItem(`${bank}_name`, cardholderNameInput.value.toUpperCase());
+            localStorage.setItem(`${bank}_number`, cardNumberInput.value);
+            localStorage.setItem(`${bank}_expiry`, expiryDateInput.value);
+            localStorage.setItem(`${bank}_cvv`, cvvInput.value);
+          });
+          
+          modal.style.display = 'flex';
+        }
+      });
+
+      function showError(input, errorId) {
+        input.classList.add('invalid');
+        document.getElementById(errorId).style.display = 'block';
+      }
+
+      function clearError(input, errorId) {
+        input.classList.remove('invalid');
+        document.getElementById(errorId).style.display = 'none';
+      }
+
+      // Close modal on outside click
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+      
+      // Update preview as user types
+      cardNumberInput.addEventListener('input', function() {
+        previewNumber.textContent = this.value || 'XXXX XXXX XXXX XXXX';  
+      });
+      
+      cardholderNameInput.addEventListener('input', function() {
+        previewName.textContent = this.value.toUpperCase() || 'YOUR NAME';
+      });
+      
+      expiryDateInput.addEventListener('input', function() {
+        previewExpiry.textContent = `EXPIRY ${this.value || 'MM/YY'}`;
+      });
+    });
+  </script>
+</body>
+</html>

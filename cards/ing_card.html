@@ -6,14 +6,150 @@
   <title>ING Digital Card</title>
   <link rel="stylesheet" href="../css/card-styles.css">
   <style>
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    
+    body {
+      background-color: #eaeaea;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .card-container {
+      perspective: 1000px;
+    }
+    
+    .card {
+      width: 360px;
+      height: 220px;
+      border-radius: 15px;
+      position: relative;
+      transition: transform 0.5s ease;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+    
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      padding: 20px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-size: cover;
+      background-position: center;
+    }
+    
     .card-front {
-      background: linear-gradient(135deg, #ff6200, #ff8c00);
-      color: white;
+      background-image: url('../images/ING.png');
+      color: #ffffff;
     }
     
     .card-back {
-      background: #ffffff;
-      color: #333;
+      background-color: #e25e00;
+      transform: rotateY(180deg);
+      color: #ffffff;
+    }
+
+    
+    /* Common elements */
+    .card-logo {
+      font-weight: bold;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .card-logo img {
+      height: 30px;
+      margin-right: 10px;
+      filter: brightness(0) invert(1); /* Make logo white */
+    }
+    
+    .card-number {
+      font-size: 18px;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+    
+    .card-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+    
+    .magnetic-strip {
+      height: 40px;
+      background: #222;
+      margin: 20px -20px;
+    }
+    
+    .signature-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f4f4f4;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    
+    .signature {
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+      margin-right: 10px;
+    }
+    
+    .cvv {
+      font-weight: bold;
+    }
+    
+    .info {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    /* Card-back specific styles */
+    .card-back .card-details {
+      color: #ffffff;
+    }
+    
+    /* Optional tilt effect */
+    .hover-tilt {
+      transition: transform 0.3s ease;
+    }
+    
+    /* Media queries for responsiveness */
+    @media (max-width: 420px) {
+      .card {
+        width: 90%;
+        height: 200px;
+      }
+    
+      .card-number {
+        font-size: 16px;
+      }
+    
+      .card-details {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -22,8 +158,6 @@
     <div class="card flip-enabled">
       <div class="card-front">
         <div class="card-logo">
-          <img src="https://www.ing.com/static/ingdotcom/img/logo.svg" alt="ING Logo">
-          ING
         </div>
         <div class="chip"></div>
         <div class="card-number">**** **** **** 1234</div>
@@ -48,6 +182,28 @@
     const card = document.querySelector('.card');
     let isFlipped = false;
     
+    // Add 3D hover effect
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+      
+      if (!isFlipped) {
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      }
+    });
+    
+    // Reset on mouse leave
+    card.addEventListener('mouseleave', () => {
+      if (!isFlipped) {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      }
+    });
+    
     // Toggle flip on click
     card.addEventListener('click', () => {
       isFlipped = !isFlipped;
@@ -55,6 +211,7 @@
         card.classList.add('flipped');
       } else {
         card.classList.remove('flipped');
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
       }
     });
     

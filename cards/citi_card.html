@@ -4,24 +4,147 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Citibank Digital Card</title>
-  <link rel="stylesheet" href="../css/card-styles.css">
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #eaeaea;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card-container {
+      perspective: 1000px;
+    }
+
+    .card {
+      width: 360px;
+      height: 220px;
+      border-radius: 15px;
+      position: relative;
+      transition: transform 0.5s ease;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      padding: 20px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-size: cover;
+      background-position: center;
+    }
+
     .card-front {
-      background: linear-gradient(135deg, #003087 0%, #005566 100%);
-      color: #fff;
+      background-image: url('../images/citi_rewards.png');
+      color: #000;
     }
     
     .card-back {
+      background-image: url('../images/citi_back_visa.png');
+      transform: rotateY(180deg);
+      color: #000;
+    }
+
+    .card-logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+
+    .card-number {
+      font-size: 22px;
+      letter-spacing: 2px;
+      color: white;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-details {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 14px;
+      color: white;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .magnetic-strip {
+      height: 40px;
+      background: #000;
+      margin: 20px -20px;
+    }
+
+    .signature-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 13px;
       color: #333;
+    }
+
+    .signature {
+      flex: 1;
+      border-bottom: 1px solid #ccc;
+      margin-right: 10px;
+    }
+
+    .cvv {
+      font-weight: bold;
+    }
+
+    .info {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .card-back .card-details {
+      color: #333;
+      text-shadow: none;
+    }
+
+    @media (max-width: 420px) {
+      .card {
+        width: 90%;
+        height: 200px;
+      }
+
+      .card-number {
+        font-size: 16px;
+      }
+
+      .card-details {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
-<body class="citi-card">
+<body>
   <div class="card-container">
     <div class="card flip-enabled">
       <div class="card-front">
-        <div class="card-logo">Citibank</div>
         <div class="chip"></div>
         <div class="card-number">4321 8765 1234 5678</div>
         <div class="card-details">
@@ -44,8 +167,7 @@
   <script>
     const card = document.querySelector('.card');
     let isFlipped = false;
-    
-    // Handle mouse move effect
+
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -54,20 +176,18 @@
       const centerY = rect.height / 2;
       const rotateX = (y - centerY) / 25;
       const rotateY = (centerX - x) / 25;
-      
+
       if (!isFlipped) {
         card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       }
     });
-    
-    // Reset on mouse leave
+
     card.addEventListener('mouseleave', () => {
       if (!isFlipped) {
         card.style.transform = 'rotateX(0deg) rotateY(0deg)';
       }
     });
-    
-    // Toggle flip on click
+
     card.addEventListener('click', () => {
       isFlipped = !isFlipped;
       if (isFlipped) {
@@ -77,15 +197,14 @@
         card.style.transform = 'rotateX(0deg) rotateY(0deg)';
       }
     });
-    
-    // Get URL parameters for dynamic card data
+
     function updateCardFromParams() {
       const urlParams = new URLSearchParams(window.location.search);
       const cardNumber = urlParams.get('number');
       const name = urlParams.get('name');
       const expiry = urlParams.get('expiry') || urlParams.get('exp');
       const cvv = urlParams.get('cvv');
-      
+
       if (cardNumber) document.querySelector('.card-number').textContent = cardNumber;
       if (name) {
         document.querySelector('.name').textContent = name;
@@ -94,7 +213,7 @@
       if (expiry) document.querySelector('.expiry').textContent = expiry;
       if (cvv) document.querySelector('.cvv').textContent = cvv;
     }
-    
+
     document.addEventListener('DOMContentLoaded', updateCardFromParams);
   </script>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Medicare Card</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
   <style>
     /* Card-specific styles */
     :root {
@@ -34,8 +34,10 @@
       </div>
       <div class="form-group">
         <label for="medicareNumber">Medicare Number</label>
-        <input type="text" id="medicareNumber" required pattern="\d{10}" title="Medicare number: 10 digits" inputmode="numeric" maxlength="10">
-        <span class="error" id="medicareNumberError">Medicare number must be 10 digits.</span>
+        <input type="text" id="medicareNumber" required 
+           title="Medicare number: 10 digits" inputmode="numeric" 
+           maxlength="12" placeholder="XXXX XXXXX X">
+        <span class="error" id="medicareNumberError">Medicare number must be 10 digits (without spaces).</span>
       </div>
       <div class="form-group">
         <label for="refNumber">Reference Number</label>
@@ -51,39 +53,6 @@
     </form>
   </div>
 
-  <div class="fullscreen" id="fullscreen">
-    <header class="card-header">
-      <img id="cardLogo" src="images/medicare_logo.png" alt="Medicare Logo" class="logo">
-    </header>
-    <div class="card-container" id="cardContainer" role="button" aria-label="Flip card">
-      <div class="card-inner" id="cardInner">
-        <div class="card-front" id="cardFront">
-          <div class="card-number" id="cardNumber">XXXXXXXXXX</div>
-          <div class="card-footer">
-            <div class="card-holder">
-              <span class="label">Cardholder</span><br>
-              <span class="value" id="fullNameDisplay">NAME</span>
-            </div>
-            <div class="expiry">
-              <span class="label">Valid Thru</span><br>
-              <span class="value" id="expiryDate">MM/YY</span>
-            </div>
-          </div>
-        </div>
-        <div class="card-back" id="cardBack">
-          <div class="card-number">Ref: <span id="refNumberBack">XX</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="button-group">
-      <button id="flipButton">Flip Card</button>
-      <button id="closeButton">Back</button>
-    </div>
-  </div>
-
-  <script src="../js/commCard.js"></script>
-  <script src="../js/citiCard.js"></script>
-  <script src="../js/ingCard.js"></script>
   <script src="../js/medicareCard.js"></script>
   <script src="../js/wallet.js"></script>
 </body>

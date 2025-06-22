@@ -4,41 +4,143 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Medicare Digital Card</title>
-  <link rel="stylesheet" href="../css/card-styles.css">
+  <link rel="stylesheet" href="../css/cards.css">
   <style>
-    .card-front {
-      background: linear-gradient(135deg, #8ccc92 0%, #8ccc92 100%);
-      color: black;
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
     }
     
-    .card-back {
-      background: #f9f9f9;
-      color: #333;
+    body {
+      background-color: #f3f3f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .card-container {
+      perspective: 1000px;
+    }
+    
+    .card {
+      width: 360px;
+      height: 220px;
+      border-radius: 15px;
+      position: relative;
+      transition: transform 0.5s ease;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    
+    .card-front {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      padding: 20px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      background-image: url('../images/medicare.png');
+      background-size: cover;
+      color: #000;
+      justify-content: center;
+      align-items: center;
+      transform: rotateY(0deg);
+    }
+    
+    .medicare-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      width: 100%;
     }
     
     .medicare-logo {
+      font-weight: bold;
+      font-size: 22px;
       display: flex;
       align-items: center;
+      color: #000;
+      text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
     }
     
-    .medicare-logo::before {
-      content: '';
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>') no-repeat center;
-      background-size: contain;
-      margin-right: 10px;
+    .card-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+    }
+    
+    .card-number {
+      font-size: 22px;
+      letter-spacing: 1.5px;
+      font-weight: bold;
+      margin: 15px 0;
     }
     
     .ref-number {
       position: absolute;
-      top: 130px;
+      top: 20px;
       right: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.4);
+      padding: 2px 8px;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: auto;
+    }
+
+    .name {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 18px;
+    }
+
+    .expiry {
+      font-weight: bold;
       font-size: 14px;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 2px 5px;
-      border-radius: 3px;
+    }
+    
+    .expiry::before {
+      content: 'Valid to ';
+      font-weight: normal;
+      opacity: 0.8;
+    }
+    
+    .medicare-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 15px;
+      font-size: 12px;
+      width: 100%;
+    }
+    
+    .medicare-footer .left {
+      opacity: 0.7;
+    }
+    
+    .medicare-footer .right {
+      font-weight: bold;
     }
   </style>
 </head>
@@ -46,12 +148,20 @@
   <div class="card-container">
     <div class="card hover-tilt">
       <div class="card-front">
-        <div class="card-logo medicare-logo">Medicare</div>
-        <div class="card-number">1234 567 890 1</div>
-        <div class="ref-number">2</div>
-        <div class="card-details">
-          <div class="name">Alex Taylor</div>
-          <div class="expiry">06/30</div>
+        <div class="card-content">
+          <div class="medicare-header">
+            <div class="ref-number" id="refNumberBack">2</div>
+          </div>
+          
+          <div class="card-number" id="cardNumber">1234 56789 0</div>
+          
+          <div class="card-details">
+            <div class="name" id="fullNameDisplay">ALEX TAYLOR</div>
+            <div class="expiry" id="expiryDate">06/30</div>
+          </div>
+          
+          <div class="medicare-footer">
+          </div>
         </div>
       </div>
     </div>
@@ -59,7 +169,7 @@
   <script>
     const card = document.querySelector('.card');
     
-    // Handle mouse move effect
+    // Handle mouse move effect for 3D tilt
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -79,15 +189,31 @@
     // Get URL parameters for dynamic card data
     function updateCardFromParams() {
       const urlParams = new URLSearchParams(window.location.search);
-      const cardNumber = urlParams.get('number') || urlParams.get('medicareNumber');
-      const name = urlParams.get('name') || urlParams.get('fullName');
+      const fullName = urlParams.get('fullName');
+      const medicareNumber = urlParams.get('medicareNumber');
       const expiry = urlParams.get('expiry');
       const refNumber = urlParams.get('refNumber');
       
-      if (cardNumber) document.querySelector('.card-number').textContent = cardNumber;
-      if (name) document.querySelector('.name').textContent = name;
-      if (expiry) document.querySelector('.expiry').textContent = expiry;
-      if (refNumber) document.querySelector('.ref-number').textContent = refNumber;
+      // Format Medicare number if it's just digits
+      if (medicareNumber) {
+        const formattedNumber = formatMedicareNumber(medicareNumber);
+        document.getElementById('cardNumber').textContent = formattedNumber;
+      }
+      
+      if (fullName) document.getElementById('fullNameDisplay').textContent = fullName.toUpperCase();
+      if (expiry) document.getElementById('expiryDate').textContent = expiry;
+      if (refNumber) document.getElementById('refNumberBack').textContent = refNumber;
+    }
+    
+    // Format Medicare number in XXXX XXXXX X format
+    function formatMedicareNumber(number) {
+      const digitsOnly = number.replace(/\D/g, '');
+      if (digitsOnly.length === 10) {
+        return digitsOnly.substring(0, 4) + ' ' + 
+               digitsOnly.substring(4, 9) + ' ' + 
+               digitsOnly.substring(9, 10);
+      }
+      return number;
     }
     
     document.addEventListener('DOMContentLoaded', updateCardFromParams);

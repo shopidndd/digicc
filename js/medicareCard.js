@@ -23,6 +23,17 @@ const medicareCard = {
   }
 };
 
+// Function to format Medicare number in XXXX XXXXX X format (correct Medicare format)
+function formatMedicareNumber(medicareNumber) {
+  const digitsOnly = medicareNumber.replace(/\D/g, '');
+  if (digitsOnly.length === 10) {
+    return digitsOnly.substring(0, 4) + ' ' + 
+           digitsOnly.substring(4, 9) + ' ' + 
+           digitsOnly.substring(9, 10);
+  }
+  return medicareNumber; // Return as is if not exactly 10 digits
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const cardForm = document.getElementById('cardForm');
   const formContainer = document.getElementById('formContainer');
@@ -32,34 +43,86 @@ document.addEventListener('DOMContentLoaded', function () {
   const closeButton = document.getElementById('closeButton');
 
   // Flip functionality
-  flipButton.addEventListener('click', () => {
-    cardInner.classList.toggle('flipped');
-  });
+  if (flipButton) {
+    flipButton.addEventListener('click', () => {
+      cardInner.classList.toggle('flipped');
+    });
+  }
 
   // Close fullscreen
-  closeButton.addEventListener('click', () => {
-    fullscreen.classList.remove('active');
-    formContainer.classList.add('active');
-  });
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      fullscreen.classList.remove('active');
+      formContainer.classList.add('active');
+    });
+  }
 
-  // Handle form submission
-  cardForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const fullName = document.getElementById('fullName').value.trim();
-    const medicareNumber = document.getElementById('medicareNumber').value.trim();
-    const expiry = document.getElementById('expiry').value.trim();
-    const refNumber = document.getElementById('refNumber').value.trim();
-
-    if (fullName && medicareNumber && expiry && refNumber) {
-      medicareCard.renderCard({ fullName, medicareNumber, expiry, refNumber });
-      formContainer.classList.remove('active');
-      fullscreen.classList.add('active');
-    }
-  });
-
-  // Format Medicare number as XXXX XXXX XXXX
-  function formatMedicareNumber(number) {
-    return number.replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim();
+  // Only process form if we're on the Medicare form page
+  if (cardForm && document.title.includes('Medicare')) {
+    // Reset error messages when user starts typing
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', function() {
+        const errorId = input.id + 'Error';
+        const errorElement = document.getElementById(errorId);
+        if (errorElement) {
+          errorElement.style.display = 'none';
+        }
+      });
+    });
+    
+    // Form validation and submission
+    cardForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      
+      // Get and validate form values
+      const fullName = document.getElementById('fullName').value.trim();
+      const medicareInput = document.getElementById('medicareNumber');
+      const medicareRaw = medicareInput.value.replace(/\D/g, '');
+      const expiry = document.getElementById('expiry').value.trim();
+      const refNumber = document.getElementById('refNumber').value.trim();
+      
+      // Reset error messages
+      document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
+      
+      // Validate each field
+      let isValid = true;
+      
+      // Validate name
+      if (!/^[A-Za-z\s]{2,50}$/.test(fullName)) {
+        document.getElementById('fullNameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate Medicare number - must be exactly 10 digits
+      if (medicareRaw.length !== 10) {
+        document.getElementById('medicareNumberError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate reference number
+      if (!/^\d{1,2}$/.test(refNumber)) {
+        document.getElementById('refNumberError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Validate expiry date
+      if (!/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(expiry)) {
+        document.getElementById('expiryError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // If all valid, render card
+      if (isValid) {
+        medicareCard.renderCard({
+          fullName,
+          medicareNumber: medicareRaw,
+          expiry,
+          refNumber
+        });
+        
+        formContainer.classList.remove('active');
+        fullscreen.classList.add('active');
+      }
+    });
   }
 });

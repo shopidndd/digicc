@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CommBank Card</title>
+  <style>
+    :root {
+  --primary: #e00000;
+  --bg: #f5f5f7;
+  --text: #1c1c1e;
+  --subtext: #6e6e73;
+  --highlight: #007aff;
+  --card-radius: 16px;
+  --dark: #000;
+  --light-border: #e0e0e0;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: white;
+  color: var(--text);
+}
+
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fff;
+}
+
+header {
+  padding: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-link {
+  font-size: 0.85rem;
+  color: var(--highlight);
+  text-decoration: none;
+}
+
+.section {
+  padding: 1rem;
+}
+
+.card-header {
+  padding: 1rem;
+}
+
+.card-preview {
+  border-radius: var(--card-radius);
+  background: linear-gradient(to right, #ffef77, #ffcc00);
+  padding: 1.2rem;
+  position: relative;
+  color: var(--dark);
+  height: 180px;
+  overflow: hidden;
+}
+
+.card-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 0.6rem;
+}
+
+.edit-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.card-number {
+  text-align: right;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.card-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.card-exp {
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.card-status {
+  font-size: 0.75rem;
+  color: var(--subtext);
+  margin-top: 0.6rem;
+}
+
+.show-btn {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  border: 2px solid #000;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.details-sheet {
+  padding: 1rem;
+  border-top: 1px solid var(--light-border);
+}
+
+.details-header {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.detail-label {
+  color: var(--subtext);
+}
+
+.copy-tag {
+  background: var(--highlight);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  margin-left: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.info-text {
+  font-size: 0.8rem;
+  color: var(--subtext);
+  margin-top: 1rem;
+}
+
+.tab-bar {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid var(--light-border);
+  background: #fff;
+  padding: 0.5rem 0;
+}
+
+.tab-item {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #888;
+}
+
+.tab-icon {
+  width: 24px;
+  height: 24px;
+  background: #ccc;
+  border-radius: 6px;
+  margin: 0 auto 0.3rem;
+}
+
+@media (max-width: 430px) {
+  .section {
+    padding: 0.8rem;
+  }
+
+  .card-preview {
+    height: 170px;
+  }
+
+  .card-number {
+    font-size: 0.9rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Card Preview -->
+    <div class="card-header">
+      <div class="card-preview">x
+        <img src="images/westpac_logo_white.png" alt="Westpac" class="card-logo" />
+        <button class="edit-button" onclick="location.href='form.html'">Edit</button>
+        <div class="card-number" id="cardNumber">7980 3745 1234 7123</div>
+        <div class="card-name" id="cardName">Jane Doe</div>
+        <div class="card-exp" id="cardExpiry">Exp: 01/26</div>
+        <div class="card-status">Active · Added to Apple Wallet</div>
+      </div>
+    </div>
+
+
+    <!-- Details Sheet -->
+    <div class="details-sheet">
+      <div class="details-header">Card details</div>
+
+      <div class="detail-row">
+        <div class="detail-label">Cardholder name</div>
+        <div class="detail-value">Jane Doe</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Card number</div>
+        <div class="detail-value">
+          7980 3745 1234 7123 <span class="copy-tag">Copy</span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Expiry date</div>
+        <div class="detail-value">01/26</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">Dynamic security code</div>
+        <div class="detail-value">123</div>
+      </div>
+
+      <p class="info-text">
+        Dynamic security code changes in the Westpac One app after 24 hours, making it safer to shop online.
+      </p>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <div class="tab-item">
+        <div class="tab-icon"></div>
+        Accounts
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon"></div>
+        Pay & Transfer
+      </div>
+      <div class="tab-item active">
+        <div class="tab-icon"></div>
+        Cards
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon"></div>
+        Timeline
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon"></div>
+        More
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get card details from localStorage or use defaults
+      const cardName = localStorage.getItem('westpac_name') || 'Jane Doe';
+      const cardNumber = localStorage.getItem('westpac_number') || '7980 3745 1234 7123';
+      const cardExpiry = localStorage.getItem('westpac_expiry') || '01/26';
+      const cardCvv = localStorage.getItem('westpac_cvv') || '123';
+      
+      // Update card display on the visual card
+      document.getElementById('cardName').textContent = cardName;
+      document.getElementById('cardNumber').textContent = cardNumber;
+      document.getElementById('cardExpiry').textContent = 'Exp: ' + cardExpiry;
+      
+      // Update details section below the card
+      document.querySelectorAll('.detail-value')[0].textContent = cardName;
+      document.querySelectorAll('.detail-value')[1].innerHTML = 
+        `<span id="detailNumber">${cardNumber}</span> <span class="copy-tag" id="copyBtn">Copy</span>`;
+      document.querySelectorAll('.detail-value')[2].textContent = cardExpiry;
+      document.querySelectorAll('.detail-value')[3].textContent = cardCvv;
+      
+      // Copy functionality
+      document.querySelector('.copy-tag').addEventListener('click', function() {
+        const textToCopy = cardNumber.replace(/\s/g, '');
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+              this.textContent = 'Copy';
+            }, 2000);
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+            alert('Failed to copy. Please try again.');
+          });
+      });
+      
+      // Add double-tap to view/hide full card number functionality for mobile
+      let lastTap = 0;
+      const originalNumber = cardNumber;
+      const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, "•");
+      let isNumberVisible = true;
+      
+      document.getElementById('cardNumber').addEventListener('click', function(e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        
+        if (tapLength < 300 && tapLength > 0) {
+          // Double tap detected
+          if (isNumberVisible) {
+            this.textContent = maskedNumber;
+          } else {
+            this.textContent = originalNumber;
+          }
+          isNumberVisible = !isNumberVisible;
+          e.preventDefault();
+        }
+        lastTap = currentTime;
+      });
+      
+      // Handle orientation changes for better mobile display
+      window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+          const cardPreview = document.querySelector('.card-preview');
+          if (window.orientation === 90 || window.orientation === -90) {
+            // Landscape mode
+            cardPreview.style.height = '160px';
+          } else {
+            // Portrait mode
+            cardPreview.style.height = '200px';
+          }
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>

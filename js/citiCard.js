@@ -23,30 +23,91 @@ const citiCard = {
     }
   };
 
-  function formatCardNumber(number) {
-    return number.replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim();
-  }
+function formatCardNumber(number) {
+  return number.replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const cardForm = document.getElementById('cardForm');
+  const formContainer = document.getElementById('formContainer');
+  const fullscreen = document.getElementById('fullscreen');
+  const cardInner = document.getElementById('cardInner');
   const flipButton = document.getElementById('flipButton');
-  flipButton.addEventListener('click', () => {
-    document.getElementById('cardInner').classList.toggle('flipped');
+  const closeButton = document.getElementById('closeButton');
+
+  // Flip functionality
+  if (flipButton) {
+    flipButton.addEventListener('click', () => {
+      cardInner.classList.toggle('flipped');
+    });
+  }
+
+  // Close fullscreen
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      fullscreen.classList.remove('active');
+      formContainer.classList.add('active');
+    });
+  }
+
+  // Reset error messages when user starts typing
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', function() {
+      const errorId = input.id + 'Error';
+      const errorElement = document.getElementById(errorId);
+      if (errorElement) {
+        errorElement.style.display = 'none';
+      }
+    });
   });
-  
-  document.getElementById('closeButton').addEventListener('click', () => {
-    document.getElementById('fullscreen').classList.remove('active');
-    document.getElementById('formContainer').classList.add('active');
-  });
-  document.getElementById('cardForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-  
-    const name = document.getElementById('name').value.trim();
-    const number = document.getElementById('number').value.trim();
-    const exp = document.getElementById('exp').value.trim();
-    const cvv = document.getElementById('cvv').value.trim();
-  
-    if (name && number && exp && cvv) {
-      ingCard.renderCard({ name, number, exp, cvv });
-      document.getElementById('formContainer').classList.remove('active');
-      document.getElementById('fullscreen').classList.add('active');
-    }
-  });
-  
+
+  // Only attach the event handler if the form exists
+  if (cardForm) {
+    cardForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const numberInput = document.getElementById('number').value.trim();
+      const number = numberInput.replace(/\D/g, ''); // Remove spaces for validation
+      const exp = document.getElementById('exp').value.trim();
+      const cvv = document.getElementById('cvv').value.trim();
+
+      // Reset error messages
+      document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
+      
+      // Validate each field
+      let isValid = true;
+      
+      if (!/^[A-Za-z\s]{2,50}$/.test(name)) {
+        document.getElementById('nameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (number.length !== 16) {
+        document.getElementById('numberError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!/^(0[1-9]|1[0-2])\/[0-9]{2}$/.test(exp)) {
+        document.getElementById('expError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!/^\d{3,4}$/.test(cvv)) {
+        document.getElementById('cvvError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (isValid) {
+        citiCard.renderCard({
+          name, 
+          number: numberInput, 
+          exp, 
+          cvv 
+        });
+        formContainer.classList.remove('active');
+        fullscreen.classList.add('active');
+      }
+    });
+  }
+});

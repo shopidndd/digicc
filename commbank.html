@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CommBank Card</title>
+  <style>
+    :root {
+      --yellow: #ffdd00;
+      --dark: #000;
+      --gray: #f5f5f5;
+      --text: #333;
+      --light-border: #ddd;
+      --card-radius: 16px;
+
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: white;
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: #fff;
+    }
+
+    .card-header {
+        padding: 1rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-preview {
+    width: 100%;  
+    border-radius: var(--card-radius);
+    background-image: url('/Users/adminadmin/cc/images/ing.png');
+    background-size: cover;
+    background-position: center;
+    padding: 1.5rem;
+    height: 200px;
+    position: relative;
+    color: white;
+  }
+
+    .card-number {
+      text-align: right;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    .card-labels {
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+    }
+
+    .card-exp {
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    .show-btn {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      border: 2px solid #000;
+      border-radius: 999px;
+      padding: 0.4rem 1rem;
+      font-size: 0.9rem;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .account-balance {
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.5rem 0 1rem;
+      border-bottom: 1px solid var(--light-border);
+    }
+
+    .list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .list li {
+      padding: 1rem;
+      border-bottom: 1px solid var(--light-border);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .apple-pay {
+      background: black;
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .tab-bar {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid var(--light-border);
+      background: #fff;
+      padding: 0.5rem 0;
+    }
+
+    .tab-item {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #888;
+    }
+
+    .tab-item .icon {
+      width: 24px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 6px;
+      margin: 0 auto 0.3rem;
+    }
+    
+    @media (max-width: 430px) {
+      .section {
+        padding: 0.8rem;
+      }
+      
+      .card {
+        height: 170px;
+      }
+      
+      .card-number {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header>
+      Cards
+      <a href="form.html" class="edit-link">Edit Card</a>
+    </header>
+
+    <!-- Loyalty tag -->
+    <div class="section">
+      <span style="font-size: 0.8rem; background: #eee; padding: 0.3rem 0.6rem; border-radius: 1rem;">
+        Loyalty cards
+      </span>
+    </div>
+
+    <!-- Card -->
+    <div class="section">
+    <div class="card-header">
+
+      <div class="card-preview">
+        <div class="card-number" id="cardNumber">5431 2345 2342 5423</div>
+        <div class="card-labels">Debit Mastercard</div>
+        <div class="card-name" id="cardName">MS JANE JOHNSON</div>
+        <div class="card-exp" id="cardExp">EXPIRY ••/••<br>CVC •••</div>
+        <div class="show-btn" id="showBtn">👁 Show</div>
+      </div>
+
+      <div class="account-balance">Smart Access<br><span style="font-weight: normal;">$70.23 available</span></div>
+    </div>
+
+    <!-- Card Options -->
+    <ul class="list">
+      <li>
+        Add to Apple Wallet
+        <span class="apple-pay">Pay</span>
+      </li>
+      <li>Lock card temporarily</li>
+      <li>Report lost, stolen or damaged card</li>
+      <li>Go to card settings</li>
+    </ul>
+
+    <!-- Bottom Nav -->
+    <div class="tab-bar">
+      <div class="tab-item">
+        <div class="icon"></div>
+        Home
+      </div>
+      <div class="tab-item">
+        <div class="icon"></div>
+        Accounts
+      </div>
+      <div class="tab-item">
+        <div class="icon"></div>
+        Pay
+      </div>
+      <div class="tab-item">
+        <div class="icon"></div>
+        Cards
+      </div>
+      <div class="tab-item">
+        <div class="icon"></div>
+        For You
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get card details from localStorage or use defaults
+      const cardName = localStorage.getItem('commbank_name') || 'MS JANE JOHNSON';
+      const cardNumber = localStorage.getItem('commbank_number') || '5431 2345 2342 5423';
+      const cardExpiry = localStorage.getItem('commbank_expiry') || '••/••';
+      const cardCvv = localStorage.getItem('commbank_cvv') || '•••';
+      
+      // Update card display with data
+      document.getElementById('cardName').textContent = cardName;
+      document.getElementById('cardNumber').textContent = cardNumber;
+      
+      // Update account balance based on card number (just for demonstration)
+      if (cardNumber !== '5431 2345 2342 5423') {
+        // If using custom card number, generate a random balance
+        const randomBalance = (Math.random() * 1000).toFixed(2);
+        document.querySelector('.account-balance').innerHTML = 
+          `Smart Access<br><span style="font-weight: normal;">$${randomBalance} available</span>`;
+      }
+      
+      // Show/hide sensitive info functionality
+      const showBtn = document.getElementById('showBtn');
+      let isDetailsShown = false;
+      
+      showBtn.addEventListener('click', function() {
+        if (isDetailsShown) {
+          document.getElementById('cardExp').innerHTML = 'EXPIRY ••/••<br>CVC •••';
+          showBtn.textContent = '👁 Show';
+        } else {
+          document.getElementById('cardExp').innerHTML = `EXPIRY ${cardExpiry}<br>CVC ${cardCvv}`;
+          showBtn.textContent = '👁 Hide';
+        }
+        isDetailsShown = !isDetailsShown;
+      });
+      
+      // Double tap on card number to mask/unmask
+      let lastTap = 0;
+      const originalNumber = cardNumber;
+      const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, "•");
+      let isNumberVisible = true;
+      
+      document.getElementById('cardNumber').addEventListener('click', function(e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        
+        if (tapLength < 300 && tapLength > 0) {
+          if (isNumberVisible) {
+            this.textContent = maskedNumber;
+          } else {
+            this.textContent = originalNumber;
+          }
+          isNumberVisible = !isNumberVisible;
+        }
+        lastTap = currentTime;
+      });
+      
+      // Add animation when card loads
+      const card = document.querySelector('.card');
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      
+      setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 100);
+      
+      // Update page title with cardholder name
+      document.title = `${cardName} - CommBank Card`;
+    });
+  </script>
+</body>
+</html>
