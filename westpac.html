@@ -51,7 +51,7 @@
     }
 
     .card {
-      background-image: url('/Users/adminadmin/cc/images/citi_visa.png');
+      background-image: url('/Users/adminadmin/cc/images/westpac.png');
     background-size: cover;
       background-position: center;
       border-radius: var(--radius);
@@ -66,7 +66,7 @@
     .card-number {
       font-size: 1.5rem;
       text-align: left;
-        margin-top: 3rem;
+        margin-top: 4rem;
       letter-spacing: 1px;
       margin-bottom: 1rem;
     }
@@ -90,7 +90,7 @@
 
     .show-btn {
       position: absolute;
-      bottom: 3.5rem;
+      bottom: 5rem;
       right: 1rem;
       border: 2px solid var(--white);
       color: var(--white);
@@ -198,7 +198,7 @@
       </div>
 
       <div class="account-balance">
-        Citi Plus Account<br><span style="font-weight: normal;">$5,490.10 available</span>
+        Everyday Account<br><span style="font-weight: normal;">$15,490.10 available</span>
       </div>
     </div>
 
@@ -214,29 +214,62 @@
     </ul>
 
     <!-- Bottom Navigation -->
-    <div class="tab-bar">
-      <div class="tab-item">
-        <div class="icon"></div>
+    <div class="tab-bar" style="display: flex; justify-content: space-around; background: #f0f0f0; padding: 10px 0;">
+      <div class="tab-item" style="text-align: center;">
+        <div class="icon">
+          <!-- Home Icon -->
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9L12 2l9 7v11a2 2 0 0 1-2 2h-5v-7H10v7H5a2 2 0 0 1-2-2V9z"/>
+          </svg>
+        </div>
         Home
       </div>
-      <div class="tab-item">
-        <div class="icon"></div>
+    
+      <div class="tab-item" style="text-align: center;">
+        <div class="icon">
+          <!-- Accounts Icon -->
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"/>
+            <path d="M5.5 21a8.38 8.38 0 0 1 13 0"/>
+          </svg>
+        </div>
         Accounts
       </div>
-      <div class="tab-item">
-        <div class="icon"></div>
+    
+      <div class="tab-item" style="text-align: center;">
+        <div class="icon">
+          <!-- Pay Icon -->
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 8v8M8 12h8M20.5 12A8.5 8.5 0 1 1 12 3.5"/>
+          </svg>
+        </div>
         Pay
       </div>
-      <div class="tab-item">
-        <div class="icon"></div>
+    
+      <div class="tab-item" style="text-align: center;">
+        <div class="icon">
+          <!-- Cards Icon -->
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+        </div>
         Cards
       </div>
-      <div class="tab-item">
-        <div class="icon"></div>
+    
+      <div class="tab-item" style="text-align: center;">
+        <div class="icon">
+          <!-- More Icon -->
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1"/>
+            <circle cx="19" cy="12" r="1"/>
+            <circle cx="5" cy="12" r="1"/>
+          </svg>
+        </div>
         More
       </div>
     </div>
-  </div>
+    
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
