@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Medicare Card</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medicare Card</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,6 +11,8 @@
       background: #f5f5f5;
       display: flex;
       justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
     .mygov-header {
@@ -34,68 +36,60 @@
       overflow: hidden;
       background: white;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 1rem;
     }
 
     .medicare-card {
-      background-image: url('images/medicare.png');
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background-image: url('/Users/adminadmin/cc/assets/medicare.png'); /* Replace with actual image URL or local path */
       background-size: cover;
       background-position: center;
-      border-radius: 12px;
-      padding: 1.2rem;
+      padding: .5rem;
       position: relative;
-      height: 240px;
-      color: #000;
-    }
-
-    .medicare-logo {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: green;
-      color: yellow;
-      font-weight: bold;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.9rem;
-      border-radius: 4px;
-    }
-
-    .anniversary {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      font-size: 0.65rem;
-      color: #1c4a2e;
-      font-weight: bold;
+      margin-bottom: 1rem;
+      height: 200px;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      border: #f0f0f0 1px solid;
+      border-radius: 10px;
     }
 
     .card-number {
       font-size: 1.8rem;
       text-align: center;
-      margin-top: 3rem;
+      margin-top: 3.5rem;
       letter-spacing: 2px;
+      font-family: monospace;
     }
 
     .members {
       display: flex;
       flex-direction: column;
+      justify-content: left;
+      align-items: left;
       gap: 0.3rem;
       margin-top: 1rem;
       font-family: monospace;
     }
 
     .member-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.95rem;
+      position: absolute;
+      font-size: 1.1rem;
+      justify-content: space-evenly;
+      align-items: left;
+      font-family: monospace;
+      margin-top: 1rem;
+      font-weight: normal;
+      margin-left: .8rem;
     }
 
     .expiry {
-      text-align: right;
+      text-align: center;
       font-size: 0.85rem;
       position: absolute;
       bottom: 1rem;
-      right: 1rem;
-      font-weight: bold;
+      left: 1rem;
+      font-weight: normal;
     }
 
     .territory-section {
@@ -137,6 +131,10 @@
       cursor: pointer;
     }
 
+    .verify-button button:hover {
+      background-color: #f0f0f0;
+    }
+
     .footer {
       font-size: 12px;
       text-align: center;
@@ -149,90 +147,91 @@
       color: #208F4C;
       font-weight: bold;
     }
+
+    .error-message {
+      text-align: center;
+      color: #e00000;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 
-<div class="mygov-header">myGov</div>
-
-<div class="card-container">
-  <div class="medicare-card">
-    <div class="anniversary">40th Anniversary<br>1984–2024</div>
-    <div class="medicare-logo">medicare</div>
-
-    <div class="card-number" id="cardNumber">1234 56789 1</div>
-
-    <div class="members" id="membersList">
-      <div class="member-row"><span>1&nbsp;&nbsp;JONATHAN</span><span>CITIZEN</span></div>
-      <div class="member-row"><span>2&nbsp;&nbsp;JANE L</span><span>CITIZEN</span></div>
-      <div class="member-row"><span>3&nbsp;&nbsp;JAMES A</span><span>CITIZEN</span></div>
-      <div class="member-row"><span>4&nbsp;&nbsp;JILL B</span><span>CITIZEN</span></div>
+  <div class="card-container" id="cardWrapper" style="display: none;">
+    <div class="medicare-card">
+      <div class="card-number" id="cardNumber" role="text">Loading...</div>
+      <div class="members" id="membersList">
+        <div class="member-row"><span>1</span><span id="memberName">Loading...</span></div>
+      </div>
+      <div class="expiry" id="cardExpiry">VALID TO Loading...</div>
     </div>
 
-    <div class="expiry" id="cardExpiry">VALID TO 06/20XX</div>
+    <div class="territory-section">
+      Australian Government – Medicare
+      <span id="extraNumber">Loading...</span>
+    </div>
+
+    <div class="card-body">
+      <p><span class="label">Position:</span> <span id="cardName">Loading...</span></p>
+      <p><span class="label">Card Number:</span> <span id="cardNumberDisplay">Loading...</span></p>
+      <p><span class="label">Expiry:</span> <span id="cardExp">Loading...</span></p>
+    </div>
+
+    <div class="verify-button">
+      <button aria-label="Verify Medicare card">Verify card</button>
+    </div>
+
+    <div class="footer">
+      Last updated: <span id="lastUpdated"></span>
+    </div>
   </div>
 
-  <div class="territory-section">
-    Australian Government – Medicare
-    <span id="extraNumber">Loading...</span>
+  <div class="error-message" id="formPrompt" style="display: none;">
+    Please enter your Medicare details <a href="index.html">here</a>.
   </div>
 
-  <div class="card-body">
-    <p><span class="label">Name:</span> <span id="cardName">Loading...</span></p>
-    <p id="cardExp">EXPIRY ••/••<br>CVC •••</p>
-    <button id="showBtn">👁 Show</button>
-  </div>
-
-  <div class="verify-button">
-    <button>Verify card</button>
-  </div>
-
-  <div class="footer">
-    Last updated: 7 Apr 2023 20:09
-  </div>
-</div>
-
-<script>
+  <script>
     document.addEventListener('DOMContentLoaded', function () {
       const name = localStorage.getItem('medicare_name');
       const number = localStorage.getItem('medicare_number');
       const expiry = localStorage.getItem('medicare_expiry');
-      const ref = localStorage.getItem('medicare_ref');
-  
+
       const cardWrapper = document.getElementById('cardWrapper');
       const formPrompt = document.getElementById('formPrompt');
-  
+
       // Show card only if all values exist
-      if (name && number && expiry && ref) {
+      if (name && number && expiry) {
         cardWrapper.style.display = 'block';
-  
-        document.getElementById('cardName').textContent = name;
+        formPrompt.style.display = 'none';
+
+        // Update card details
+        document.getElementById('cardName').textContent = name; // Position
+        document.getElementById('cardNumberDisplay').textContent = number; // Card Number
+        document.getElementById('memberName').textContent = name;
         document.getElementById('cardNumber').textContent = number;
         document.getElementById('extraNumber').textContent = number;
         document.getElementById('cardExpiry').textContent = `VALID TO ${expiry}`;
-  
-        let isDetailsShown = false;
-        const showBtn = document.getElementById('showBtn');
-  
-        showBtn.addEventListener('click', function () {
-          const cardExp = document.getElementById('cardExp');
-          if (isDetailsShown) {
-            cardExp.innerHTML = 'EXPIRY ••/••<br>CVC •••';
-            showBtn.textContent = '👁 Show';
-          } else {
-            cardExp.innerHTML = `EXPIRY ${expiry}<br>CVC ${ref}`;
-            showBtn.textContent = '👁 Hide';
-          }
-          isDetailsShown = !isDetailsShown;
+        document.getElementById('cardExp').textContent = expiry;
+
+        // Update last updated date (current date: 12:44 PM NZST, June 23, 2025)
+        const now = new Date('2025-06-23T12:44:00+12:00');
+        document.getElementById('lastUpdated').textContent = now.toLocaleString('en-NZ', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
         });
-  
+
         // Double-tap to toggle Medicare number visibility
         let lastTap = 0;
         const originalNumber = number;
-        const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, "•");
+        const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, '•');
         let isNumberVisible = true;
-  
-        document.getElementById('cardNumber').addEventListener('click', function (e) {
+
+        document.getElementById('cardNumber').addEventListener('click', function () {
           const currentTime = new Date().getTime();
           const tapLength = currentTime - lastTap;
           if (tapLength < 300 && tapLength > 0) {
@@ -246,8 +245,9 @@
       } else {
         // If not generated yet
         formPrompt.style.display = 'block';
+        cardWrapper.style.display = 'none';
       }
     });
   </script>
-  </body>
+</body>
 </html>
