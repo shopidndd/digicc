@@ -243,7 +243,11 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Get card details from localStorage or use defaults
       const cardName = localStorage.getItem('citibank_name') || 'MR ALEX WILSON';
-      const cardNumber = localStorage.getItem('citibank_number') || '4556 7378 9012 3456';
+      function formatCardNumber(num) {
+        return num.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+      }
+      const cardNumber = formatCardNumber(cardNumberRaw);
+
       const cardExpiry = localStorage.getItem('citibank_expiry') || '••/••';
       const cardCvv = localStorage.getItem('citibank_cvv') || '•••';
       

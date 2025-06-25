@@ -199,7 +199,7 @@
       </div>
 
       <div class="account-balance">
-        Citi Plus Account<br><span style="font-weight: normal;">$5,490.10 available</span>
+        Everyday Account<br><span style="font-weight: normal;">$65,490.10 available</span>
       </div>
     </div>
 
@@ -243,18 +243,24 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Get card details from localStorage or use defaults
       const cardName = localStorage.getItem('Commbank_name') || 'MR ALEX WILSON';
-      const cardNumber = localStorage.getItem('Commbank_number') || '4556 7378 9012 3456';
+      const cardNumberRaw = localStorage.getItem('Commbank_number') || '4556737890123456';
       const cardExpiry = localStorage.getItem('Commbank_expiry') || '••/••';
       const cardCvv = localStorage.getItem('Commbank_cvv') || '•••';
-      
+
+      // Format card number with spaces every 4 digits
+      function formatCardNumber(num) {
+        return num.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+      }
+      const cardNumber = formatCardNumber(cardNumberRaw);
+
       // Update card display
       document.getElementById('cardName').textContent = cardName;
       document.getElementById('cardNumber').textContent = cardNumber;
-      
+
       // Show/hide sensitive info functionality
       const showBtn = document.getElementById('showBtn');
       let isDetailsShown = false;
-      
+
       showBtn.addEventListener('click', function() {
         if (isDetailsShown) {
           document.getElementById('cardExp').innerHTML = 'EXPIRY ••/••<br>CVC •••';
@@ -265,7 +271,7 @@
         }
         isDetailsShown = !isDetailsShown;
       });
-      
+
       // Handle orientation change
       window.addEventListener('orientationchange', function() {
         // Adjust card display for better visibility
@@ -280,7 +286,7 @@
           }
         }, 300);
       });
-      
+
       // Double tap on card number to mask/unmask
       let lastTap = 0;
       const originalNumber = cardNumber;
