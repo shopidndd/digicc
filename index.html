@@ -2,179 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>AusGen</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const App = () => {
+      const [isDark, setIsDark] = useState(true);
+      const [isLoaded, setIsLoaded] = useState(false);
+
+      useEffect(() => {
+        setTimeout(() => setIsLoaded(true), 300);
+      }, []);
+
+      const toggleTheme = () => {
+        setIsDark(!isDark);
+      };
+
+      return (
+        <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+          isDark ? 'bg-gray-900' : 'bg-gray-100'
+        } overflow-hidden`}>
+          <div className={`w-full max-w-sm p-6 rounded-2xl shadow-xl ${
+            isDark ? 'bg-gray-800' : 'bg-white'
+          } flex flex-col items-center text-center transform transition-all duration-500 ${
+            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          } mx-4`}>
+            {/* Logo with animated cards */}
+            <div className="relative w-28 h-28 mb-6 rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-md overflow-hidden group touch-none">
+              <span className="text-4xl font-mono text-gray-400 filter drop-shadow-sm transform scale-105">AG</span>
+              
+              {/* Simplified cards for mobile */}
+              <div className="absolute w-14 h-9 rounded-md shadow-sm bg-yellow-600 top-[35%] left-[30%] -rotate-10 opacity-0 animate-[fadeIn_0.8s_0.6s_forwards] group-hover:scale-105 transition-transform duration-200"></div>
+              <div className="absolute w-14 h-9 rounded-md shadow-sm bg-gray-500 top-[30%] left-[38%] rotate-4 opacity-0 animate-[fadeIn_0.8s_0.8s_forwards] group-hover:scale-105 transition-transform duration-200"></div>
+              <div className="absolute w-14 h-9 rounded-md shadow-sm bg-gray-600 top-[40%] left-[45%] rotate-10 opacity-0 animate-[fadeIn_0.8s_1s_forwards] group-hover:scale-105 transition-transform duration-200"></div>
+              
+              {/* Background effects */}
+              <div className="absolute w-14 h-14 bg-gray-700 rounded-full -bottom-4 -right-4 filter blur-sm"></div>
+              <div className="absolute w-8 h-8 bg-white/10 rounded-full -top-2 -left-2 filter blur-sm"></div>
+            </div>
+
+            {/* Title and description */}
+            <h1 className={`text-2xl font-bold mb-2 sm:text-3xl ${
+              isDark ? 'text-white' : 'text-gray-900'
+            } animate-[fadeUp_0.6s_0.2s_forwards]`}>
+              AusGen
+            </h1>
+            <p className={`${
+              isDark ? 'text-gray-400' : 'text-gray-600'
+            } mb-6 text-base sm:text-lg max-w-[240px] leading-relaxed animate-[fadeUp_0.6s_0.3s_forwards]`}>
+              Digital Card Generator
+            </p>
+
+            {/* Theme toggle button */}
+            <button
+              onClick={toggleTheme}
+              className="mb-4 p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-colors text-lg active:scale-95"
+              aria-label="Toggle theme"
+            >
+              {isDark ? '☀️' : '🌙'}
+            </button>
+
+            {/* Enter button */}
+            <a
+              href="select.html"
+              className={`inline-block w-full px-8 py-4 rounded-full text-base sm:text-lg font-semibold text-white bg-blue-900 hover:bg-red-600 transform hover:-translate-y-0.5 active:scale-95 transition-all shadow-md animate-[fadeUp_0.6s_0.4s_forwards]`}
+            >
+              Enter App
+            </a>
+          </div>
+
+          {/* Simplified background animation */}
+          <div className="fixed inset-0 pointer-events-none hidden sm:block">
+            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
+            <div className="absolute w-80 h-80 bg-red-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+
   <style>
-    :root {
-      --primary: #0f2235;
-      --bg: #1c1c1e;
-      --text: #f5f5f7;
-      --subtext: #a1a1aa;
-      --highlight: #f73336;
-      --card-radius: 16px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container {
-      max-width: 430px;
-      width: 100%;
-      background: var(--bg);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      box-shadow: 0 0 30px rgba(10, 132, 255, 0.1);
-    }
-
-    .logo {
-        width: 120px;
-        height: 120px;
-        background: linear-gradient(145deg, #1d1e2d, #1a1a1a);
-        border-radius: 20%;
-        margin-bottom: 2rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-        position: relative;
-        overflow: hidden;
-        filter: grayscale(20%) contrast(110%);
-        }
-
-        .logo-icon {
-        font-size: 50px;
-        color: #aaa;
-        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.05));
-        font-family: monospace;
-        transform: scale(1.05) rotate(-2deg);
-        }
-
-        .logo::after {
-        content: "";
-        position: absolute;
-        width: 60px;
-        height: 60px;
-        background: #212124;
-        border-radius: 50%;
-        bottom: -20px;
-        right: -20px;
-        filter: blur(2px);
-        }
-
-        .logo::before {
-        content: "";
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 50%;
-        top: -10px;
-        left: -10px;
-        filter: blur(1px);
-        }
-
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.5rem;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 0.8s forwards;
-      animation-delay: 0.2s;
-    }
-
-    p {
-      color: var(--subtext);
-      margin-bottom: 3rem;
-      font-size: 1.1rem;
-      max-width: 280px;
-      line-height: 1.5;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 0.8s forwards;
-      animation-delay: 0.4s;
-    }
-
-    .enter-button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 16px 40px;
-      border-radius: 50px;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.3s, background-color 0.3s;
-      box-shadow: 0 5px 15px rgba(10, 132, 255, 0.4);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeUp 0.8s forwards;
-      animation-delay: 0.6s;
-    }
-
-    .enter-button:hover {
-      background-color: #cc4e00;
-      transform: translateY(-3px);
-    }
-
-    .enter-button:active {
-      transform: translateY(0);
-    }
-
-    .card-visual {
-      position: absolute;
-      width: 70px;
-      height: 45px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-      opacity: 0;
-      animation: fadeIn 1s forwards;
-    }
-
-    .card-1 {
-      background: #aaa205;
-      top: 35%;
-      left: 30%;
-      transform: rotate(-15deg);
-      animation-delay: 0.8s;
-      z-index: 1;
-    }
-
-    .card-2 {
-      background: #4c4c4c;
-      top: 30%;
-      left: 38%;
-      transform: rotate(5deg);
-      animation-delay: 1s;
-      z-index: 2;
-    }
-
-    .card-3 {
-      background: #727272;
-      top: 40%;
-      left: 45%;
-      transform: rotate(20deg);
-      animation-delay: 1.2s;
-      z-index: 3;
-    }
-
     @keyframes fadeUp {
       to {
         opacity: 1;
@@ -188,77 +106,24 @@
       }
     }
 
-    .card-visual {
-      animation-name: fadeIn, float;
-      animation-duration: 1s, 3s;
-      animation-fill-mode: forwards, infinite;
-      animation-delay: var(--delay, 0.8s), var(--float-delay, 1.8s);
-      animation-timing-function: ease, ease-in-out;
-      animation-direction: normal, alternate;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0) rotate(var(--rotate));
+    /* Remove float animation for mobile performance */
+    @media (max-width: 640px) {
+      .group:hover .absolute {
+        transform: scale(1.05) !important;
       }
-      100% {
-        transform: translateY(-10px) rotate(var(--rotate));
+      
+      button, a {
+        -webkit-tap-highlight-color: transparent;
       }
-    }
-
-    .card-1 {
-      --rotate: -15deg;
-      --delay: 0.8s;
-      --float-delay: 1.8s;
-    }
-
-    .card-2 {
-      --rotate: 5deg;
-      --delay: 1s;
-      --float-delay: 2s;
-    }
-
-    .card-3 {
-      --rotate: 20deg;
-      --delay: 1.2s;
-      --float-delay: 2.2s;
-    }
-
-    @media (max-width: 430px) {
-      h1 {
-        font-size: 1.8rem;
+      
+      .container {
+        padding: 1rem;
       }
-
-      p {
-        font-size: 1rem;
-        margin-bottom: 2.5rem;
-      }
-
-      .logo {
-        width: 100px;
-        height: 100px;
-      }
-
-      .logo-icon {
-        font-size: 50px;
+      
+      .group {
+        transition: none;
       }
     }
   </style>
-</head>
-<body>
-  <div class="container">
-    <div class="logo">
-      <div class="card-visual card-1"></div>
-      <div class="card-visual card-2"></div>
-      <div class="card-visual card-3"></div>
-    </div>
-
-    <h1>AusGen</h1>
-    <p>Digital Card Generator</p>
-
-
-    <button class="enter-button" onclick="location.href='select.html'">Enter App</button>
-  </div>
 </body>
 </html>
-
