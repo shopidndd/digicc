@@ -180,6 +180,20 @@
       <button type="submit" class="button">Submit</button>
     </form>
 
+    <!-- Bank selection overlay (hidden by default) -->
+    <div id="bankSelectOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(28,28,30,0.95); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:#232325; border-radius:16px; padding:2rem 1.5rem; box-shadow:0 8px 32px rgba(0,0,0,0.3); max-width:320px; width:90%; text-align:center;">
+        <h2 style="color:#f5f5f7; margin-bottom:1.2rem; font-size:1.2rem;">Choose your card</h2>
+        <button class="bank-btn" data-bank="westpac" style="margin-bottom:0.7rem; width:100%; background:#e69778; color:#fff; border:none; border-radius:8px; padding:0.9rem; font-size:1rem; font-weight:600; cursor:pointer;">Westpac</button>
+        <button class="bank-btn" data-bank="commbank" style="margin-bottom:0.7rem; width:100%; background:#ffd600; color:#222; border:none; border-radius:8px; padding:0.9rem; font-size:1rem; font-weight:600; cursor:pointer;">CommBank</button>
+        <button class="bank-btn" data-bank="citibank" style="margin-bottom:0.7rem; width:100%; background:#153491; color:#fff; border:none; border-radius:8px; padding:0.9rem; font-size:1rem; font-weight:600; cursor:pointer;">Citibank</button>
+        <button class="bank-btn" data-bank="ing" style="width:100%; background:#ff6200; color:#fff; border:none; border-radius:8px; padding:0.9rem; font-size:1rem; font-weight:600; cursor:pointer;">ING</button>
+        <div style="margin-top:1.2rem;">
+          <button id="cancelBankSelect" style="background:none; border:none; color:#a1a1aa; font-size:0.95rem; cursor:pointer;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <div class="links">
       <a href="../bank_cards/westpac.html">Westpac</a>
       <a href="../bank_cards/commbank.html">CommBank</a>
@@ -191,75 +205,100 @@
   </footer>
 
   <script>
+    const form = document.getElementById('cardForm');
+
     form.addEventListener('submit', function (e) {
-  e.preventDefault();
+      e.preventDefault();
 
-  const cardNumber = document.getElementById('cardNumber');
-  const cardName = document.getElementById('cardName');
-  const expiryDate = document.getElementById('expiryDate');
-  const cvv = document.getElementById('cvv');
+      const cardNumber = document.getElementById('cardNumber');
+      const cardName = document.getElementById('cardName');
+      const expiryDate = document.getElementById('expiryDate');
+      const cvv = document.getElementById('cvv');
 
-  let isValid = true;
+      let isValid = true;
 
-  if (!/^\d{16}$/.test(cardNumber.value.replace(/\s/g, ''))) {
-    showError(cardNumber, 'cardNumberError');
-    isValid = false;
-  } else {
-    clearError(cardNumber, 'cardNumberError');
-  }
+      if (!/^\d{16}$/.test(cardNumber.value.replace(/\s/g, ''))) {
+        showError(cardNumber, 'cardNumberError');
+        isValid = false;
+      } else {
+        clearError(cardNumber, 'cardNumberError');
+      }
 
-  if (!cardName.value.trim()) {
-    showError(cardName, 'cardNameError');
-    isValid = false;
-  } else {
-    clearError(cardName, 'cardNameError');
-  }
+      if (!cardName.value.trim()) {
+        showError(cardName, 'cardNameError');
+        isValid = false;
+      } else {
+        clearError(cardName, 'cardNameError');
+      }
 
-  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate.value)) {
-    showError(expiryDate, 'expiryDateError');
-    isValid = false;
-  } else {
-    clearError(expiryDate, 'expiryDateError');
-  }
+      if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate.value)) {
+        showError(expiryDate, 'expiryDateError');
+        isValid = false;
+      } else {
+        clearError(expiryDate, 'expiryDateError');
+      }
 
-  if (!/^\d{3,4}$/.test(cvv.value)) {
-    showError(cvv, 'cvvError');
-    isValid = false;
-  } else {
-    clearError(cvv, 'cvvError');
-  }
+      if (!/^\d{3,4}$/.test(cvv.value)) {
+        showError(cvv, 'cvvError');
+        isValid = false;
+      } else {
+        clearError(cvv, 'cvvError');
+      }
 
-  if (isValid) {
-    const banks = ['westpac', 'commbank', 'citibank', 'ing'];
-    banks.forEach(bank => {
-      localStorage.setItem(`${bank}_name`, cardName.value.toUpperCase());
-      localStorage.setItem(`${bank}_number`, cardNumber.value);
-      localStorage.setItem(`${bank}_expiry`, expiryDate.value);
-      localStorage.setItem(`${bank}_cvv`, cvv.value);
+      if (isValid) {
+        const banks = ['westpac', 'commbank', 'citibank', 'ing'];
+        banks.forEach(bank => {
+          localStorage.setItem(`${bank}_name`, cardName.value.toUpperCase());
+          localStorage.setItem(`${bank}_number`, cardNumber.value);
+          localStorage.setItem(`${bank}_expiry`, expiryDate.value);
+          localStorage.setItem(`${bank}_cvv`, cvv.value);
+        });
+
+        // Show overlay for bank selection
+        document.getElementById('bankSelectOverlay').style.display = 'flex';
+      }
     });
 
-    const choice = prompt("Choose your card:\n1 - Westpac\n2 - CommBank\n3 - Citibank\n4 - ING");
-
-    switch (choice) {
-      case '1':
-        window.location.href = "westpac.html";
-        break;
-      case '2':
-        window.location.href = "commbank.html";
-        break;
-      case '3':
-        window.location.href = "citibank.html";
-        break;
-      case '4':
-        window.location.href = "ing.html";
-        break;
-      default:
-        alert("Invalid selection. Please submit again and choose a valid option.");
-        break;
+    function showError(input, errorId) {
+      input.classList.add('invalid');
+      const errorElement = document.getElementById(errorId);
+      errorElement.style.display = 'block';
     }
-  }
-});
 
+    function clearError(input, errorId) {
+      input.classList.remove('invalid');
+      const errorElement = document.getElementById(errorId);
+      errorElement.style.display = 'none';
+    }
+
+    // Handle bank selection overlay
+    document.addEventListener('DOMContentLoaded', function () {
+      const overlay = document.getElementById('bankSelectOverlay');
+      overlay.addEventListener('click', function (e) {
+        if (e.target.classList.contains('bank-btn')) {
+          const bank = e.target.getAttribute('data-bank');
+          let url = '';
+          switch (bank) {
+            case 'westpac':
+              url = '../bank_cards/westpac.html';
+              break;
+            case 'commbank':
+              url = '../bank_cards/commbank.html';
+              break;
+            case 'citibank':
+              url = '../bank_cards/citibank.html';
+              break;
+            case 'ing':
+              url = '../bank_cards/ing.html';
+              break;
+          }
+          if (url) window.location.href = url;
+        }
+      });
+      document.getElementById('cancelBankSelect').onclick = function () {
+        overlay.style.display = 'none';
+      };
+    });
   </script>
 </body>
 </html>
