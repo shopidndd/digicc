@@ -1,0 +1,49 @@
+@media (max-width: 640px) {
+    body {
+      padding: 1rem;
+    }
+  
+    #appContainer {
+      max-width: 100%;
+      padding: 1rem;
+    }
+  
+    .progress-bar {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .progress-step {
+      width: 100%;
+    }
+  
+    .progress-step span {
+      margin: 0 auto;
+    }
+  
+    .menu-button,
+    .back-button,
+    .submit-button,
+    .clear-button {
+      padding: 0.75rem;
+      font-size: 0.875rem;
+    }
+  
+    .image-preview {
+      max-height: 8rem;
+    }
+  
+    .image-upload-container {
+      padding: 0.5rem;
+    }
+  }
+  
+  @media (min-width: 641px) and (max-width: 1024px) {
+    #appContainer {
+      max-width: 90%;
+    }
+  
+    .progress-bar {
+      gap: 0.5rem;
+    }
+  }

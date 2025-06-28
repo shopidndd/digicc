@@ -1,129 +1,285 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AusGen</title>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <title>AusGen – Digital Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useEffect } = React;
+<body class="flex items-center justify-center theme-dark">
+  <div id="appContainer" class="w-full max-w-2xl p-6 rounded-2xl shadow-xl">
+    <!-- Content will be dynamically loaded here -->
+  </div>
+  <div class="fixed inset-0 pointer-events-none hidden sm:block">
+    <div class="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
+    <div class="absolute w-80 h-80 bg-red-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
+  </div>
+  <script>
+    let currentPage = 'landing';
+    const appContainer = document.getElementById('appContainer');
+    let isDark = localStorage.getItem('theme') === 'dark' || true;
+    let licenseDetails = JSON.parse(localStorage.getItem('licenseDetails')) || {};
+    let ccDetails = JSON.parse(localStorage.getItem('ccDetails')) || {};
+    let medicareDetails = JSON.parse(localStorage.getItem('medicareDetails')) || {};
+    let selectedState = localStorage.getItem('selectedState') || '';
+    let uploadedImage = localStorage.getItem('uploadedImage') || null;
 
-    const App = () => {
-      const [isDark, setIsDark] = useState(true);
-      const [isLoaded, setIsLoaded] = useState(false);
+    function applyTheme() {
+      document.body.classList.toggle('theme-dark', isDark);
+      document.body.classList.toggle('theme-light', !isDark);
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateProgressStyles();
+    }
 
-      useEffect(() => {
-        setTimeout(() => setIsLoaded(true), 300);
-      }, []);
+    function toggleTheme() {
+      isDark = !isDark;
+      applyTheme();
+    }
 
-      const toggleTheme = () => {
-        setIsDark(!isDark);
+    function loadPage(page) {
+      fetch(`pages/${page}.html`)
+        .then(response => response.text())
+        .then(html => {
+          appContainer.innerHTML = html;
+          currentPage = page;
+          if (page === 'landing') {
+            document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+            document.getElementById('enterApp')?.addEventListener('click', () => loadPage('initial-menu'));
+          } else if (['initial-menu', 'license-management', 'credit-card-menu', 'medicare-menu'].includes(page)) {
+            document.getElementById('themeToggleMain')?.addEventListener('click', toggleTheme);
+            document.querySelectorAll('.menu-button, .back-button').forEach(button => {
+              button.addEventListener('click', (e) => {
+                const target = e.target.getAttribute('data-target');
+                if (target) loadPage(target);
+                if (e.target.hasAttribute('data-license')) {
+                  localStorage.setItem('selectedLicense', e.target.getAttribute('data-license'));
+                }
+              });
+            });
+            if (page === 'initial-menu') updateProgress();
+          } else if (page === 'license-section') {
+            initializeLicenseForm();
+          } else if (page === 'license-display') {
+            const licenseType = localStorage.getItem('selectedLicense');
+            if (licenseType) {
+              fetch(`licence/${licenseType}_driver_licence.html`)
+                .then(licenseResponse => licenseResponse.text())
+                .then(licenseHtml => {
+                  appContainer.innerHTML = licenseHtml;
+                  populateLicenseDetails();
+                })
+                .catch(licenseError => console.error('Error loading license:', licenseError));
+            }
+          } else if (page === 'upload-section') {
+            initializeUpload();
+          } else if (page === 'state-section') {
+            initializeStateSelection();
+          } else if (page === 'summary-section') {
+            updateSummary();
+          }
+        })
+        .catch(error => console.error('Error loading page:', error));
+    }
+
+    function updateProgress() {
+      const progressSteps = ['stateProgress', 'detailsProgress', 'imageProgress'].map(id => document.getElementById(id));
+      progressSteps.forEach(step => {
+        if (step) {
+          step.classList.toggle('completed', 
+            step.id === 'stateProgress' ? !!selectedState :
+            step.id === 'detailsProgress' ? Object.keys(licenseDetails).length >= 4 :
+            !!uploadedImage
+          );
+        }
+      });
+      updateProgressStyles();
+    }
+
+    function updateProgressStyles() {
+      document.querySelectorAll('.progress-step span').forEach(span => {
+        const step = span.parentElement;
+        if (step.classList.contains('completed')) {
+          span.classList.add(isDark ? 'bg-blue-700' : 'bg-blue-600', 'text-white');
+          span.classList.remove('bg-gray-300', 'text-gray-600');
+        } else {
+          span.classList.add('bg-gray-300', 'text-gray-600');
+          span.classList.remove(isDark ? 'bg-blue-700' : 'bg-blue-600', 'text-white');
+        }
+      });
+    }
+
+    function initializeStateSelection() {
+      document.querySelectorAll('.state-button').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedState = button.getAttribute('data-state');
+          localStorage.setItem('selectedState', selectedState);
+          localStorage.setItem('selectedLicense', selectedState.toLowerCase());
+          loadPage('license-section');
+          updateProgress();
+        });
+      });
+    }
+
+    function initializeUpload() {
+      const imageUpload = document.getElementById('imageUpload');
+      const imagePreview = document.getElementById('imagePreview');
+      const removeImageBtn = document.getElementById('removeImage');
+      const dropArea = document.getElementById('dropArea');
+      const dragFeedback = document.getElementById('dragFeedback');
+
+      if (uploadedImage) {
+        imagePreview.src = uploadedImage;
+        imagePreview.classList.remove('hidden');
+        removeImageBtn.classList.remove('hidden');
+      }
+
+      imageUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedImage = e.target.result;
+            imagePreview.src = uploadedImage;
+            imagePreview.classList.remove('hidden');
+            removeImageBtn.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dragFeedback.classList.remove('hidden');
+      });
+
+      dropArea.addEventListener('dragleave', () => {
+        dragFeedback.classList.add('hidden');
+      });
+
+      dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragFeedback.classList.add('hidden');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedImage = e.target.result;
+            imagePreview.src = uploadedImage;
+            imagePreview.classList.remove('hidden');
+            removeImageBtn.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      window.saveImage = () => {
+        if (uploadedImage) {
+          localStorage.setItem('uploadedImage', uploadedImage);
+          updateProgress();
+          loadPage('license-section');
+        } else {
+          alert('Please upload an image first.');
+        }
       };
 
-      return (
-        <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
-          isDark ? 'bg-gray-900' : 'bg-gray-100'
-        } overflow-hidden`}>
-          <div className={`w-full max-w-sm p-6 rounded-2xl shadow-xl ${
-            isDark ? 'bg-gray-800' : 'bg-white'
-          } flex flex-col items-center text-center transform transition-all duration-500 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          } mx-4`}>
-            {/* Logo with animated cards */}
-            <div className="relative w-28 h-28 mb-6 rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-md overflow-hidden group touch-none">
-              <span className="text-4xl font-mono text-gray-400 filter drop-shadow-sm transform scale-105">AG</span>
-              
-              {/* Simplified cards for mobile */}
-              <div className="absolute w-14 h-9 rounded-md shadow-sm bg-yellow-600 top-[35%] left-[30%] -rotate-10 opacity-0 animate-[fadeIn_0.8s_0.6s_forwards] group-hover:scale-105 transition-transform duration-200"></div>
-              <div className="absolute w-14 h-9 rounded-md shadow-sm bg-gray-500 top-[30%] left-[38%] rotate-4 opacity-0 animate-[fadeIn_0.8s_0.8s_forwards] group-hover:scale-105 transition-transform duration-200"></div>
-              <div className="absolute w-14 h-9 rounded-md shadow-sm bg-gray-600 top-[40%] left-[45%] rotate-10 opacity-0 animate-[fadeIn_0.8s_1s_forwards] group-hover:scale-105 transition-transform duration-200"></div>
-              
-              {/* Background effects */}
-              <div className="absolute w-14 h-14 bg-gray-700 rounded-full -bottom-4 -right-4 filter blur-sm"></div>
-              <div className="absolute w-8 h-8 bg-white/10 rounded-full -top-2 -left-2 filter blur-sm"></div>
-            </div>
+      window.removeImage = () => {
+        uploadedImage = null;
+        localStorage.removeItem('uploadedImage');
+        imagePreview.src = '';
+        imagePreview.classList.add('hidden');
+        removeImageBtn.classList.add('hidden');
+        updateProgress();
+      };
 
-            {/* Title and description */}
-            <h1 className={`text-2xl font-bold mb-2 sm:text-3xl ${
-              isDark ? 'text-white' : 'text-gray-900'
-            } animate-[fadeUp_0.6s_0.2s_forwards]`}>
-              AusGen
-            </h1>
-            <p className={`${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            } mb-6 text-base sm:text-lg max-w-[240px] leading-relaxed animate-[fadeUp_0.6s_0.3s_forwards]`}>
-              Digital Card Generator
-            </p>
+      window.openImagePreview = () => {
+        if (uploadedImage) {
+          const win = window.open('');
+          win.document.write(`<img src="${uploadedImage}" style="max-width:100%;">`);
+        }
+      };
+    }
 
-            {/* Theme toggle button */}
-            <button
-              onClick={toggleTheme}
-              className="mb-4 p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-colors text-lg active:scale-95"
-              aria-label="Toggle theme"
-            >
-              {isDark ? '☀️' : '🌙'}
-            </button>
+    function initializeLicenseForm() {
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = new FormData(form);
+          const data = {
+            licenseNumber: formData.get('licenseNumber'),
+            licenseName: formData.get('licenseName'),
+            dateOfBirth: formData.get('dateOfBirth'),
+            expiryDate: formData.get('expiryDate')
+          };
+          const errors = {};
+          if (!/^[A-Z0-9]{6,12}$/.test(data.licenseNumber)) {
+            errors.licenseNumber = 'Please enter a valid license number (6-12 alphanumeric characters)';
+          }
+          if (!data.licenseName.trim()) {
+            errors.licenseName = 'Please enter full name';
+          }
+          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data.dateOfBirth)) {
+            errors.dateOfBirth = 'Please enter a valid date of birth (DD/MM/YYYY)';
+          }
+          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data.expiryDate)) {
+            errors.expiryDate = 'Please enter a valid expiry date (DD/MM/YYYY)';
+          }
+          document.querySelectorAll('.error').forEach(el => el.textContent = '');
+          if (Object.keys(errors).length === 0) {
+            licenseDetails = data;
+            localStorage.setItem('licenseDetails', JSON.stringify(licenseDetails));
+            updateProgress();
+            loadPage('license-display');
+          } else {
+            for (const [key, value] of Object.entries(errors)) {
+              const errorEl = document.getElementById(`${key}Error`);
+              if (errorEl) errorEl.textContent = value;
+            }
+          }
+        });
+      }
+    }
 
-            {/* Enter button */}
-            <a
-              href="select.html"
-              className={`inline-block w-full px-8 py-4 rounded-full text-base sm:text-lg font-semibold text-white bg-blue-900 hover:bg-red-600 transform hover:-translate-y-0.5 active:scale-95 transition-all shadow-md animate-[fadeUp_0.6s_0.4s_forwards]`}
-            >
-              Enter App
-            </a>
-          </div>
+    function populateLicenseDetails() {
+      const licenseName = licenseDetails.licenseName || 'FIRST MIDDLE LASTNAME';
+      const licenseNumber = licenseDetails.licenseNumber || 'N/A';
+      const dateOfBirth = licenseDetails.dateOfBirth || 'N/A';
+      const expiryDate = licenseDetails.expiryDate || 'N/A';
+      const nameParts = licenseName.trim().split(' ');
+      const lastName = nameParts.pop().toUpperCase();
+      const firstMiddleName = nameParts.join(' ');
 
-          {/* Simplified background animation */}
-          <div className="fixed inset-0 pointer-events-none hidden sm:block">
-            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
-            <div className="absolute w-80 h-80 bg-red-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
-          </div>
-        </div>
-      );
-    };
+      document.getElementById('firstMiddleName').textContent = firstMiddleName || 'First Middle Name';
+      document.getElementById('lastName').textContent = lastName || 'LASTNAME';
+      document.getElementById('licenseNumber').textContent = licenseNumber;
+      document.getElementById('dateOfBirth').textContent = dateOfBirth;
+      document.getElementById('expiryDate').textContent = expiryDate;
+      document.getElementById('cardNumber').textContent = licenseNumber;
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+      if (uploadedImage) {
+        const photo = document.querySelector('.license-photo');
+        if (photo) photo.src = uploadedImage;
+      }
+
+      const now = new Date();
+      const formattedDate = now.toLocaleString('en-AU', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      document.getElementById('refreshDate').textContent = formattedDate;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
+      loadPage('landing');
+    });
   </script>
-
-  <style>
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-    /* Remove float animation for mobile performance */
-    @media (max-width: 640px) {
-      .group:hover .absolute {
-        transform: scale(1.05) !important;
-      }
-      
-      button, a {
-        -webkit-tap-highlight-color: transparent;
-      }
-      
-      .container {
-        padding: 1rem;
-      }
-      
-      .group {
-        transition: none;
-      }
-    }
-  </style>
 </body>
 </html>

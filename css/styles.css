@@ -1,0 +1,225 @@
+:root {
+    --primary-color: #00FFAA;
+    --secondary-color: rgb(42, 42, 42);
+    --text-color: white;
+    --hover-color: #00E5A0;
+    --background-gradient: linear-gradient(to bottom right, rgb(42, 42, 42), black);
+  }
+  
+  body {
+    background: var(--background-gradient);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease;
+  }
+  
+  h1, h2, h3 {
+    color: var(--primary-color);
+  }
+  
+  button {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--hover-color);
+    box-shadow: 0 0 5px var(--hover-color);
+  }
+  
+  .image-preview {
+    max-width: 100%;
+    max-height: 12rem;
+    border: 2px solid #666;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.3s ease;
+  }
+  
+  .image-preview:hover {
+    transform: scale(1.05);
+    border-color: var(--hover-color);
+  }
+  
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .theme-dark {
+    background: var(--background-gradient);
+    color: var(--text-color);
+  }
+  
+  .theme-light {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .theme-light h1,
+  .theme-light h2,
+  .theme-light h3 {
+    color: var(--primary-color);
+  }
+  
+  .theme-light button {
+    color: var(--secondary-color);
+  }
+  
+  .theme-light .form-input {
+    background-color: #fff;
+    border-color: #ccc;
+  }
+  
+  .theme-light .form-input:focus {
+    border-color: var(--hover-color);
+  }
+  
+  .theme-light .image-preview {
+    border-color: #ccc;
+  }
+  
+  .theme-light .image-preview:hover {
+    border-color: var(--hover-color);
+  }
+  
+  /* Section Styles */
+  .section {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+  
+  .progress-bar {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-step {
+    position: relative;
+    flex: 1;
+  }
+  
+  .progress-step span {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    border-radius: 50%;
+    background-color: #666;
+    color: #fff;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .progress-step.completed span {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+  }
+  
+  .progress-step .progress-step-label {
+    position: absolute;
+    bottom: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
+  .menu-button,
+  .back-button,
+  .submit-button,
+  .clear-button {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .menu-button {
+    background-color: #3b82f6;
+  }
+  
+  .menu-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .back-button {
+    background-color: #4b5563;
+  }
+  
+  .back-button:hover {
+    background-color: #374151;
+  }
+  
+  .submit-button {
+    background-color: #3b82f6;
+  }
+  
+  .submit-button:hover {
+    background-color: #2563eb;
+  }
+  
+  .clear-button {
+    background-color: #dc2626;
+  }
+  
+  .clear-button:hover {
+    background-color: #b91c1c;
+  }
+  
+  .image-upload-container {
+    padding: 1rem;
+    border: 2px dashed #666;
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .image-upload-container.dragover {
+    border-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  .loading {
+    border-top-color: #3b82f6;
+  }

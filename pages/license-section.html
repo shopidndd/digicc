@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<div id="licenseSection" class="section hidden animate-[fadeUp_0.6s]" data-loaded="false"></div>
+<script>
+  if (!document.getElementById('licenseSection').dataset.loaded) {
+    fetch('forms/licence_form.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('licenseSection').innerHTML = html;
+        document.getElementById('licenseSection').dataset.loaded = true;
+        document.querySelector('.submit-button').onclick = saveLicenseDetails;
+        document.querySelector('.back-button').onclick = () => loadPage('license-menu');
+      });
+  }
+</script>

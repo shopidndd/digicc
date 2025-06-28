@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victoria Driver Licence</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+            overflow: auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #003087;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .header span {
+            font-size: 12px;
+        }
+
+        .header .vicroads-logo {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header .back-btn {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .header .view-details {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .content {
+            display: flex;
+            padding: 20px;
+            background-color: #d9e6d3;
+            margin-bottom: 20px;
+        }
+
+        .photo {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo img {
+            width: 120px;
+            height: 150px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+        }
+
+        .info {
+            flex: 1;
+            padding-left: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .info p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .info .reveal-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #003087;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .info .reveal-btn:hover {
+            background-color: #002766;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: #003087;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tab:hover {
+            background-color: #002766;
+        }
+
+        .license-header {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .license-details, .license-info {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .detail-row .label {
+            font-weight: bold;
+        }
+
+        .detail-row .value {
+            text-align: right;
+        }
+
+        .signature {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin-left: auto;
+        }
+
+        .section-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .status-check {
+            color: #28a745;
+            margin-right: 5px;
+        }
+
+        .barcode-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .barcode {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Initial Interface Section -->
+        <div class="header">
+            <a href="#" class="back-btn">←</a>
+            <span>DRIVER LICENCE</span><br>
+            <span>Victoria Australia</span>
+            <span class="vicroads-logo">V<i>ic</i>roads</span>
+            <a href="#" class="view-details">View details</a>
+        </div>
+        <div class="content">
+            <div class="photo">
+                <img src="placeholder-photo.jpg" alt="Licensee Photo" onerror="this.src='https://via.placeholder.com/120x150?text=No+Photo';">
+            </div>
+            <div class="info">
+                <p>Presenting a QR code allows your driver licence information to be scanned and shared.</p>
+                <p>Do you consent to share your information?</p>
+                <button class="reveal-btn" onclick="loadForm()" aria-label="Reveal QR Code">Reveal QR Code</button>
+            </div>
+        </div>
+        <div class="tabs">
+            <div class="tab">Licence</div>
+            <div class="tab">Identity</div>
+            <div class="tab">Age</div>
+        </div>
+
+        <!-- Detailed Licence Information Section -->
+        <div class="license-header">ROBERT H M CAMPBELL</div>
+        <div class="license-details">
+            <div class="detail-row">
+                <span class="label">Licence number</span>
+                <span class="value" id="licenseNumberDisplay">002387720</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Expiry</span>
+                <span class="value" id="expiryDateDisplay">3 Feb 2026</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Licence type</span>
+                <span class="value" id="licenseTypeDisplay">Car</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Date of birth</span>
+                <span class="value" id="dobDisplay">8 Dec 1984</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Address</span>
+                <span class="value" id="addressDisplay">1 PARK AVE<br>RICHMOND VIC 3121</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Signature</span>
+                <img src="signature.png" alt="Signature" class="signature" id="signatureDisplay" onerror="this.style.display='none';">
+            </div>
+        </div>
+        <div class="section-header">Car licence details</div>
+        <div class="license-info">
+            <div class="detail-row">
+                <span class="label">Licence status</span>
+                <span class="value"><span class="status-check">✔</span> Current</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Proficiency</span>
+                <span class="value">Full</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Issue date</span>
+                <span class="value">3 Feb 2023</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Expiry</span>
+                <span class="value" id="expiryDateCarDisplay">3 Feb 2026</span>
+            </div>
+        </div>
+        <div class="section-header">Other details</div>
+        <div class="license-info">
+            <div class="detail-row">
+                <span class="label">Conditions</span>
+                <span class="value">No conditions</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Card number</span>
+                <span class="value" id="cardNumberDisplay">P09577366</span>
+            </div>
+        </div>
+        <div class="barcode-section">
+            <span class="label">Victoria Police barcode</span>
+            <img src="barcode.png" alt="Barcode" class="barcode" id="barcodeDisplay" onerror="this.style.display='none';">
+        </div>
+
+        <div id="formSection"></div>
+    </div>
+
+    <script src="licenseForm.js"></script>
+    <script>
+        // Initial display
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate from localStorage if available
+            const fullName = localStorage.getItem('vic_fullName') || 'ROBERT H M CAMPBELL';
+            const licenseNumber = localStorage.getItem('vic_licenseNumber') || '002387720';
+            const cardNumber = localStorage.getItem('vic_cardNumber') || 'P09577366';
+            const dob = localStorage.getItem('vic_dob') || '1984-12-08';
+            const expiryDate = localStorage.getItem('vic_expiryDate') || '2026-02-03';
+            const address = localStorage.getItem('vic_address') || '1 PARK AVE<br>RICHMOND VIC 3121';
+
+            document.querySelector('.license-header').textContent = fullName;
+            document.getElementById('licenseNumberDisplay').textContent = licenseNumber;
+            document.getElementById('cardNumberDisplay').textContent = cardNumber;
+            document.getElementById('dobDisplay').textContent = new Date(dob).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+            document.getElementById('expiryDateDisplay').textContent = new Date(expiryDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+            document.getElementById('expiryDateCarDisplay').textContent = new Date(expiryDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+            document.getElementById('addressDisplay').innerHTML = address.replace(/\n/g, '<br>');
+        });
+    </script>
+</body>
+</html>

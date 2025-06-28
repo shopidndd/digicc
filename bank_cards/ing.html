@@ -246,50 +246,42 @@
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get card details from localStorage or use defaults
-      const cardName = localStorage.getItem('Commbank_name') || 'MR ALEX WILSON';
-      const cardNumberRaw = localStorage.getItem('Commbank_number') || '4556737890123456';
-      const cardExpiry = localStorage.getItem('Commbank_expiry') || '••/••';
-      const cardCvv = localStorage.getItem('Commbank_cvv') || '•••';
+      // Always get latest card details from localStorage
+      const cardName = localStorage.getItem('ing_name') || 'Jane Doe';
+      const cardNumberRaw = localStorage.getItem('ing_number') || '7980374512347123';
+      const cardExpiry = localStorage.getItem('ing_expiry') || '01/26';
+      const cardCvv = localStorage.getItem('ing_cvv') || '123';
 
-      // Format card number with spaces every 4 digits
       function formatCardNumber(num) {
         return num.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
       }
       const cardNumber = formatCardNumber(cardNumberRaw);
 
-      // Update card display
       document.getElementById('cardName').textContent = cardName;
       document.getElementById('cardNumber').textContent = cardNumber;
+      document.getElementById('cardExpiry').textContent = 'Exp: ' + cardExpiry;
 
-      // Show/hide sensitive info functionality
-      const showBtn = document.getElementById('showBtn');
-      let isDetailsShown = false;
+      // Update details section below the card
+      document.querySelectorAll('.detail-value')[0].textContent = cardName;
+      document.querySelectorAll('.detail-value')[1].innerHTML =
+        `<span id="detailNumber">${cardNumber}</span> <span class="copy-tag" id="copyBtn">Copy</span>`;
+      document.querySelectorAll('.detail-value')[2].textContent = cardExpiry;
+      document.querySelectorAll('.detail-value')[3].textContent = cardCvv;
 
-      showBtn.addEventListener('click', function() {
-        if (isDetailsShown) {
-          document.getElementById('cardExp').innerHTML = 'EXPIRY ••/••<br>CVC •••';
-          showBtn.textContent = '👁 Show';
-        } else {
-          document.getElementById('cardExp').innerHTML = `EXPIRY ${cardExpiry}<br>CVC ${cardCvv}`;
-          showBtn.textContent = '👁 Hide';
-        }
-        isDetailsShown = !isDetailsShown;
-      });
-
-      // Handle orientation change
-      window.addEventListener('orientationchange', function() {
-        // Adjust card display for better visibility
-        setTimeout(() => {
-          const card = document.querySelector('.card');
-          if (window.orientation === 90 || window.orientation === -90) {
-            // Landscape
-            card.style.height = '150px';
-          } else {
-            // Portrait
-            card.style.height = '180px';
-          }
-        }, 300);
+      // Copy functionality
+      document.querySelector('.copy-tag').addEventListener('click', function() {
+        const textToCopy = cardNumber.replace(/\s/g, '');
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+              this.textContent = 'Copy';
+            }, 2000);
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+            alert('Failed to copy. Please try again.');
+          });
       });
 
       // Double tap on card number to mask/unmask
@@ -297,26 +289,33 @@
       const originalNumber = cardNumber;
       const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, "•");
       let isNumberVisible = true;
-      
+
       document.getElementById('cardNumber').addEventListener('click', function(e) {
         const currentTime = new Date().getTime();
         const tapLength = currentTime - lastTap;
-        
+
         if (tapLength < 300 && tapLength > 0) {
-          this.classList.add('animated');
-          
           if (isNumberVisible) {
             this.textContent = maskedNumber;
           } else {
             this.textContent = originalNumber;
           }
           isNumberVisible = !isNumberVisible;
-          
-          setTimeout(() => {
-            this.classList.remove('animated');
-          }, 500);
+          e.preventDefault();
         }
         lastTap = currentTime;
+      });
+
+      // Handle orientation change
+      window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+          const cardPreview = document.querySelector('.card-preview');
+          if (window.orientation === 90 || window.orientation === -90) {
+            cardPreview.style.height = '160px';
+          } else {
+            cardPreview.style.height = '220px';
+          }
+        }, 300);
       });
     });
   </script>

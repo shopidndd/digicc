@@ -255,19 +255,17 @@
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get card details from localStorage or use defaults
-      const cardName = localStorage.getItem('Commbank_name') || 'MR ALEX WILSON';
-      const cardNumberRaw = localStorage.getItem('Commbank_number') || '4556737890123456';
-      const cardExpiry = localStorage.getItem('Commbank_expiry') || '••/••';
-      const cardCvv = localStorage.getItem('Commbank_cvv') || '•••';
+      // Always get latest card details from localStorage
+      const cardName = localStorage.getItem('commbank_name') || 'MR ALEX WILSON';
+      const cardNumberRaw = localStorage.getItem('commbank_number') || '4556737890123456';
+      const cardExpiry = localStorage.getItem('commbank_expiry') || '••/••';
+      const cardCvv = localStorage.getItem('commbank_cvv') || '•••';
 
-      // Format card number with spaces every 4 digits
       function formatCardNumber(num) {
         return num.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
       }
       const cardNumber = formatCardNumber(cardNumberRaw);
 
-      // Update card display
       document.getElementById('cardName').textContent = cardName;
       document.getElementById('cardNumber').textContent = cardNumber;
 

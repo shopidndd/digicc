@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<div id="ccFormSection" class="section hidden animate-[fadeUp_0.6s]" data-loaded="false"></div>
+<script>
+  if (!document.getElementById('ccFormSection').dataset.loaded) {
+    fetch('forms/cc_form.html')
+      .then(response => response.text())
+      .then(html => {
+        document.getElementById('ccFormSection').innerHTML = html || `
+          <h2 class="text-2xl font-bold mb-6 text-center">Enter Credit Card Details</h2>
+          <div class="form-container">
+            <div class="form-group">
+              <label for="ccFullName" class="block text-sm font-medium mb-1">Cardholder Name</label>
+              <input type="text" id="ccFullName" name="ccFullName" required placeholder="Enter cardholder name" class="form-input w-full p-3 rounded-lg mb-2">
+            </div>
+            <div class="form-group">
+              <label for="ccNumber" class="block text-sm font-medium mb-1">Card Number</label>
+              <input type="text" id="ccNumber" name="ccNumber" required placeholder="Enter card number" pattern="\d{16}" class="form-input w-full p-3 rounded-lg mb-2">
+            </div>
+            <div class="form-group">
+              <label for="ccExpiry" class="block text-sm font-medium mb-1">Expiry Date</label>
+              <input type="month" id="ccExpiry" name="ccExpiry" required class="form-input w-full p-3 rounded-lg mb-2">
+            </div>
+            <button class="submit-button w-full py-4 mb-3 rounded-full text-white bg-blue-700 hover:bg-blue-600 font-semibold transition-all active:scale-95" onclick="saveCcDetails()">Save Details</button>
+            <button class="back-button w-full py-4 mb-3 rounded-full text-white bg-gray-600 hover:bg-gray-700 font-semibold transition-all active:scale-95 flex items-center justify-center" data-target="credit-card-menu" aria-label="Back to Menu">
+              <span class="mr-2">←</span> Back
+            </button>
+          </div>
+        `;
+        document.getElementById('ccFormSection').dataset.loaded = true;
+        document.querySelector('.submit-button').onclick = saveCcDetails;
+        document.querySelector('.back-button').onclick = () => loadPage('credit-card-menu');
+      });
+  }
+</script>

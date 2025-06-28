@@ -26,6 +26,21 @@
         setIsDark(!isDark);
       };
 
+      const showSection = async (sectionId) => {
+        const targetSection = document.getElementById(sectionId);
+        if (sectionId === 'licenseSection' && !targetSection.dataset.loaded) {
+          try {
+            // Correct the path to match your actual file name and location
+            const response = await fetch('../forms/licence_form.html');
+            if (!response.ok) throw new Error(`Failed to fetch licence_form.html: ${response.status}`);
+            // ...existing code...
+          } catch (error) {
+            // ...existing code...
+          }
+        }
+        // ...existing code...
+      };
+
       return (
         <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
           isDark ? 'bg-gray-900' : 'bg-gray-100'
@@ -62,7 +77,7 @@
             <div className="flex-1 p-4 sm:p-6 flex flex-col gap-4 sm:gap-6">
               {/* Bank Card Option */}
               <a
-                href="forms/bank_forms.html"
+                href="forms/cc_form.html"
                 className={`block p-4 sm:p-6 rounded-xl ${
                   isDark ? 'bg-gray-700' : 'bg-gray-200'
                 } text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.4s_forwards] touch-none`}
@@ -101,6 +116,27 @@
                   isDark ? 'text-gray-400' : 'text-gray-600'
                 } max-w-[220px] mx-auto`}>
                   Generate a digital Medicare card with your details
+                </p>
+              </a>
+              {/* Driver’s Licence Option */}
+              <a
+                href="forms/licence_form.html"
+                className={`block p-4 sm:p-6 rounded-xl ${
+                  isDark ? 'bg-gray-700' : 'bg-gray-200'
+                } text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.6s_forwards] touch-none`}
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-800 to-yellow-500 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
+                  🚗
+                </div>
+                <h2 className={`text-base sm:text-lg font-semibold ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                } mb-2`}>
+                  Driver’s Licence
+                </h2>
+                <p className={`text-sm sm:text-base ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
+                } max-w-[220px] mx-auto`}>
+                  Generate a digital Australian driver’s licence for any state
                 </p>
               </a>
             </div>

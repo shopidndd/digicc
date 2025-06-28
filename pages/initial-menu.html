@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<button id="themeToggleMain" class="absolute top-4 right-4 p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-colors text-lg active:scale-95" aria-label="Toggle theme">🌙</button>
+<div class="loading rounded-full border-4 border-gray-200 border-t-blue-700 w-10 h-10 animate-spin absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden" id="loadingSpinner"></div>
+<div class="progress-bar flex justify-between mb-6">
+  <div class="progress-step flex-1 text-center relative" id="stateProgress" data-label="State" aria-label="Step 1: State Selection">
+    <span class="inline-block w-8 h-8 leading-8 rounded-full bg-gray-300 text-gray-600 text-sm font-medium transition-all">1</span>
+    <div class="absolute bottom-[-20px] left-1/2 -translate-x-1/2 text-xs">State</div>
+  </div>
+  <div class="progress-step flex-1 text-center relative" id="detailsProgress" data-label="Details" aria-label="Step 2: Details Input">
+    <span class="inline-block w-8 h-8 leading-8 rounded-full bg-gray-300 text-gray-600 text-sm font-medium transition-all">2</span>
+    <div class="absolute bottom-[-20px] left-1/2 -translate-x-1/2 text-xs">Details</div>
+  </div>
+  <div class="progress-step flex-1 text-center relative" id="imageProgress" data-label="Image" aria-label="Step 3: Image Upload">
+    <span class="inline-block w-8 h-8 leading-8 rounded-full bg-gray-300 text-gray-600 text-sm font-medium transition-all">3</span>
+    <div class="absolute bottom-[-20px] left-1/2 -translate-x-1/2 text-xs">Image</div>
+  </div>
+</div>
+<div id="initialMenuSection" class="section animate-[fadeUp_0.6s]">
+  <h2 class="text-2xl font-bold mb-6 text-center">Digital Generator</h2>
+  <button class="menu-button w-full py-4 mb-3 rounded-full text-white bg-blue-700 hover:bg-blue-600 font-semibold transition-all active:scale-95" data-target="license-menu" aria-label="Start Licence Generator">Licence Generator</button>
+  <button class="menu-button w-full py-4 mb-3 rounded-full text-white bg-blue-700 hover:bg-blue-600 font-semibold transition-all active:scale-95" data-target="credit-card-menu" aria-label="Start Credit Card Generator">Credit Card Generator</button>
+  <button class="menu-button w-full py-4 mb-3 rounded-full text-white bg-blue-700 hover:bg-blue-600 font-semibold transition-all active:scale-95" data-target="medicare-menu" aria-label="Start Medicare Generator">Medicare Generator</button>
+  <button class="clear-button w-full py-4 mb-3 rounded-full text-white bg-red-600 hover:bg-red-700 font-semibold transition-all active:scale-95" onclick="clearData()" aria-label="Clear All Data">Clear All Data</button>
+</div>
