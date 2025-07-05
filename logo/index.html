@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AusGen – Digital Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="flex items-center justify-center theme-dark">
+  <div id="appContainer" class="w-full max-w-2xl p-6 rounded-2xl shadow-xl">
+    <!-- Content will be dynamically loaded here -->
+  </div>
+  <div class="fixed inset-0 pointer-events-none hidden sm:block">
+    <div class="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
+    <div class="absolute w-80 h-80 bg-red-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
+  </div>
+  <script>
+    let currentPage = 'landing';
+    const appContainer = document.getElementById('appContainer');
+    let isDark = localStorage.getItem('theme') === 'dark' || true;
+    let licenseDetails = JSON.parse(localStorage.getItem('licenseDetails')) || {};
+    let ccDetails = JSON.parse(localStorage.getItem('ccDetails')) || {};
+    let medicareDetails = JSON.parse(localStorage.getItem('medicareDetails')) || {};
+    let selectedState = localStorage.getItem('selectedState') || '';
+    let uploadedImage = localStorage.getItem('uploadedImage') || null;
+
+    function applyTheme() {
+      document.body.classList.toggle('theme-dark', isDark);
+      document.body.classList.toggle('theme-light', !isDark);
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateProgressStyles();
+    }
+
+    function toggleTheme() {
+      isDark = !isDark;
+      applyTheme();
+    }
+
+    function loadPage(page) {
+      fetch(`pages/${page}.html`)
+        .then(response => response.text())
+        .then(html => {
+          appContainer.innerHTML = html;
+          currentPage = page;
+          if (page === 'landing') {
+            document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+            document.getElementById('enterApp')?.addEventListener('click', () => loadPage('initial-menu'));
+          } else if (['initial-menu', 'license-management', 'credit-card-menu', 'medicare-menu'].includes(page)) {
+            document.getElementById('themeToggleMain')?.addEventListener('click', toggleTheme);
+            document.querySelectorAll('.menu-button, .back-button').forEach(button => {
+              button.addEventListener('click', (e) => {
+                const target = e.target.getAttribute('data-target');
+                if (target) loadPage(target);
+                if (e.target.hasAttribute('data-license')) {
+                  localStorage.setItem('selectedLicense', e.target.getAttribute('data-license'));
+                }
+              });
+            });
+            if (page === 'initial-menu') updateProgress();
+          } else if (page === 'license-section') {
+            initializeLicenseForm();
+          } else if (page === 'license-display') {
+            const licenseType = localStorage.getItem('selectedLicense');
+            if (licenseType) {
+              fetch(`licence/${licenseType}_driver_licence.html`)
+                .then(licenseResponse => licenseResponse.text())
+                .then(licenseHtml => {
+                  appContainer.innerHTML = licenseHtml;
+                  populateLicenseDetails();
+                })
+                .catch(licenseError => console.error('Error loading license:', licenseError));
+            }
+          } else if (page === 'upload-section') {
+            initializeUpload();
+          } else if (page === 'state-section') {
+            initializeStateSelection();
+          } else if (page === 'summary-section') {
+            updateSummary();
+          }
+        })
+        .catch(error => console.error('Error loading page:', error));
+    }
+
+    function updateProgress() {
+      const progressSteps = ['stateProgress', 'detailsProgress', 'imageProgress'].map(id => document.getElementById(id));
+      progressSteps.forEach(step => {
+        if (step) {
+          step.classList.toggle('completed', 
+            step.id === 'stateProgress' ? !!selectedState :
+            step.id === 'detailsProgress' ? Object.keys(licenseDetails).length >= 4 :
+            !!uploadedImage
+          );
+        }
+      });
+      updateProgressStyles();
+    }
+
+    function updateProgressStyles() {
+      document.querySelectorAll('.progress-step span').forEach(span => {
+        const step = span.parentElement;
+        if (step.classList.contains('completed')) {
+          span.classList.add(isDark ? 'bg-blue-700' : 'bg-blue-600', 'text-white');
+          span.classList.remove('bg-gray-300', 'text-gray-600');
+        } else {
+          span.classList.add('bg-gray-300', 'text-gray-600');
+          span.classList.remove(isDark ? 'bg-blue-700' : 'bg-blue-600', 'text-white');
+        }
+      });
+    }
+
+    function initializeStateSelection() {
+      document.querySelectorAll('.state-button').forEach(button => {
+        button.addEventListener('click', () => {
+          selectedState = button.getAttribute('data-state');
+          localStorage.setItem('selectedState', selectedState);
+          localStorage.setItem('selectedLicense', selectedState.toLowerCase());
+          loadPage('license-section');
+          updateProgress();
+        });
+      });
+    }
+
+    function initializeUpload() {
+      const imageUpload = document.getElementById('imageUpload');
+      const imagePreview = document.getElementById('imagePreview');
+      const removeImageBtn = document.getElementById('removeImage');
+      const dropArea = document.getElementById('dropArea');
+      const dragFeedback = document.getElementById('dragFeedback');
+
+      if (uploadedImage) {
+        imagePreview.src = uploadedImage;
+        imagePreview.classList.remove('hidden');
+        removeImageBtn.classList.remove('hidden');
+      }
+
+      imageUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedImage = e.target.result;
+            imagePreview.src = uploadedImage;
+            imagePreview.classList.remove('hidden');
+            removeImageBtn.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dragFeedback.classList.remove('hidden');
+      });
+
+      dropArea.addEventListener('dragleave', () => {
+        dragFeedback.classList.add('hidden');
+      });
+
+      dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragFeedback.classList.add('hidden');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            uploadedImage = e.target.result;
+            imagePreview.src = uploadedImage;
+            imagePreview.classList.remove('hidden');
+            removeImageBtn.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      window.saveImage = () => {
+        if (uploadedImage) {
+          localStorage.setItem('uploadedImage', uploadedImage);
+          updateProgress();
+          loadPage('license-section');
+        } else {
+          alert('Please upload an image first.');
+        }
+      };
+
+      window.removeImage = () => {
+        uploadedImage = null;
+        localStorage.removeItem('uploadedImage');
+        imagePreview.src = '';
+        imagePreview.classList.add('hidden');
+        removeImageBtn.classList.add('hidden');
+        updateProgress();
+      };
+
+      window.openImagePreview = () => {
+        if (uploadedImage) {
+          const win = window.open('');
+          win.document.write(`<img src="${uploadedImage}" style="max-width:100%;">`);
+        }
+      };
+    }
+
+    function initializeLicenseForm() {
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const formData = new FormData(form);
+          const data = {
+            licenseNumber: formData.get('licenseNumber'),
+            licenseName: formData.get('licenseName'),
+            dateOfBirth: formData.get('dateOfBirth'),
+            expiryDate: formData.get('expiryDate')
+          };
+          const errors = {};
+          if (!/^[A-Z0-9]{6,12}$/.test(data.licenseNumber)) {
+            errors.licenseNumber = 'Please enter a valid license number (6-12 alphanumeric characters)';
+          }
+          if (!data.licenseName.trim()) {
+            errors.licenseName = 'Please enter full name';
+          }
+          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data.dateOfBirth)) {
+            errors.dateOfBirth = 'Please enter a valid date of birth (DD/MM/YYYY)';
+          }
+          if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data.expiryDate)) {
+            errors.expiryDate = 'Please enter a valid expiry date (DD/MM/YYYY)';
+          }
+          document.querySelectorAll('.error').forEach(el => el.textContent = '');
+          if (Object.keys(errors).length === 0) {
+            licenseDetails = data;
+            localStorage.setItem('licenseDetails', JSON.stringify(licenseDetails));
+            updateProgress();
+            loadPage('license-display');
+          } else {
+            for (const [key, value] of Object.entries(errors)) {
+              const errorEl = document.getElementById(`${key}Error`);
+              if (errorEl) errorEl.textContent = value;
+            }
+          }
+        });
+      }
+    }
+
+    function populateLicenseDetails() {
+      const licenseName = licenseDetails.licenseName || 'FIRST MIDDLE LASTNAME';
+      const licenseNumber = licenseDetails.licenseNumber || 'N/A';
+      const dateOfBirth = licenseDetails.dateOfBirth || 'N/A';
+      const expiryDate = licenseDetails.expiryDate || 'N/A';
+      const nameParts = licenseName.trim().split(' ');
+      const lastName = nameParts.pop().toUpperCase();
+      const firstMiddleName = nameParts.join(' ');
+
+      document.getElementById('firstMiddleName').textContent = firstMiddleName || 'First Middle Name';
+      document.getElementById('lastName').textContent = lastName || 'LASTNAME';
+      document.getElementById('licenseNumber').textContent = licenseNumber;
+      document.getElementById('dateOfBirth').textContent = dateOfBirth;
+      document.getElementById('expiryDate').textContent = expiryDate;
+      document.getElementById('cardNumber').textContent = licenseNumber;
+
+      if (uploadedImage) {
+        const photo = document.querySelector('.license-photo');
+        if (photo) photo.src = uploadedImage;
+      }
+
+      const now = new Date();
+      const formattedDate = now.toLocaleString('en-AU', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      document.getElementById('refreshDate').textContent = formattedDate;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
+      loadPage('landing');
+    });
+  </script>
+</body>
+</html>
