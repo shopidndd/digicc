@@ -28,17 +28,19 @@
 
       const showSection = async (sectionId) => {
         const targetSection = document.getElementById(sectionId);
+        if (!targetSection) return;
         if (sectionId === 'licenseSection' && !targetSection.dataset.loaded) {
           try {
-            // Correct the path to match your actual file name and location
             const response = await fetch('../forms/licence_form.html');
             if (!response.ok) throw new Error(`Failed to fetch licence_form.html: ${response.status}`);
-            // ...existing code...
+            const html = await response.text();
+            targetSection.innerHTML = html;
+            targetSection.dataset.loaded = "true";
           } catch (error) {
-            // ...existing code...
+            targetSection.innerHTML = `<div class="text-red-500 p-4">Error loading section: ${error.message}</div>`;
           }
         }
-        // ...existing code...
+        targetSection.style.display = 'block';
       };
 
       return (
@@ -50,7 +52,6 @@
           } rounded-2xl shadow-xl transition-all duration-500 ${
             isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}>
-            {/* Header */}
             <header className="p-4 sm:p-6 relative text-center">
               <a
                 href="index.html"
@@ -73,9 +74,7 @@
               </p>
             </header>
 
-            {/* Options Container */}
             <div className="flex-1 p-4 sm:p-6 flex flex-col gap-4 sm:gap-6">
-              {/* Bank Card Option */}
               <a
                 href="forms/cc_form.html"
                 className={`block p-4 sm:p-6 rounded-xl ${
@@ -97,7 +96,6 @@
                 </p>
               </a>
 
-              {/* Medicare Card Option */}
               <a
                 href="forms/medicare_form.html"
                 className={`block p-4 sm:p-6 rounded-xl ${
@@ -118,7 +116,6 @@
                   Generate a digital Medicare card with your details
                 </p>
               </a>
-              {/* Driver’s Licence Option */}
               <a
                 href="forms/licence_form.html"
                 className={`block p-4 sm:p-6 rounded-xl ${
@@ -141,7 +138,6 @@
               </a>
             </div>
 
-            {/* Theme Toggle */}
             <div className="p-4 sm:p-6 flex justify-center">
               <button
                 onClick={toggleTheme}
@@ -152,7 +148,6 @@
               </button>
             </div>
 
-            {/* Footer */}
             <footer className={`p-4 sm:p-6 text-center text-xs sm:text-sm ${
               isDark ? 'text-gray-400' : 'text-gray-600'
             } animate-[fadeUp_0.6s_0.6s_forwards]`}>
@@ -160,7 +155,6 @@
             </footer>
           </div>
 
-          {/* Simplified Background Animation */}
           <div className="fixed inset-0 pointer-events-none hidden sm:block">
             <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
             <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
