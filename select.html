@@ -8,6 +8,58 @@
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background-gradient: linear-gradient(135deg, #6B46C1, #2C5282);
+      --text-color: #F7FAFC;
+      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
+      --hover-color: #20b6af;
+      --card-bg: rgba(28, 30, 34, 0.9);
+    }
+
+    [data-theme="light"] {
+      --background-gradient: linear-gradient(135deg, #E9D8FD, #EBF4FF);
+      --text-color: #2D3748;
+      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
+      --card-bg: rgba(255, 255, 255, 0.95);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      transition: background 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+      font-family: sans-serif;
+    }
+
+    .glass {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(182, 176, 176, 0.357);
+      transition: transform 0.3s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      a, button {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -44,32 +96,24 @@
       };
 
       return (
-        <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
-          isDark ? 'bg-gray-900' : 'bg-gray-100'
-        } overflow-hidden`}>
-          <div className={`w-full max-w-sm mx-auto flex-1 flex flex-col ${
-            isDark ? 'bg-gray-800' : 'bg-white'
-          } rounded-2xl shadow-xl transition-all duration-500 ${
+        <div className="min-h-screen flex items-center justify-center px-4 py-8">
+          <div className={`w-full max-w-sm mx-auto flex-1 flex flex-col glass rounded-2xl shadow-xl transition-all duration-500 ${
             isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}>
             <header className="p-4 sm:p-6 relative text-center">
               <a
                 href="index.html"
                 className={`absolute top-4 left-4 text-base sm:text-lg font-semibold ${
-                  isDark ? 'text-orange-400 hover:text-orange-300' : 'text-orange-500 hover:text-orange-600'
+                  isDark ? 'text-white-400 hover:text-white-300' : 'text-white-500 hover:text-white-600'
                 } transition-colors`}
                 aria-label="Back to home"
               >
                 Back
               </a>
-              <h1 className={`text-xl sm:text-2xl font-bold ${
-                isDark ? 'text-white' : 'text-gray-900'
-              } animate-[fadeUp_0.6s_0.2s_forwards]`}>
+              <h1 className={`text-3xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#ED64A6] to-[#F56565] leading-tight animate-[fadeUp_0.6s_0.2s_forwards]`}>
                 Select an Option
               </h1>
-              <p className={`mt-2 text-sm sm:text-base ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              } animate-[fadeUp_0.6s_0.3s_forwards]`}>
+              <p className={`mt-2 text-base sm:text-lg text-white/80 animate-[fadeUp_0.6s_0.3s_forwards]`}>
                 Choose what type of digital card you want to generate
               </p>
             </header>
@@ -77,62 +121,44 @@
             <div className="flex-1 p-4 sm:p-6 flex flex-col gap-4 sm:gap-6">
               <a
                 href="forms/cc_form.html"
-                className={`block p-4 sm:p-6 rounded-xl ${
-                  isDark ? 'bg-gray-700' : 'bg-gray-200'
-                } text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.4s_forwards] touch-none`}
+                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.4s_forwards] touch-none card-hover`}
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
                   💳
                 </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                } mb-2`}>
+                <h2 className={`text-base sm:text-lg font-semibold text-white mb-2`}>
                   Digital Bank Card
                 </h2>
-                <p className={`text-sm sm:text-base ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                } max-w-[220px] mx-auto`}>
+                <p className={`text-sm sm:text-base text-white/80 max-w-[220px] mx-auto`}>
                   Create a digital version of your bank card for major Australian banks
                 </p>
               </a>
 
               <a
                 href="forms/medicare_form.html"
-                className={`block p-4 sm:p-6 rounded-xl ${
-                  isDark ? 'bg-gray-700' : 'bg-gray-200'
-                } text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.5s_forwards] touch-none`}
+                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.5s_forwards] touch-none card-hover`}
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-green-900 to-green-600 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
                   🏥
                 </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                } mb-2`}>
+                <h2 className={`text-base sm:text-lg font-semibold text-white mb-2`}>
                   Medicare Card
                 </h2>
-                <p className={`text-sm sm:text-base ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                } max-w-[220px] mx-auto`}>
+                <p className={`text-sm sm:text-base text-white/80 max-w-[220px] mx-auto`}>
                   Generate a digital Medicare card with your details
                 </p>
               </a>
               <a
                 href="forms/licence_form.html"
-                className={`block p-4 sm:p-6 rounded-xl ${
-                  isDark ? 'bg-gray-700' : 'bg-gray-200'
-                } text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.6s_forwards] touch-none`}
+                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.6s_forwards] touch-none card-hover`}
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-800 to-yellow-500 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
                   🚗
                 </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                } mb-2`}>
+                <h2 className={`text-base sm:text-lg font-semibold text-white mb-2`}>
                   Driver’s Licence
                 </h2>
-                <p className={`text-sm sm:text-base ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                } max-w-[220px] mx-auto`}>
+                <p className={`text-sm sm:text-base text-white/80 max-w-[220px] mx-auto`}>
                   Generate a digital Australian driver’s licence for any state
                 </p>
               </a>
@@ -141,16 +167,14 @@
             <div className="p-4 sm:p-6 flex justify-center">
               <button
                 onClick={toggleTheme}
-                className="p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-colors text-lg active:scale-95"
+                className="p-3 rounded-full bg-gray-700 text-white hover:bg-[#38B2AC] transition-colors text-lg active:scale-95"
                 aria-label="Toggle theme"
               >
                 {isDark ? '☀️' : '🌙'}
               </button>
             </div>
 
-            <footer className={`p-4 sm:p-6 text-center text-xs sm:text-sm ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            } animate-[fadeUp_0.6s_0.6s_forwards]`}>
+            <footer className={`p-4 sm:p-6 text-center text-sm text-white/60 animate-[fadeUp_0.6s_0.6s_forwards]`}>
               AusGen - Digital Card Generator
             </footer>
           </div>

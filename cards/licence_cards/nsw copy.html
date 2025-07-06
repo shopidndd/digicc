@@ -42,6 +42,18 @@
             z-index: 2;
         }
 
+        .background-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; /* Adjustable size */
+            height: auto;
+            opacity: 0.3; /* Increased from 0.1 */
+            z-index: 0; /* Behind all content */
+            pointer-events: none;
+        }
+
         .hologram-block {
             position: absolute;
             top: 0;
@@ -52,7 +64,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1;
-            opacity: 0.3;
+            opacity: 0.5; /* Increased from 0.3 */
             pointer-events: none;
             overflow: hidden;
         }
@@ -224,7 +236,7 @@
             align-items: left;
             justify-content: left;
             z-index: 1;
-            opacity: 0.4;
+            opacity: 0.6; /* Increased from 0.4 */
             pointer-events: none;
             overflow: hidden;
         }
@@ -250,21 +262,25 @@
         }
 
         .card-number {
-            line-height: 1.6;
-            font-size: 28px;
-            font-weight: 400;
+            line-height: 1;
+            font-size: 22px;
+            font-weight: 500;
             margin-bottom: 0;
             color: #022551;
             text-align: left;
             flex-grow: 1;
+            position: relative;
+            z-index: 2;
         }
 
         .card-number small {
             font-size: 14px;
             font-weight: 500;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             color: #022551;
+            position: relative;
+            z-index: 2;
         }
 
         .footer {
@@ -304,6 +320,14 @@
 </head>
 <body>
     <div class="card">  
+        <div class="background-logo">
+            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                width="100%" viewBox="0 0 800 864" enable-background="new 0 0 800 864" xml:space="preserve">
+                <path fill="#FFFFFF" opacity="1.000000" stroke="none" 
+                    d="M400 0L800 216V648L400 864L0 648V216L400 0Z" /> <!-- Placeholder path, replace with full SVG -->
+            </svg>
+        </div>
+
         <div class="hologram-block"></div>
 
         <div class="top-title-header">NSW Driver Licence</div>
@@ -316,12 +340,12 @@
         </div>
         
         <div class="identity-section">
-            <img src="./assets/logo.png" alt="NSW Logo" class="nsw-logo">
+            <img src="../../assets/logo.png" alt="NSW Logo" class="nsw-logo">
             <div class="photo-block">
                 <img src="" alt="Photo" class="license-photo" id="cardPhoto">
             </div>
             <div class="refreshed-date">
-                <small id="cardRefreshed">Refreshed<br>19 Nov 2024<br>14:39pm</small>
+                <small id="cardRefreshed">Refreshed<br>05 Jul 2025<br>04:59pm</small>
             </div>
         </div>
         
@@ -365,7 +389,7 @@
         
         <div class="signature-block">
             <div class="label">SIGNATURE</div>
-            <img src="sig.png" alt="Signature" class="signature-image" id="cardSignature">
+            <img src="../../assets/signature.png" alt="Signature" class="signature-image" id="cardSignature">
             <div style="font-size: 14px; color: #022551; text-align: center; margin-top: 10px;">S.Citizen</div>
         </div>
         
@@ -374,9 +398,12 @@
                 <polygon fill="#fff9c4" points="0,150 1440,300 1440,900 0,900"/>
                 <polygon fill="#ffeb3b" points="0,300 1440,150 1440,900 0,900"/>
             </svg>
-            <div class="card-number"><small>CARD NUMBER</small><br><span id="cardNumber">card_number</span></div>
+            <div class="card-number">
+                <small>CARD NUMBER</small><br>
+                <span id="cardNumber">card_number</span>
+            </div>
             <div>
-                <img src="assets/logo.png" alt="NSW Logo" class="nsw-logo">
+                <img src="../../assets/logo.png" alt="NSW Logo" class="nsw-logo">
             </div>
         </div>
         
@@ -409,70 +436,48 @@
                 }
             }
 
-            // Function to format date and time in AEST
             function updateLiveTime() {
                 const now = new Date();
-                // Adjust to AEST (UTC+10, no daylight saving for simplicity; adjust if needed)
                 const aestOffset = 10 * 60; // AEST is UTC+10 in hours
                 const aestTime = new Date(now.getTime() + aestOffset * 60 * 1000);
                 const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
                 const formattedDate = aestTime.toLocaleString('en-AU', options).replace(',', '').split(' ');
-                const time = formattedDate.pop().toLowerCase(); // e.g., "pm"
-                const datePart = formattedDate.join(' ').replace(/(\d+)/, '$1 '); // e.g., "05 Jul 2025 15:21"
+                const time = formattedDate.pop().toLowerCase();
+                const datePart = formattedDate.join(' ').replace(/(\d+)/, '$1 ');
                 document.getElementById('cardRefreshed').innerHTML = `Refreshed<br>${datePart}<br>${time}`;
             }
 
             window.addEventListener('load', () => {
                 createSwirlPatterns(5);
                 setInterval(() => createSwirlPatterns(5), 5000);
-                // Initial update and start live update every second
                 updateLiveTime();
                 setInterval(updateLiveTime, 1000);
             });
 
-            // Populate card with form data
             window.addEventListener('DOMContentLoaded', () => {
                 const data = JSON.parse(localStorage.getItem('nswLicenceData') || '{}');
-                // Name
                 if (data.licenseName) {
                     const parts = data.licenseName.trim().split(' ');
                     document.getElementById('cardFirstMiddle').textContent = parts.slice(0, -1).join(' ') || parts[0] || '';
                     document.getElementById('cardLast').textContent = (parts.length > 1 ? parts[parts.length - 1] : '').toUpperCase();
                 }
-                // Licence Number
                 if (data.licenseNumber) {
                     document.getElementById('cardLicenceNumber').textContent = data.licenseNumber;
                     document.getElementById('cardNumber').textContent = data.licenseNumber;
                 } else {
                     document.getElementById('cardNumber').textContent = 'card_number';
                 }
-                // Expiry
-                if (data.expiryDate) {
-                    document.getElementById('cardExpiry').textContent = data.expiryDate;
-                }
-                // DOB
-                if (data.dateOfBirth) {
-                    document.getElementById('cardDOB').textContent = data.dateOfBirth;
-                }
-                // Address
-                if (data.address) {
-                    document.getElementById('cardAddress').innerHTML = data.address.replace(/\n/g, '<br>');
-                } else {
-                    document.getElementById('cardAddress').innerHTML = '47 WARATAH AVE,<br>RANDWICK NSW 2031';
-                }
-                // Class
-                if (data.classType) {
-                    document.getElementById('cardClass').textContent = data.classType;
-                }
-                // Conditions
-                if (data.conditions) {
-                    document.getElementById('cardConditions').textContent = data.conditions;
-                }
-                // Photo
-                if (data.photoDataUrl) {
-                    document.getElementById('cardPhoto').src = data.photoDataUrl;
-                }
-                // QR code
+                if (data.expiryDate) document.getElementById('cardExpiry').textContent = data.expiryDate;
+                if (data.dateOfBirth) document.getElementById('cardDOB').textContent = data.dateOfBirth;
+                if (data.address) document.getElementById('cardAddress').innerHTML = data.address.replace(/\n/g, '<br>');
+                else document.getElementById('cardAddress').innerHTML = '47 WARATAH AVE,<br>RANDWICK NSW 2031';
+                if (data.classType) document.getElementById('cardClass').textContent = data.classType;
+                if (data.conditions) document.getElementById('cardConditions').textContent = data.conditions;
+                if (data.photoDataUrl) document.getElementById('cardPhoto').src = data.photoDataUrl;
+                if (data.signatureDataUrl) document.getElementById('cardSignature').src = data.signatureDataUrl;
+                else document.getElementById('cardSignature').src = '../../assets/signature.png';
+                if (data.addressPhotoDataUrl) document.getElementById('cardAddressPhoto').src = data.addressPhotoDataUrl;
+                if (data.refreshed) document.getElementById('cardRefreshed').innerHTML = data.refreshed.replace(/\n/g, '<br>');
                 const qrData = {
                     licenseNumber: data.licenseNumber || '',
                     licenseName: data.licenseName || '',
@@ -484,15 +489,6 @@
                 const qrString = encodeURIComponent(JSON.stringify(qrData));
                 const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=190x190&data=${qrString}`;
                 document.getElementById('cardQR').src = qrUrl;
-                // Address background photo
-                if (data.addressPhotoDataUrl) {
-                    document.getElementById('cardAddressPhoto').src = data.addressPhotoDataUrl;
-                }
-                // Signature
-                if (data.signatureDataUrl) {
-                    document.getElementById('cardSignature').src = data.signatureDataUrl;
-                }
-                // Refreshed date (handled by load event now)
             });
         </script>
     </div>
