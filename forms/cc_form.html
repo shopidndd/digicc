@@ -74,10 +74,7 @@
       const handleBankSelect = (bank) => {
         let url = '';
         switch (bank) {
-          case 'westpac': url = '../bank_cards/westpac.html'; break;
-          case 'commbank': url = '../bank_cards/commbank.html'; break;
-          case 'citibank': url = '../bank_cards/citibank.html'; break;
-          case 'ing': url = '../bank_cards/ing.html'; break;
+          case 'view': url = 'cards/bank_cards/cc.html'; break;
         }
         if (url) window.location.href = url;
       };
