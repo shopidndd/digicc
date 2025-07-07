@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Service NSW App</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <img src="img/top_logo.png" alt="Service NSW Logo" />
+        <div class="icons">
+            <img src="img/bell.png" alt="Notifications" />
+            <img src="img/user.png" alt="Profile" />
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <div id="home" class="container active">
+        <div class="section-title">Favourites</div>
+        <div class="card">
+            <img src="img/nsw_cardmenulogo.png" alt="Driver's Licence Card" class="card-image" />
+        </div>
+
+        <div class="section-title">Featured</div>
+        <div class="featured-scroller">
+            <div class="featured-item" data-image-id="flood">
+                <img src="img/flood_support.jpg" alt="Flood Support" class="placeholder-image" />
+                <p>East Coast Flood Report <span>→</span></p>
+            </div>
+            <div class="featured-item" data-image-id="toll">
+                <img src="img/toll_relief.jpg" alt="Toll Relief" class="placeholder-image" />
+                <p>Claim toll relief $60 cap <span>✓</span></p>
+            </div>
+            <div class="featured-item" data-image-id="savir">
+                <img src="img/savir_finder.jpg" alt="Savir Finder" class="placeholder-image" />
+                <p>Use the Savir Finder</p>
+            </div>
+        </div>
+
+        <div class="section-title">Services</div>
+        <div class="services-grid">
+            <div class="service-item">
+                <img src="img/search.png" alt="Search" />
+                <span>Registrations</span>
+            </div>
+            <div class="service-item">
+                <img src="img/money.png" alt="Money" />
+                <span>Fines and demerits</span>
+            </div>
+            <div class="service-item">
+                <img src="img/ticket.png" alt="Ticket" />
+                <span>Vouchers</span>
+                <span class="new"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Section -->
+    <div id="services" class="container">
+        <h1>Services</h1>
+        <p>This is a placeholder for Services.</p>
+    </div>
+
+    <!-- Wallet Section -->
+    <div id="wallet" class="container">
+        <h1>Wallet</h1>
+        <p>This is a placeholder for Wallet.</p>
+        <form id="cardForm">
+            <input type="text" id="fullName" placeholder="Full Name" />
+            <input type="text" id="cardNumber" placeholder="Card Number" />
+            <input type="text" id="expiryDate" placeholder="Expiry Date (MM/YY)" />
+            <button type="submit">Add Card</button>
+        </form>
+        <div id="newCard" class="card"></div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="navigate('home')">
+            <img src="img/home.png" alt="Home" />
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="navigate('services')">
+            <img src="img/shop.png" alt="Services" />
+            <span>Services</span>
+        </div>
+        <div class="nav-item" onclick="navigate('wallet')">
+            <img src="img/wallet.png" alt="Wallet" />
+            <span>Wallet</span>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+</body>
+</html>

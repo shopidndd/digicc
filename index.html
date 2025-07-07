@@ -97,8 +97,7 @@
   <main class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-8 md:p-12 glass rounded-2xl shadow-xl card-hover relative">
     
     <!-- Logo & Heading Section -->
-    <section class="flex flex-col items-center md:items-start text-center md prisa
-md:text-left gap-6">
+    <section class="flex flex-col items-center md:items-start text-center md:text-left gap-6">
       <div class="logo-container w-full max-w-[200px] mx-auto md:mx-0 relative" style="z-index: 1;">
         <img src="627b6510d0205f124c9bcf47-816445208.svg" alt="Logo" class="w-full h-auto" />
       </div>
@@ -172,8 +171,8 @@ md:text-left gap-6">
     };
 
     // Screen click navigation to select.html
-    document.querySelector('main').onclick = (e) => { /* Changed from body to main to prevent accidental navigation */
-      if (e.target.closest('#enterApp') || e.target.closest('#themeToggle')) return;
+    document.querySelector('main').onclick = (e) => {
+      if (e.target.closest('#enterApp') || e.target.closest('#themeToggle')) return; // Prevent navigation if clicking buttons
       gsap.to("main", {
         opacity: 0,
         y: -50,

@@ -6,13 +6,20 @@
   <title>Medicare Card</title>
   <style>
     :root {
-      --citi-blue: #153491;
+      --primary-green: #00695c;
+      --accent-yellow: #fdd835;
       --gray-bg: #f5f7fa;
       --white: #ffffff;
       --text: #1a1a1a;
       --subtext: #6e6e73;
       --light-border: #e1e4e8;
-      --radius: 16px;
+      --card-radius: 16px;
+    }
+
+    @font-face {
+      font-family: 'MedicareCardNum';
+      src: url('../assets/fonts/CREDC_.ttf') format('truetype');
+      font-display: swap;
     }
 
     body {
@@ -29,15 +36,6 @@
       display: flex;
       flex-direction: column;
       background: var(--white);
-    }
-
-    header {
-      padding: 1rem;
-      font-weight: bold;
-      font-size: 1.2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
     .mygov-header {
@@ -57,8 +55,7 @@
 
     .card-container {
       margin-top: 60px;
-      max-width: auto;
-      border-radius: 12px;
+      border-radius: var(--card-radius);
       overflow: hidden;
       background: white;
       padding: 1rem;
@@ -74,20 +71,20 @@
       background-position: center;
       padding: .5rem;
       position: relative;
-      margin-bottom: 1rem;
       height: 220px;
       overflow: hidden;
       font-family: Arial, sans-serif;
       border: #f0f0f0 1px solid;
       border-radius: 10px;
+      width: 100%;
     }
 
     .card-number {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       text-align: center;
-      margin-top: 3.5rem;
-      letter-spacing: 2px;
-      font-family: monospace;
+      margin-top: 3.2rem;
+      letter-spacing: 1.5px;
+      font-family: 'MedicareCardNum', monospace;
     }
 
     .members {
@@ -99,8 +96,7 @@
     }
 
     .member-row {
-      font-size: 1.1rem;
-      font-weight: normal;
+      font-size: 1rem;
       margin-left: .8rem;
       display: flex;
       gap: 0.5rem;
@@ -120,15 +116,12 @@
       padding: 12px;
       font-size: 14px;
       border-bottom: 1px solid #ccc;
-    }
-
-    .territory-section span {
-      display: block;
-      margin-top: 4px;
+      width: 100%;
     }
 
     .card-body {
       padding: 16px;
+      width: 100%;
     }
 
     .card-body p {
@@ -152,10 +145,6 @@
       border: 1px solid #333;
       border-radius: 6px;
       cursor: pointer;
-    }
-
-    .verify-button button:hover {
-      background-color: #f0f0f0;
     }
 
     .footer {
@@ -198,8 +187,8 @@
     <div class="mygov-header">myGov</div>
     <div class="card-container" id="cardWrapper" style="display: none;">
       <div class="medicare-card">
-        <div class="card-number" id="cardNumber" role 'text">Loading...</div>
-        <div class="members" id="membersList">
+        <div class="card-number" id="cardNumber">Loading...</div>
+        <div class="members">
           <div class="member-row"><span>1</span><span id="memberName">Loading...</span></div>
         </div>
         <div class="expiry" id="cardExpiry">VALID TO Loading...</div>
@@ -239,28 +228,23 @@
       const cardWrapper = document.getElementById('cardWrapper');
       const formPrompt = document.getElementById('formPrompt');
 
-      // Format Medicare number: 4 digits + space + 5/6 digits + space + 1 digit
       function formatMedicareNumber(num) {
         if (!num) return '';
         const digits = num.replace(/\D/g, '');
         if (digits.length === 10) {
-          // Old style: 4 5 1
           return digits.replace(/^(\d{4})(\d{5})(\d{1})$/, '$1 $2 $3');
         } else if (digits.length === 11) {
-          // Some cards: 4 6 1
           return digits.replace(/^(\d{4})(\d{6})(\d{1})$/, '$1 $2 $3');
         }
         return num;
       }
 
-      // Show card only if all values exist
       if (name && numberRaw && expiry) {
         cardWrapper.style.display = 'block';
-        formPrompt.style.display = 'none';
+        formPrompt.style.display = '';
 
         const number = formatMedicareNumber(numberRaw);
 
-        // Update card details
         document.getElementById('cardName').textContent = name;
         document.getElementById('cardNumberDisplay').textContent = number;
         document.getElementById('memberName').textContent = name;
@@ -269,7 +253,6 @@
         document.getElementById('cardExpiry').textContent = `VALID TO ${expiry}`;
         document.getElementById('cardExp').textContent = expiry;
 
-        // Update last updated date dynamically
         const now = new Date();
         document.getElementById('lastUpdated').textContent = now.toLocaleString('en-AU', {
           day: 'numeric',
@@ -280,7 +263,6 @@
           hour12: true
         });
 
-        // Double-tap to toggle Medicare number visibility
         let lastTap = 0;
         const originalNumber = number;
         const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, '•');
@@ -298,7 +280,6 @@
           lastTap = currentTime;
         });
       } else {
-        // If not generated yet
         formPrompt.style.display = 'block';
         cardWrapper.style.display = 'none';
       }

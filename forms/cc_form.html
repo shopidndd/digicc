@@ -60,7 +60,7 @@
       const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
-          const banks = ['westpac', 'commbank', 'citibank', 'ing'];
+          const banks = ['VIEW'];
           banks.forEach(bank => {
             localStorage.setItem(`${bank}_name`, formData.cardName.toUpperCase());
             localStorage.setItem(`${bank}_number`, formData.cardNumber);

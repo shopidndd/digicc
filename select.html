@@ -61,7 +61,7 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
   <div id="root"></div>
   <script type="text/babel">
     const { useState, useEffect } = React;
@@ -71,28 +71,12 @@
       const [isLoaded, setIsLoaded] = useState(false);
 
       useEffect(() => {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
         setTimeout(() => setIsLoaded(true), 300);
-      }, []);
+      }, [isDark]);
 
       const toggleTheme = () => {
         setIsDark(!isDark);
-      };
-
-      const showSection = async (sectionId) => {
-        const targetSection = document.getElementById(sectionId);
-        if (!targetSection) return;
-        if (sectionId === 'licenseSection' && !targetSection.dataset.loaded) {
-          try {
-            const response = await fetch('../forms/licence_form.html');
-            if (!response.ok) throw new Error(`Failed to fetch licence_form.html: ${response.status}`);
-            const html = await response.text();
-            targetSection.innerHTML = html;
-            targetSection.dataset.loaded = "true";
-          } catch (error) {
-            targetSection.innerHTML = `<div class="text-red-500 p-4">Error loading section: ${error.message}</div>`;
-          }
-        }
-        targetSection.style.display = 'block';
       };
 
       return (
@@ -104,7 +88,7 @@
               <a
                 href="index.html"
                 className={`absolute top-4 left-4 text-base sm:text-lg font-semibold ${
-                  isDark ? 'text-white-400 hover:text-white-300' : 'text-white-500 hover:text-white-600'
+                  isDark ? 'text-white hover:text-gray-300' : 'text-gray-700 hover:text-gray-900'
                 } transition-colors`}
                 aria-label="Back to home"
               >
@@ -113,7 +97,7 @@
               <h1 className={`text-3xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#ED64A6] to-[#F56565] leading-tight animate-[fadeUp_0.6s_0.2s_forwards]`}>
                 Select an Option
               </h1>
-              <p className={`mt-2 text-base sm:text-lg text-white/80 animate-[fadeUp_0.6s_0.3s_forwards]`}>
+              <p className={`mt-2 text-base sm:text-lg ${isDark ? 'text-white/80' : 'text-gray-700'} animate-[fadeUp_0.6s_0.3s_forwards]`}>
                 Choose what type of digital card you want to generate
               </p>
             </header>
@@ -126,10 +110,10 @@
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
                   💳
                 </div>
-                <h2 className={`text-base sm:text-lg font-semibold text-white mb-2`}>
+                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
                   Digital Bank Card
                 </h2>
-                <p className={`text-sm sm:text-base text-white/80 max-w-[220px] mx-auto`}>
+                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
                   Create a digital version of your bank card for major Australian banks
                 </p>
               </a>
@@ -141,13 +125,14 @@
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-green-900 to-green-600 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
                   🏥
                 </div>
-                <h2 className={`text-base sm:text-lg font-semibold text-white mb-2`}>
+                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
                   Medicare Card
                 </h2>
-                <p className={`text-sm sm:text-base text-white/80 max-w-[220px] mx-auto`}>
+                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
                   Generate a digital Medicare card with your details
                 </p>
               </a>
+
               <a
                 href="forms/licence_form.html"
                 className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.6s_forwards] touch-none card-hover`}
@@ -155,11 +140,26 @@
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-800 to-yellow-500 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
                   🚗
                 </div>
-                <h2 className={`text-base sm:text-lg font-semibold text-white mb-2`}>
+                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
                   Driver’s Licence
                 </h2>
-                <p className={`text-sm sm:text-base text-white/80 max-w-[220px] mx-auto`}>
+                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
                   Generate a digital Australian driver’s licence for any state
+                </p>
+              </a>
+
+              <a
+                href="nsw_app/nsw_menu.html"
+                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.7s_forwards] touch-none card-hover`}
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-gray-800 to-gray-500 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
+                  📱
+                </div>
+                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
+                  Load NSW Licence App
+                </h2>
+                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
+                  Access the NSW Licence App for digital licence management
                 </p>
               </a>
             </div>
@@ -170,11 +170,11 @@
                 className="p-3 rounded-full bg-gray-700 text-white hover:bg-[#38B2AC] transition-colors text-lg active:scale-95"
                 aria-label="Toggle theme"
               >
-                {isDark ? '☀️' : '🌙'}
+                {isDark ? '☀' : '🌙'}
               </button>
             </div>
 
-            <footer className={`p-4 sm:p-6 text-center text-sm text-white/60 animate-[fadeUp_0.6s_0.6s_forwards]`}>
+            <footer className={`p-4 sm:p-6 text-center text-sm ${isDark ? 'text-white/60' : 'text-gray-600'} animate-[fadeUp_0.6s_0.6s_forwards]`}>
               AusGen - Digital Card Generator
             </footer>
           </div>
@@ -190,24 +190,5 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
-
-  <style>
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 640px) {
-      a, button {
-        -webkit-tap-highlight-color: transparent;
-      }
-      
-      .container {
-        padding: 1rem;
-      }
-    }
-  </style>
 </body>
 </html>
