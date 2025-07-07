@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Service NSW App</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background-gradient: linear-gradient(135deg, #6B46C1, #2C5282);
+      --text-color: #F7FAFC;
+      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
+      --hover-color: #20b6af;
+      --card-bg: rgba(28, 30, 34, 0.9);
+    }
+
+    [data-theme="light"] {
+      --background-gradient: linear-gradient(135deg, #E9D8FD, #EBF4FF);
+      --text-color: #2D3748;
+      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
+      --card-bg: rgba(255, 255, 255, 0.95);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      transition: background 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+      font-family: sans-serif;
+    }
+
+    .glass {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(182, 176, 176, 0.357);
+      transition: transform 0.3s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .featured-scroller {
+      overflow-x: auto;
+      white-space: nowrap;
+      height: 150px;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+    }
+
+    .featured-item {
+      display: inline-block;
+      vertical-align: top;
+      width: 200px;
+      margin-right: 15px;
+      scroll-snap-align: start;
+    }
+
+    @media (max-width: 640px) {
+      a, button {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const App = () => {
+      const [isDark, setIsDark] = useState(true);
+      const [isLoaded, setIsLoaded] = useState(false);
+      const [activeTab, setActiveTab] = useState('home');
+      const [newCard, setNewCard] = useState(null);
+
+      useEffect(() => {
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        setTimeout(() => setIsLoaded(true), 300);
+      }, [isDark]);
+
+      const toggleTheme = () => {
+        setIsDark(!isDark);
+      };
+
+      const handleTabChange = (tab) => {
+        setActiveTab(tab);
+      };
+
+      const handleFormSubmit = (e) => {
+        e.preventDefault();
+        const fullName = e.target.fullName.value;
+        const cardNumber = e.target.cardNumber.value;
+        const expiryDate = e.target.expiryDate.value;
+        setNewCard({ fullName, cardNumber, expiryDate });
+        e.target.reset();
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col px-4 py-8">
+          <div className={`w-full max-w-sm mx-auto flex-1 flex flex-col glass rounded-2xl shadow-xl transition-all duration-500 ${
+            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
+            {/* Header */}
+            <header className="p-4 sm:p-6 flex justify-between items-center bg-black/50">
+              <img src="img/top_logo.png" alt="Service NSW Logo" className="h-8 sm:h-10" />
+              <div className="flex gap-2">
+                <img src="img/bell.png" alt="Notifications" className="h-5 sm:h-6" />
+                <img src="img/user.png" alt="Profile" className="h-5 sm:h-6" />
+              </div>
+            </header>
+
+            {/* Home Section */}
+            <div className={`container flex-1 p-4 sm:p-6 ${activeTab === 'home' ? 'block' : 'hidden'}`}>
+              <h2 className={`text-lg sm:text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-3 animate-[fadeUp_0.6s_0.2s_forwards]`}>
+                Favourites
+              </h2>
+              <div className="card p-4 sm:p-5 rounded-xl shadow-md card-hover animate-[fadeUp_0.6s_0.3s_forwards]">
+                <a href="cards/licence_cards/nsw.html" className="block">
+                  <img src="img/nsw_cardmenulogo.png" alt="Driver's Licence Card" className="w-full h-auto rounded-md touch-none" />
+                </a>
+              </div>
+
+              <h2 className={`text-lg sm:text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-3 mt-6 animate-[fadeUp_0.6s_0.4s_forwards]`}>
+                Featured
+              </h2>
+              <div className="featured-scroller">
+                <div className="featured-item p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.5s_forwards]">
+                  <img src="img/flood_support.jpg" alt="Flood Support" className="w-full h-24 object-cover rounded-md" />
+                  <p className={`text-sm ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 truncate`}>East Coast Flood Report <span>→</span></p>
+                </div>
+                <div className="featured-item p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.6s_forwards]">
+                  <img src="img/toll_relief.jpg" alt="Toll Relief" className="w-full h-24 object-cover rounded-md" />
+                  <p className={`text-sm ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 truncate`}>Claim toll relief $60 cap <span>✓</span></p>
+                </div>
+                <div className="featured-item p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.7s_forwards]">
+                  <img src="img/savir_finder.jpg" alt="Savir Finder" className="w-full h-24 object-cover rounded-md" />
+                  <p className={`text-sm ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 truncate`}>Use the Savir Finder</p>
+                </div>
+              </div>
+
+              <h2 className={`text-lg sm:text-xl font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-3 mt-6 animate-[fadeUp_0.6s_0.8s_forwards]`}>
+                Services
+              </h2>
+              <div className="grid gap-3">
+                <div className="service-item flex items-center p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.9s_forwards]">
+                  <img src="img/search.png" alt="Search" className="w-6 h-6 mr-3" />
+                  <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Registrations</span>
+                </div>
+                <div className="service-item flex items-center p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_1s_forwards]">
+                  <img src="img/money.png" alt="Money" className="w-6 h-6 mr-3" />
+                  <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Fines and demerits</span>
+                </div>
+                <div className="service-item flex items-center p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_1.1s_forwards]">
+                  <img src="img/ticket.png" alt="Ticket" className="w-6 h-6 mr-3" />
+                  <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Vouchers</span>
+                  <span className="ml-2 bg-pink-500 text-white text-xs px-2 py-1 rounded-full">New</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Services Section */}
+            <div className={`container flex-1 p-4 sm:p-6 ${activeTab === 'services' ? 'block' : 'hidden'}`}>
+              <h1 className={`text-2xl sm:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} animate-[fadeUp_0.6s_0.2s_forwards]`}>
+                Services
+              </h1>
+              <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 animate-[fadeUp_0.6s_0.3s_forwards]`}>
+                This is a placeholder for Services.
+              </p>
+            </div>
+
+            {/* Wallet Section */}
+            <div className={`container flex-1 p-4 sm:p-6 ${activeTab === 'wallet' ? 'block' : 'hidden'}`}>
+              <h1 className={`text-2xl sm:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'} animate-[fadeUp_0.6s_0.2s_forwards]`}>
+                Wallet
+              </h1>
+              <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 animate-[fadeUp_0.6s_0.3s_forwards]`}>
+                This is a placeholder for Wallet.
+              </p>
+              <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 max-w-xs mx-auto mt-4">
+                <input
+                  type="text"
+                  id="fullName"
+                  placeholder="Full Name"
+                  className="p-2 text-sm border border-blue-900 rounded-md text-gray-900"
+                />
+                <input
+                  type="text"
+                  id="cardNumber"
+                  placeholder="Card Number"
+                  className="p-2 text-sm border border-blue-900 rounded-md text-gray-900"
+                />
+                <input
+                  type="text"
+                  id="expiryDate"
+                  placeholder="Expiry Date (MM/YY)"
+                  className="p-2 text-sm border border-blue-900 rounded-md text-gray-900"
+                />
+                <button
+                  type="submit"
+                  className="p-2 bg-blue-900 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Add Card
+                </button>
+              </form>
+              {newCard && (
+                <div className="card p-4 sm:p-5 rounded-xl shadow-md card-hover mt-4 animate-[fadeUp_0.6s_0.4s_forwards]">
+                  <p className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Name: {newCard.fullName}</p>
+                  <p className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Card: {newCard.cardNumber}</p>
+                  <p className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Expiry: {newCard.expiryDate}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Theme Toggle */}
+            <div className="p-4 sm:p-6 flex justify-center">
+              <button
+                onClick={toggleTheme}
+                className="p-3 rounded-full bg-gray-700 text-white hover:bg-[#38B2AC] transition-colors text-lg active:scale-95"
+                aria-label="Toggle theme"
+              >
+                {isDark ? '☀' : '🌙'}
+              </button>
+            </div>
+
+            {/* Bottom Navigation */}
+            <div className="bottom-nav flex justify-around p-3 bg-black/50 fixed bottom-0 w-full max-w-sm shadow-md">
+              <div
+                className={`nav-item flex-1 text-center p-2 cursor-pointer ${activeTab === 'home' ? 'bg-blue-900' : ''}`}
+                onClick={() => handleTabChange('home')}
+              >
+                <img src="img/home.png" alt="Home" className="w-6 h-6 mx-auto" />
+                <span className="text-xs text-white">Home</span>
+              </div>
+              <div
+                className={`nav-item flex-1 text-center p-2 cursor-pointer ${activeTab === 'services' ? 'bg-blue-900' : ''}`}
+                onClick={() => handleTabChange('services')}
+              >
+                <img src="img/shop.png" alt="Services" className="w-6 h-6 mx-auto" />
+                <span className="text-xs text-white">Services</span>
+              </div>
+              <div
+                className={`nav-item flex-1 text-center p-2 cursor-pointer ${activeTab === 'wallet' ? 'bg-blue-900' : ''}`}
+                onClick={() => handleTabChange('wallet')}
+              >
+                <img src="img/wallet.png" alt="Wallet" className="w-6 h-6 mx-auto" />
+                <span className="text-xs text-white">Wallet</span>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <footer className={`p-4 sm:p-6 text-center text-sm ${isDark ? 'text-white/60' : 'text-gray-600'} animate-[fadeUp_0.6s_0.6s_forwards]`}>
+              Service NSW - Digital Services
+            </footer>
+          </div>
+
+          <div className="fixed inset-0 pointer-events-none hidden sm:block">
+            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
+            <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
