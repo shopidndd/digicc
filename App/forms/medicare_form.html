@@ -291,7 +291,7 @@
           localStorage.setItem('medicare_expiry', formData.expiryDate);
           setSuccessMessage('Details saved successfully!');
           document.getElementById('form-announcer').textContent = 'Form submitted successfully';
-          setTimeout(() => { window.location.href = '../medicare_card/medicare.html'; }, 1000);
+          setTimeout(() => { window.location.href = '../cards/medicare_card/medicare.html'; }, 1000);
         } catch (err) {
           console.error(err);
           document.getElementById('form-announcer').textContent = 'Submission failed';
