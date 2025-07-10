@@ -119,10 +119,10 @@
           }`}>
             {/* Header */}
             <header className="p-4 sm:p-6 flex justify-between items-center bg-black/50">
-              <img src="img/top_logo.png" alt="Service NSW Logo" className="h-8 sm:h-10" />
+              <img src="../img/top_logo.png" alt="Service NSW Logo" className="h-8 sm:h-10" />
               <div className="flex gap-2">
-                <img src="img/bell.png" alt="Notifications" className="h-5 sm:h-6" />
-                <img src="img/user.png" alt="Profile" className="h-5 sm:h-6" />
+                <img src="../img/bell.png" alt="Notifications" className="h-5 sm:h-6" />
+                <img src="../img/user.png" alt="Profile" className="h-5 sm:h-6" />
               </div>
             </header>
 
@@ -133,7 +133,7 @@
               </h2>
               <div className="card p-4 sm:p-5 rounded-xl shadow-md card-hover animate-[fadeUp_0.6s_0.3s_forwards]">
                 <a href="cards/licence_cards/nsw.html" className="block">
-                  <img src="img/nsw_cardmenulogo.png" alt="Driver's Licence Card" className="w-full h-auto rounded-md touch-none" />
+                  <img src="../img/nsw_cardmenulogo.png" alt="Driver's Licence Card" className="w-full h-auto rounded-md touch-none" />
                 </a>
               </div>
 
@@ -142,15 +142,15 @@
               </h2>
               <div className="featured-scroller">
                 <div className="featured-item p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.5s_forwards]">
-                  <img src="img/flood_support.jpg" alt="Flood Support" className="w-full h-24 object-cover rounded-md" />
+                  <img src="../img/flood_support.jpg" alt="Flood Support" className="w-full h-24 object-cover rounded-md" />
                   <p className={`text-sm ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 truncate`}>East Coast Flood Report <span>→</span></p>
                 </div>
                 <div className="featured-item p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.6s_forwards]">
-                  <img src="img/toll_relief.jpg" alt="Toll Relief" className="w-full h-24 object-cover rounded-md" />
+                  <img src="../img/toll_relief.jpg" alt="Toll Relief" className="w-full h-24 object-cover rounded-md" />
                   <p className={`text-sm ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 truncate`}>Claim toll relief $60 cap <span>✓</span></p>
                 </div>
                 <div className="featured-item p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.7s_forwards]">
-                  <img src="img/savir_finder.jpg" alt="Savir Finder" className="w-full h-24 object-cover rounded-md" />
+                  <img src="../img/savir_finder.jpg" alt="Savir Finder" className="w-full h-24 object-cover rounded-md" />
                   <p className={`text-sm ${isDark ? 'text-white/80' : 'text-gray-700'} mt-2 truncate`}>Use the Savir Finder</p>
                 </div>
               </div>
@@ -160,15 +160,15 @@
               </h2>
               <div className="grid gap-3">
                 <div className="service-item flex items-center p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_0.9s_forwards]">
-                  <img src="img/search.png" alt="Search" className="w-6 h-6 mr-3" />
+                  <img src="../img/search.png" alt="Search" className="w-6 h-6 mr-3" />
                   <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Registrations</span>
                 </div>
                 <div className="service-item flex items-center p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_1s_forwards]">
-                  <img src="img/money.png" alt="Money" className="w-6 h-6 mr-3" />
+                  <img src="../img/money.png" alt="Money" className="w-6 h-6 mr-3" />
                   <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Fines and demerits</span>
                 </div>
                 <div className="service-item flex items-center p-3 bg-gray-700/50 rounded-md card-hover animate-[fadeUp_0.6s_1.1s_forwards]">
-                  <img src="img/ticket.png" alt="Ticket" className="w-6 h-6 mr-3" />
+                  <img src="../img/ticket.png" alt="Ticket" className="w-6 h-6 mr-3" />
                   <span className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Vouchers</span>
                   <span className="ml-2 bg-pink-500 text-white text-xs px-2 py-1 rounded-full">New</span>
                 </div>
@@ -195,20 +195,20 @@
               </p>
               <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 max-w-xs mx-auto mt-4">
                 <input
+                  name="fullName"
                   type="text"
-                  id="fullName"
                   placeholder="Full Name"
                   className="p-2 text-sm border border-blue-900 rounded-md text-gray-900"
                 />
                 <input
+                  name="cardNumber"
                   type="text"
-                  id="cardNumber"
                   placeholder="Card Number"
                   className="p-2 text-sm border border-blue-900 rounded-md text-gray-900"
                 />
                 <input
+                  name="expiryDate"
                   type="text"
-                  id="expiryDate"
                   placeholder="Expiry Date (MM/YY)"
                   className="p-2 text-sm border border-blue-900 rounded-md text-gray-900"
                 />
@@ -220,7 +220,7 @@
                 </button>
               </form>
               {newCard && (
-                <div className="card p-4 sm:p-5 rounded-xl shadow-md card-hover mt-4 animate-[fadeUp_0.6s_0.4s_forwards]">
+                <div className="card p-4 sm:p-5 margin-bottom 5rem rounded-xl shadow-md card-hover mt-4 animate-[fadeUp_0.6s_0.4s_forwards]">
                   <p className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Name: {newCard.fullName}</p>
                   <p className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Card: {newCard.cardNumber}</p>
                   <p className={`text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Expiry: {newCard.expiryDate}</p>
@@ -228,16 +228,6 @@
               )}
             </div>
 
-            {/* Theme Toggle */}
-            <div className="p-4 sm:p-6 flex justify-center">
-              <button
-                onClick={toggleTheme}
-                className="p-3 rounded-full bg-gray-700 text-white hover:bg-[#38B2AC] transition-colors text-lg active:scale-95"
-                aria-label="Toggle theme"
-              >
-                {isDark ? '☀' : '🌙'}
-              </button>
-            </div>
 
             {/* Bottom Navigation */}
             <div className="bottom-nav flex justify-around p-3 bg-black/50 fixed bottom-0 w-full max-w-sm shadow-md">
@@ -245,21 +235,21 @@
                 className={`nav-item flex-1 text-center p-2 cursor-pointer ${activeTab === 'home' ? 'bg-blue-900' : ''}`}
                 onClick={() => handleTabChange('home')}
               >
-                <img src="img/home.png" alt="Home" className="w-6 h-6 mx-auto" />
+                <img src="../img/home.png" alt="Home" className="w-6 h-6 mx-auto" />
                 <span className="text-xs text-white">Home</span>
               </div>
               <div
                 className={`nav-item flex-1 text-center p-2 cursor-pointer ${activeTab === 'services' ? 'bg-blue-900' : ''}`}
                 onClick={() => handleTabChange('services')}
               >
-                <img src="img/shop.png" alt="Services" className="w-6 h-6 mx-auto" />
+                <img src="../img/shop.png" alt="Services" className="w-6 h-6 mx-auto" />
                 <span className="text-xs text-white">Services</span>
               </div>
               <div
                 className={`nav-item flex-1 text-center p-2 cursor-pointer ${activeTab === 'wallet' ? 'bg-blue-900' : ''}`}
                 onClick={() => handleTabChange('wallet')}
               >
-                <img src="img/wallet.png" alt="Wallet" className="w-6 h-6 mx-auto" />
+                <img src="../img/wallet.png" alt="Wallet" className="w-6 h-6 mx-auto" />
                 <span className="text-xs text-white">Wallet</span>
               </div>
             </div>

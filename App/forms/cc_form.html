@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Enter your card details to create a personalized digital card with AusGen.">
+  <meta name="keywords" content="digital card, card generator, credit card form, personalized cards">
+  <meta name="author" content="xAI">
+  <meta name="robots" content="index, follow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>AusGen - Enter Card Details</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background-gradient: linear-gradient(135deg, #46c159, #6f822c);
+      --text-color: #F7FAFC;
+      --cta-gradient: linear-gradient(90deg, #64bbed, #fb5959);
+      --hover-color: #384cb2;
+      --card-bg: rgba(179, 192, 218, 0.3);
+      --glass-overlay: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      --shadow-color: rgba(0, 0, 0, 0.25);
+      --border-color: rgba(255, 255, 255, 0.2);
+      --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-base: 15px;
+      --transition-all: all 0.2s ease-in-out;
+    }
+
+    [data-theme="light"] {
+      --background-gradient: linear-gradient(135deg, #ffffff, #c7c7c7);
+      --text-color: #2D3748;
+      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
+      --card-bg: rgba(255, 255, 255, 0.4);
+      --glass-overlay: linear-gradient(145deg, rgba(200, 200, 200, 0.2), rgba(200, 200, 200, 0.05));
+      --shadow-color: rgba(0, 0, 0, 0.2);
+      --border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+      background: var(--background-gradient);
+      color: var(--text-color);
+      font-family: var(--font-primary);
+      font-size: var(--font-size-base);
+      transition: background 0.4s ease, color 0.4s ease;
+      overflow-x: hidden;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1), transparent 50%);
+      opacity: 0.5;
+      animation: subtleMove 20s infinite linear;
+      z-index: -1;
+    }
+
+    @keyframes subtleMove {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(20px, 20px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .glass {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px) saturate(110%);
+      -webkit-backdrop-filter: blur(10px) saturate(110%);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px var(--shadow-color);
+      transition: var(--transition-all);
+      position: relative;
+    }
+
+    .glass:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-color);
+      backdrop-filter: blur(12px) saturate(120%);
+      -webkit-backdrop-filter: blur(12px) saturate(120%);
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--glass-overlay);
+      pointer-events: none;
+      opacity: 0.8;
+      transition: var(--transition-all);
+    }
+
+    .glass:hover::before {
+      opacity: 1;
+    }
+
+    .cta-button {
+      background: var(--cta-gradient);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button:hover {
+      background: var(--hover-color);
+      transform: scale(1.05);
+    }
+
+    .cta-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .cta-button::after {
+      content: 'Loading...';
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-color);
+    }
+
+    .cta-button.loading::after {
+      display: block;
+    }
+
+    .cta-button.loading span {
+      visibility: hidden;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body, .glass, .glass::before, .cta-button, body::before {
+        transition: none;
+        animation: none;
+      }
+      .glass:hover, .cta-button:hover {
+        transform: none;
+        box-shadow: 0 4px 16px var(--shadow-color);
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root { --font-size-base: 13px; }
+      .glass {
+        border-radius: 8px;
+        box-shadow: 0 2px 12px var(--shadow-color);
+        backdrop-filter: blur(8px) saturate(100%);
+        -webkit-backdrop-filter: blur(8px) saturate(100%);
+      }
+      main {
+        padding: 0.75rem;
+        gap: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+      }
+      .logo-container { max-width: 100px; }
+      .cta-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        max-width: 160px;
+      }
+      #themeToggle {
+        padding: 0.5rem;
+      }
+      #themeToggle svg {
+        width: 16px;
+        height: 16px;
+      }
+      input, button, a { -webkit-tap-highlight-color: transparent; }
+    }
+  </style>
+</head>
+<body>
+  <div aria-live="polite" class="sr-only" id="form-announcer"></div>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const App = () => {
+      const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') === 'dark' || true);
+      const [isLoaded, setIsLoaded] = useState(false);
+      const [formData, setFormData] = useState({
+        cardNumber: '',
+        cardName: '',
+        expiryDate: '',
+        cvv: ''
+      });
+      const [errors, setErrors] = useState({});
+      const [showOverlay, setShowOverlay] = useState(false);
+      const [isSubmitting, setIsSubmitting] = useState(false);
+
+      useEffect(() => {
+        if (window.gsap) {
+          gsap.fromTo('main', 
+            { opacity: 0, y: 30 }, 
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', onComplete: () => setIsLoaded(true) }
+          );
+        } else {
+          setTimeout(() => setIsLoaded(true), 300);
+        }
+      }, []);
+
+      const toggleTheme = () => {
+        const newTheme = !isDark;
+        setIsDark(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
+        localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+        const announcer = document.getElementById('form-announcer');
+        if (announcer) {
+          announcer.textContent = `Theme switched to ${newTheme ? 'dark' : 'light'} mode`;
+        }
+        if (window.gsap) {
+          gsap.to('body', {
+            background: newTheme ? 'var(--background-gradient)' : 'var(--background-gradient)',
+            duration: 0.4,
+            ease: 'power2.inOut'
+          });
+        }
+      };
+
+      const formatCardNumber = (value) => {
+        const cleaned = value.replace(/\D/g, '');
+        const formatted = cleaned.match(/.{1,4}/g)?.join(' ') || cleaned;
+        return formatted.slice(0, 19);
+      };
+
+      const formatExpiryDate = (value) => {
+        const cleaned = value.replace(/\D/g, '');
+        if (cleaned.length > 2) {
+          return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
+        }
+        return cleaned;
+      };
+
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        let formattedValue = value;
+        if (name === 'cardNumber') {
+          formattedValue = formatCardNumber(value);
+        } else if (name === 'expiryDate') {
+          formattedValue = formatExpiryDate(value);
+        }
+        setFormData(prev => ({ ...prev, [name]: formattedValue }));
+        setErrors(prev => ({ ...prev, [name]: '' }));
+      };
+
+      const validateForm = () => {
+        const newErrors = {};
+        const cleanedCardNumber = formData.cardNumber.replace(/\s/g, '');
+        if (!/^\d{16}$/.test(cleanedCardNumber)) {
+          newErrors.cardNumber = 'Card number must be 16 digits';
+        }
+        if (!formData.cardName.trim() || !/^[a-zA-Z\s]+$/.test(formData.cardName)) {
+          newErrors.cardName = 'Enter a valid cardholder name';
+        }
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiryDate)) {
+          newErrors.expiryDate = 'Enter a valid expiry date (MM/YY)';
+        }
+        if (!/^\d{3,4}$/.test(formData.cvv)) {
+          newErrors.cvv = 'Enter a valid CVV (3-4 digits)';
+        }
+        setErrors(newErrors);
+        const announcer = document.getElementById('form-announcer');
+        if (announcer && Object.keys(newErrors).length > 0) {
+          announcer.textContent = 'Please correct the errors in the form';
+        }
+        return Object.keys(newErrors).length === 0;
+      };
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+        setIsSubmitting(true);
+        try {
+          // Simulate async submission (replace with actual API call)
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          setShowOverlay(true);
+          const announcer = document.getElementById('form-announcer');
+          if (announcer) {
+            announcer.textContent = 'Form submitted successfully';
+          }
+        } catch (error) {
+          console.error('Submission failed:', error);
+          const announcer = document.getElementById('form-announcer');
+          if (announcer) {
+            announcer.textContent = 'Submission failed, please try again';
+          }
+        } finally {
+          setIsSubmitting(false);
+        }
+      };
+
+      const handleBankSelect = (bank) => {
+        const bankRoutes = {
+          westpac: '../cards/bank_cards/cc.html'
+        };
+        const url = bankRoutes[bank.toLowerCase()];
+        if (url) {
+          if (window.gsap) {
+            gsap.to('main', {
+              opacity: 0,
+              y: -30,
+              duration: 0.4,
+              ease: 'power2.in',
+              onComplete: () => window.location.href = url
+            });
+          } else {
+            window.location.href = url;
+          }
+        }
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center">
+          <main className={`w-full max-w-sm mx-auto flex-1 flex flex-col glass rounded-2xl shadow-xl transition-all duration-500 ${
+            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          } p-4 sm:p-6`} role="main" aria-labelledby="main-heading">
+            <header className="flex flex-col items-center text-center gap-3">
+              <h1 id="main-heading" className="text-xl sm:text-2xl font-bold">Enter Card Details</h1>
+            </header>
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col gap-4 sm:gap-5 mt-4 sm:mt-6">
+              <div className="flex flex-col">
+                <label htmlFor="cardNumber" className="text-sm sm:text-base font-medium mb-1">Card Number</label>
+                <input
+                  type="text"
+                  id="cardNumber"
+                  name="cardNumber"
+                  value={formData.cardNumber}
+                  onChange={handleInputChange}
+                  placeholder="1234 5678 9012 3456"
+                  maxLength="19"
+                  aria-describedby="cardNumber-error"
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.cardNumber ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
+                  } transition-all`}
+                />
+                {errors.cardNumber && (
+                  <span id="cardNumber-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.cardNumber}</span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="cardName" className="text-sm sm:text-base font-medium mb-1">Cardholder Name</label>
+                <input
+                  type="text"
+                  id="cardName"
+                  name="cardName"
+                  value={formData.cardName}
+                  onChange={handleInputChange}
+                  placeholder="Full Name"
+                  aria-describedby="cardName-error"
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.cardName ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
+                  } transition-all`}
+                />
+                {errors.cardName && (
+                  <span id="cardName-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.cardName}</span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="expiryDate" className="text-sm sm:text-base font-medium mb-1">Expiry Date</label>
+                <input
+                  type="text"
+                  id="expiryDate"
+                  name="expiryDate"
+                  value={formData.expiryDate}
+                  onChange={handleInputChange}
+                  placeholder="MM/YY"
+                  maxLength="5"
+                  aria-describedby="expiryDate-error"
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.expiryDate ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
+                  } transition-all`}
+                />
+                {errors.expiryDate && (
+                  <span id="expiryDate-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.expiryDate}</span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="cvv" className="text-sm sm:text-base font-medium mb-1">CVV</label>
+                <input
+                  type="text"
+                  id="cvv"
+                  name="cvv"
+                  value={formData.cvv}
+                  onChange={handleInputChange}
+                  placeholder="123"
+                  maxLength="4"
+                  aria-describedby="cvv-error"
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.cvv ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
+                  } transition-all`}
+                />
+                {errors.cvv && (
+                  <span id="cvv-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.cvv}</span>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`cta-button w-full p-3 sm:p-4 rounded-lg text-sm sm:text-base font-semibold text-white shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 ${
+                  isSubmitting ? 'loading' : ''
+                }`}
+              >
+                <span>Submit</span>
+              </button>
+            </form>
+            <div className="p-4 sm:p-6 flex justify-center">
+              <button
+                onClick={toggleTheme}
+                className="p-3 rounded-full glass focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="theme-icon">
+                  <path className="sun" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" style={{ display: isDark ? 'block' : 'none' }} />
+                  <circle className="sun" cx="12" cy="12" r="5" style={{ display: isDark ? 'block' : 'none' }} />
+                  <path className="moon" d="M12 3a9 9 0 0 0 9 9c0-4.97-4.03-9-9-9z" fill="currentColor" style={{ display: isDark ? 'none' : 'block' }} />
+                </svg>
+              </button>
+            </div>
+            <footer className="p-4 sm:p-6 text-center text-xs sm:text-sm">
+              AusGen - Digital Card Generator
+            </footer>
+          </main>
+          {showOverlay && (
+            <div className="fixed inset-0 bg-gray-900/95 flex items-center justify-center z-[1000] animate-[fadeIn_0.3s]">
+              <div className="glass rounded-2xl p-4 sm:p-6 max-w-xs w-[90%] text-center shadow-2xl">
+                <h2 className="text-base sm:text-lg font-semibold mb-4">Choose Your Card</h2>
+                <button
+                  onClick={() => handleBankSelect('westpac')}
+                  className="cta-button w-full p-3 mb-2 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                >
+                  Westpac
+                </button>
+                <button
+                  onClick={() => setShowOverlay(false)}
+                  className="w-full p-3 rounded-lg bg-transparent font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+          <div className="fixed inset-0 pointer-events-none hidden sm:block">
+            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl opacity-10 -top-40 -left-40"></div>
+            <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl opacity-10 -bottom-40 -right-40"></div>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

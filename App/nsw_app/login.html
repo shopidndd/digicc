@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyServiceNSW Account Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-white text-gray-900 font-sans flex items-center justify-center min-h-screen px-4">
+
+  <div class="max-w-md w-full border border-gray-300 rounded-md p-6 shadow-sm">
+    
+    <!-- Logos -->
+    <div class="flex items-center justify-center space-x-8 mb-4">
+        <img src="/Users/adminadmin/cc_gen/digicc/App/img/headerimage.png" alt="Service NSW Logo" class="h-20">
+      </div>
+      
+
+    <!-- Title -->
+    <h1 class="text-2xl font-semibold mb-6">Log in</h1>
+
+    <!-- Form -->
+    <form class="space-y-5" onsubmit="event.preventDefault(); window.location.href='/nsw_menu.html';">
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium">Email</label>
+        <input type="email" id="email" class="mt-1 w-full border-2 border-blue-600 focus:outline-none px-3 py-2 rounded-md" required>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="password" class="block text-sm font-medium">Password</label>
+        <div class="relative">
+          <input type="password" id="password" class="mt-1 w-full border border-gray-400 px-3 py-2 rounded-md" required>
+          <button type="button" class="absolute right-3 top-2 text-sm text-blue-700 font-medium">Show</button>
+        </div>
+      </div>
+
+      <!-- Reset Password -->
+      <div>
+        <a href="#" class="text-dark-blue-700 text-sm font-medium hover:underline">Reset password</a>
+      </div>
+
+      <!-- Continue Button -->
+      <button type="submit" class="w-full bg-red-700 text-white font-bold py-2 rounded-md hover:bg-red-800">
+        Continue
+      </button>
+
+      <!-- Create Account -->
+      <div class="text-sm">
+        <a href="#" class="text-dark-blue-800 font-medium hover:underline">I don't have an account. Create account</a>
+      </div>
+    </form>
+
+    <!-- Footer Links -->
+    <div class="mt-6 text-xs text-center text-gray-600 space-x-3">
+      <a href="#" class="hover:underline">Service NSW</a>
+      <a href="#" class="hover:underline">Accessibility</a>
+      <a href="#" class="hover:underline">Privacy</a>
+      <a href="#" class="hover:underline">Terms of use</a>
+      <a href="#" class="hover:underline">Copyright and disclaimer</a>
+    </div>
+  </div>
+
+</body>
+</html>

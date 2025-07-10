@@ -1,187 +1,440 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Select an option to generate a digital card with AusGen - Digital Card Generator.">
+  <meta name="keywords" content="digital card, card generator, bank card, medicare card, driver’s licence">
+  <meta name="author" content="xAI">
+  <meta name="robots" content="index, follow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>AusGen - Select Option</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --background-gradient: linear-gradient(135deg, #6B46C1, #2C5282);
+      --background-gradient: linear-gradient(135deg, #46c159, #6f822c);
       --text-color: #F7FAFC;
-      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
-      --hover-color: #20b6af;
-      --card-bg: rgba(28, 30, 34, 0.9);
+      --cta-gradient: linear-gradient(90deg, #64bbed, #fb5959);
+      --hover-color: #384cb2;
+      --card-bg: rgba(179, 192, 218, 0.3);
+      --glass-overlay: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      --shadow-color: rgba(0, 0, 0, 0.25);
+      --border-color: rgba(255, 255, 255, 0.2);
+      --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-base: 15px;
+      --transition-all: all 0.2s ease-in-out;
     }
 
     [data-theme="light"] {
-      --background-gradient: linear-gradient(135deg, #E9D8FD, #EBF4FF);
+      --background-gradient: linear-gradient(135deg, #ffffff, #c7c7c7);
       --text-color: #2D3748;
       --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
-      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-bg: rgba(255, 255, 255, 0.4);
+      --glass-overlay: linear-gradient(145deg, rgba(200, 200, 200, 0.2), rgba(200, 200, 200, 0.05));
+      --shadow-color: rgba(0, 0, 0, 0.2);
+      --border-color: rgba(0, 0, 0, 0.15);
     }
 
     body {
       background: var(--background-gradient);
       color: var(--text-color);
-      transition: background 0.5s ease, color 0.5s ease;
+      font-family: var(--font-primary);
+      font-size: var(--font-size-base);
+      transition: background 0.4s ease, color 0.4s ease;
       overflow-x: hidden;
-      font-family: sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      z-index: 0;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1), transparent 50%);
+      opacity: 0.5;
+      animation: subtleMove 20s infinite linear;
+      z-index: -1;
+    }
+
+    @keyframes subtleMove {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(20px, 20px); }
+      100% { transform: translate(0, 0); }
     }
 
     .glass {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(182, 176, 176, 0.357);
-      transition: transform 0.3s ease;
+      backdrop-filter: blur(10px) saturate(110%);
+      -webkit-backdrop-filter: blur(10px) saturate(110%);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px var(--shadow-color);
+      transition: var(--transition-all);
+      position: relative;
+      z-index: 10;
+      touch-action: manipulation;
+    }
+
+    .glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--glass-overlay);
+      pointer-events: none;
+      opacity: 0.8;
+      transition: var(--transition-all);
+      z-index: -2;
+    }
+
+    .glass:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-color);
+      backdrop-filter: blur(12px) saturate(120%);
+      -webkit-backdrop-filter: blur(12px) saturate(120%);
+    }
+
+    .glass:hover::before {
+      opacity: 1;
     }
 
     .card-hover:hover {
       transform: translateY(-5px);
+      z-index: 15;
+    }
+
+    .cta-button {
+      background: var(--cta-gradient);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      z-index: 20;
+    }
+
+    .cta-button:hover {
+      background: var(--hover-color);
+      transform: scale(1.05);
+    }
+
+    .cta-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .cta-button::after {
+      content: 'Loading...';
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-color);
+    }
+
+    .cta-button.loading::after {
+      display: block;
+    }
+
+    .cta-button.loading span {
+      visibility: hidden;
     }
 
     @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .bg-blobs {
+      z-index: -2;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body, .glass, .glass::before, .cta-button, body::before {
+        transition: none;
+        animation: none;
+      }
+      .glass:hover, .card-hover:hover, .cta-button:hover {
+        transform: none;
+        box-shadow: 0 4px 16px var(--shadow-color);
       }
     }
 
     @media (max-width: 640px) {
-      a, button {
-        -webkit-tap-highlight-color: transparent;
+      :root { --font-size-base: 13px; }
+      .glass {
+        border-radius: 8px;
+        box-shadow: 0 2px 12px var(--shadow-color);
+        backdrop-filter: blur(8px) saturate(100%);
+        -webkit-backdrop-filter: blur(8px) saturate(100%);
+      }
+      main {
+        padding: 0.75rem;
+        gap: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+      }
+      .card-option { 
+        padding: 0.75rem; 
+        position: relative;
+        z-index: 50;
       }
       
-      .container {
-        padding: 1rem;
+      .card-icon { width: 2.5rem; height: 2.5rem; }
+      .cta-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        max-width: 160px;
       }
+      #themeToggle {
+        padding: 0.5rem;
+      }
+      #themeToggle svg {
+        width: 16px;
+        height: 16px;
+      }
+      input, button, a { -webkit-tap-highlight-color: transparent; }
     }
   </style>
 </head>
-<body data-theme="dark">
+<body>
+  <div aria-live="polite" class="sr-only" id="theme-announcer"></div>
   <div id="root"></div>
   <script type="text/babel">
     const { useState, useEffect } = React;
 
     const App = () => {
-      const [isDark, setIsDark] = useState(true);
+      const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') === 'dark' || true);
       const [isLoaded, setIsLoaded] = useState(false);
 
       useEffect(() => {
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        setTimeout(() => setIsLoaded(true), 300);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const themeIcon = document.querySelector('.theme-icon');
+        const sunPaths = document.querySelectorAll('.sun');
+        const moonPath = document.querySelector('.moon');
+        if (themeIcon && sunPaths && moonPath) {
+          if (isDark) {
+            sunPaths.forEach(path => path.style.display = 'block');
+            moonPath.style.display = 'none';
+          } else {
+            sunPaths.forEach(path => path.style.display = 'none');
+            moonPath.style.display = 'block';
+          }
+        }
+        if (window.gsap) {
+          gsap.fromTo('main', 
+            { opacity: 0, y: 30 }, 
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', onComplete: () => setIsLoaded(true) }
+          );
+          gsap.from('.card-option', {
+          opacity: 0,
+          y: 20,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out',
+          delay: 0.2
+        });
+        } else {
+          setTimeout(() => setIsLoaded(true), 300);
+        }
+
+        // Initialize tilt effect
+        const initTiltEffect = () => {
+          const cards = document.querySelectorAll('.card-option');
+          cards.forEach(card => {
+            const handleMove = (e) => {
+              const rect = card.getBoundingClientRect();
+              const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+              const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+              const tiltX = (y - centerY) / centerY * 6;
+              const tiltY = -(x - centerX) / centerX * 6;
+              if (window.gsap) {
+                gsap.to(card, {
+                  rotationX: tiltX,
+                  rotationY: tiltY,
+                  duration: 0.2,
+                  ease: 'power2.out',
+                  transformPerspective: 800
+                });
+              }
+            };
+
+            card.addEventListener('mousemove', handleMove);
+            card.addEventListener('touchmove', handleMove);
+
+            card.addEventListener('mouseleave', () => {
+              if (window.gsap) {
+                gsap.to(card, {
+                  rotationX: 0,
+                  rotationY: 0,
+                  duration: 0.4,
+                  ease: 'power2.out'
+                });
+              }
+            });
+
+            card.addEventListener('touchend', () => {
+              if (window.gsap) {
+                gsap.to(card, {
+                  rotationX: 0,
+                  rotationY: 0,
+                  duration: 0.4,
+                  ease: 'power2.out'
+                });
+              }
+            });
+          });
+        };
+
+        if (window.gsap) {
+          setTimeout(initTiltEffect, 1000); // Delay to ensure cards are rendered
+        }
       }, [isDark]);
 
       const toggleTheme = () => {
-        setIsDark(!isDark);
+        const newTheme = !isDark;
+        setIsDark(newTheme);
+        const announcer = document.getElementById('theme-announcer');
+        if (announcer) {
+          announcer.textContent = `Theme switched to ${newTheme ? 'dark' : 'light'} mode`;
+        }
       };
+
+      const navigateWithAnimation = (url, e) => {
+        e.preventDefault();
+        const link = e.currentTarget;
+        link.classList.add('loading');
+        link.style.pointerEvents = 'none';
+        if (window.gsap) {
+          gsap.to('main', {
+            opacity: 0,
+            y: -30,
+            duration: 0.4,
+            ease: 'power2.in',
+            onComplete: () => window.location.href = url
+          });
+        } else {
+          window.location.href = url;
+        }
+      };
+
+      const cardOptions = [
+        {
+          href: 'App/forms/cc_form.html',
+          icon: '💳',
+          title: 'Digital Bank Card',
+          description: 'Create a digital version of your bank card for major Australian banks',
+          gradient: 'from-blue-900 to-blue-600'
+        },
+        {
+          href: 'App/forms/medicare_form.html',
+          icon: '🏥',
+          title: 'Medicare Card',
+          description: 'Generate a digital Medicare card with your details',
+          gradient: 'from-green-900 to-green-600'
+        },
+        {
+          href: 'App/forms/licence_form.html',
+          icon: '🚗',
+          title: 'Driver’s Licence',
+          description: 'Generate a digital Australian driver’s licence for any state',
+          gradient: 'from-yellow-800 to-yellow-500'
+        },
+        {
+          href: 'App/nsw_app/nsw_menu.html',
+          icon: '📱',
+          title: 'Load NSW Licence App',
+          description: 'Access the NSW Licence App for digital licence management',
+          gradient: 'from-gray-800 to-gray-500'
+        }
+      ];
 
       return (
         <div className="min-h-screen flex items-center justify-center px-4 py-8">
-          <div className={`w-full max-w-sm mx-auto flex-1 flex flex-col glass rounded-2xl shadow-xl transition-all duration-500 ${
+          <main className={`w-full max-w-sm mx-auto flex-1 flex flex-col glass rounded-2xl shadow-xl transition-all duration-500 z-10 ${
             isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}>
-            <header className="p-4 sm:p-6 relative text-center">
+          }`} role="main" aria-labelledby="main-heading">
+            <header className="p-4 sm:p-6 relative text-center z-20">
               <a
                 href="index.html"
-                className={`absolute top-4 left-4 text-base sm:text-lg font-semibold ${
-                  isDark ? 'text-white hover:text-gray-300' : 'text-gray-700 hover:text-gray-900'
-                } transition-colors`}
+                className={`absolute top-4 left-4 text-base sm:text-lg font-semibold cta-button px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 z-30`}
                 aria-label="Back to home"
+                onClick={(e) => navigateWithAnimation('index.html', e)}
               >
-                Back
+                <span>Back</span>
               </a>
-              <h1 className={`text-3xl sm:text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#ED64A6] to-[#F56565] leading-tight animate-[fadeUp_0.6s_0.2s_forwards]`}>
+              <h1 id="main-heading" className="text-xl sm:text-2xl font-bold animate-[fadeUp_0.6s_0.2s_forwards]">
                 Select an Option
               </h1>
-              <p className={`mt-2 text-base sm:text-lg ${isDark ? 'text-white/80' : 'text-gray-700'} animate-[fadeUp_0.6s_0.3s_forwards]`}>
+              <p className={`mt-2 text-base sm:text-lg animate-[fadeUp_0.6s_0.3s_forwards]`}>
                 Choose what type of digital card you want to generate
               </p>
             </header>
-
-            <div className="flex-1 p-4 sm:p-6 flex flex-col gap-4 sm:gap-6">
-              <a
-                href="forms/cc_form.html"
-                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.4s_forwards] touch-none card-hover`}
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-blue-900 to-blue-600 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
-                  💳
-                </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
-                  Digital Bank Card
-                </h2>
-                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
-                  Create a digital version of your bank card for major Australian banks
-                </p>
-              </a>
-
-              <a
-                href="forms/medicare_form.html"
-                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.5s_forwards] touch-none card-hover`}
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-green-900 to-green-600 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
-                  🏥
-                </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
-                  Medicare Card
-                </h2>
-                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
-                  Generate a digital Medicare card with your details
-                </p>
-              </a>
-
-              <a
-                href="forms/licence_form.html"
-                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.6s_forwards] touch-none card-hover`}
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-800 to-yellow-500 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
-                  🚗
-                </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
-                  Driver’s Licence
-                </h2>
-                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
-                  Generate a digital Australian driver’s licence for any state
-                </p>
-              </a>
-
-              <a
-                href="nsw_app/nsw_menu.html"
-                className={`block p-4 sm:p-6 rounded-xl text-center cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all animate-[fadeUp_0.6s_0.7s_forwards] touch-none card-hover`}
-              >
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-gray-800 to-gray-500 flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl">
-                  📱
-                </div>
-                <h2 className={`text-base sm:text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'} mb-2`}>
-                  Load NSW Licence App
-                </h2>
-                <p className={`text-sm sm:text-base ${isDark ? 'text-white/80' : 'text-gray-700'} max-w-[220px] mx-auto`}>
-                  Access the NSW Licence App for digital licence management
-                </p>
-              </a>
+            <div className="flex-1 p-4 sm:p-6 flex flex-col gap-4 sm:gap-6 z-10">
+              {isLoaded &&
+                cardOptions.map((option, index) => (
+                  <a
+                    key={index}
+                    href={option.href}
+                    className="card-option block p-4 sm:p-6 rounded-xl text-center glass cursor-pointer shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 transition-all card-hover z-10"
+                    onClick={(e) => navigateWithAnimation(option.href, e)}
+                  >
+                    <div className={`card-icon w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br ${option.gradient} flex items-center justify-center mb-3 mx-auto text-xl sm:text-2xl z-10`}>
+                      {option.icon}
+                    </div>
+                    <h2 className="text-base sm:text-lg font-semibold mb-2 z-10">{option.title}</h2>
+                    <p className="text-sm sm:text-base max-w-[220px] mx-auto z-10">{option.description}</p>
+                  </a>
+                ))
+              }
             </div>
 
-            <div className="p-4 sm:p-6 flex justify-center">
+            <div className="p-4 sm:p-6 flex justify-center z-20">
               <button
+                id="themeToggle"
                 onClick={toggleTheme}
-                className="p-3 rounded-full bg-gray-700 text-white hover:bg-[#38B2AC] transition-colors text-lg active:scale-95"
-                aria-label="Toggle theme"
+                className="p-3 rounded-full glass focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 z-30"
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
               >
-                {isDark ? '☀' : '🌙'}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="theme-icon">
+                  <path className="sun" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" style={{ display: isDark ? 'block' : 'none' }} />
+                  <circle className="sun" cx="12" cy="12" r="5" style={{ display: isDark ? 'block' : 'none' }} />
+                  <path className="moon" d="M12 3a9 9 0 0 0 9 9c0-4.97-4.03-9-9-9z" fill="currentColor" style={{ display: isDark ? 'none' : 'block' }} />
+                </svg>
               </button>
             </div>
-
-            <footer className={`p-4 sm:p-6 text-center text-sm ${isDark ? 'text-white/60' : 'text-gray-600'} animate-[fadeUp_0.6s_0.6s_forwards]`}>
+            <footer className="p-4 sm:p-6 text-center text-xs sm:text-sm animate-[fadeUp_0.6s_0.6s_forwards] z-10">
               AusGen - Digital Card Generator
             </footer>
-          </div>
-
-          <div className="fixed inset-0 pointer-events-none hidden sm:block">
-            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
-            <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
+          </main>
+          <div className="fixed inset-0 pointer-events-none bg-blobs hidden sm:block">
+            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl opacity-10 -top-40 -left-40"></div>
+            <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl opacity-10 -bottom-40 -right-40"></div>
           </div>
         </div>
       );
