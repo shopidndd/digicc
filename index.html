@@ -9,187 +9,54 @@
   <meta name="robots" content="index, follow">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>Digital Card Generator</title>
+  <title>AusGen - Digital Card Generator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <style>
-    :root {
-      --background-gradient: linear-gradient(135deg, #181a18, #848810);
-      --text-color: #F7FAFC;
-      --cta-gradient: linear-gradient(90deg, #468e0b, #848810);
-      --hover-color: #c41818;
-      --card-bg: rgba(179, 192, 218, 0.3);
-      --glass-overlay: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-      --shadow-color: rgba(0, 0, 0, 0.25);
-      --border-color: rgba(255, 255, 255, 0.2);
-      --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-size-base: 15px;
-      --transition-all: all 0.2s ease-in-out;
-    }
-
-    [data-theme="light"] {
-      --background-gradient: linear-gradient(135deg, #ffffff, #c7c7c7);
-      --text-color: #2D3748;
-      --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
-      --card-bg: rgba(255, 255, 255, 0.4);
-      --glass-overlay: linear-gradient(145deg, rgba(223, 223, 223, 0.145), rgba(200, 200, 200, 0.05));
-      --shadow-color: rgba(0, 0, 0, 0.2);
-      --border-color: rgba(0, 0, 0, 0.15);
-    }
-
-    body {
-      background: var(--background-gradient);
-      color: var(--text-color);
-      font-family: var(--font-primary);
-      font-size: var(--font-size-base);
-      transition: background 0.4s ease, color 0.4s ease;
-      overflow-x: hidden;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      -webkit-tap-highlight-color: transparent;
-      position: relative;
-    }
-
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1), transparent 50%);
-      opacity: 0.5;
-      animation: subtleMove 20s infinite linear;
-      z-index: -1;
-    }
-
-    @keyframes subtleMove {
-      0% { transform: translate(0, 0); }
-      50% { transform: translate(20px, 20px); }
-      100% { transform: translate(0, 0); }
-    }
-
-    
-
-    
-
-  
-
-    
-
-    .cta-button {
-      background: var(--cta-gradient);
-      border: none;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-button:hover {
-      background: var(--hover-color);
-      transform: scale(.8);
-    }
-
-    .cta-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .cta-button::after {
-      content: 'Loading...';
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: var(--text-color);
-    }
-
-    .cta-button.loading::after {
-      display: block;
-    }
-
-    .cta-button.loading span {
-      visibility: hidden;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      body, .glass, .glass::before, .cta-button, body::before {
-        transition: none;
-        animation: none;
-      }
-      .glass:hover, .card-hover:hover, .cta-button:hover {
-        transform: none;
-        box-shadow: 0 4px 16px var(--shadow-color);
-      }
-      .pulse {
-        animation: none;
-      }
-    }
-
-    @media (max-width: 640px) {
-      :root {
-        --font-size-base: 13px;
-      }
-      .glass {
-        border-radius: 8px;
-        box-shadow: 0 2px 12px var(--shadow-color);
-        backdrop-filter: blur(8px) saturate(100%);
-        -webkit-backdrop-filter: blur(8px) saturate(100%);
-      }
-      main {
-        padding: 0.75rem;
-        gap: 1rem;
-      }
-      h1 {
-        font-size: 1.5rem;
-        line-height: 1.2;
-      }
-      .logo-container {
-        max-width: 100px;
-      }
-      .cta-button {
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-        max-width: 90px;
-      }
-      #themeToggle {
-        padding: 0.5rem;
-      }
-      #themeToggle svg {
-        width: 16px;
-        height: 16px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
   <div aria-live="polite" class="sr-only" id="theme-announcer"></div>
-  <main class="w-full max-w-lg mx-auto grid grid-cols-1 gap-4 p-4 sm:p-6 glass card-hover" role="main" aria-labelledby="main-heading">
+  <main class="w-full max-w-sm mx-auto grid grid-cols-1 gap-4 p-4 sm:p-6 glass animate-[fadeUp_0.6s_0.1s_forwards]" role="main" aria-labelledby="main-heading">
     <header class="flex flex-col items-center text-center gap-3">
-      <div class="logo-container w-full max-w-[120px]">
+      <div class="logo-container w-full max-w-[120px] animate-[fadeUp_0.6s_0.2s_forwards]">
         <img src="App/assets/AUSGEN_LOGO.png" alt="Digital Card Generator Logo" class="w-full h-auto" loading="lazy">
       </div>
+      <h1 id="main-heading" class="text-xl sm:text-2xl font-bold animate-[fadeUp_0.6s_0.3s_forwards]">Digital Card Generator</h1>
     </header>
     <section class="flex flex-col items-center justify-center gap-3">
-      <button id="enterApp" class="cta-button w-full max-w-[180px] px-4 py-2 rounded-lg font-bold text-sm text-white shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50">
+      <button
+        id="enterApp"
+        class="cta-button w-full max-w-[180px] px-4 py-2 rounded-lg font-bold text-sm text-white shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 animate-[fadeUp_0.6s_0.5s_forwards]"
+      >
         <span>Start Creating</span>
       </button>
-      <button id="themeToggle" aria-label="Toggle between light and dark theme" class="p-2 rounded-full glass focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50">
+      <button
+        id="themeToggle"
+        class="p-3 rounded-full glass focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 animate-[fadeUp_0.6s_0.6s_forwards]"
+        aria-label="Switch to light theme"
+      >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="theme-icon">
-          <path class="sun" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          <circle class="sun" cx="12" cy="12" r="5" />
+          <path class="sun" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" style="display: block;" />
+          <circle class="sun" cx="12" cy="12" r="5" style="display: block;" />
           <path class="moon" d="M12 3a9 9 0 0 0 9 9c0-4.97-4.03-9-9-9z" fill="currentColor" style="display: none;" />
         </svg>
       </button>
     </section>
+    <div class="flex justify-between px-4 sm:px-6 pb-4 sm:pb-6 text-sm sm:text-base animate-[fadeUp_0.6s_0.7s_forwards]">
+      <a href="forms/credit_card/index.html" class="hover:underline">Credit Card</a>
+      <a href="forms/licence/index.html" class="hover:underline">Driver's License</a>
+      <a href="forms/medicare/index.html" class="hover:underline">Medicare Card</a>
+    </div>
+    <footer class="p-4 sm:p-6 text-center text-xs sm:text-sm footer animate-[fadeUp_0.6s_0.8s_forwards]">
+      AusGen - Digital Card Generator
+    </footer>
   </main>
+  <div class="fixed inset-0 pointer-events-none hidden sm:block">
+    <div class="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl opacity-10 -top-40 -left-40"></div>
+    <div class="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl opacity-10 -bottom-40 -right-40"></div>
+  </div>
   <script>
-    // Utility function for GSAP animations with fallback
     const animateElement = (selector, props, delay = 0) => {
       if (window.gsap) {
         gsap.from(selector, {
@@ -198,21 +65,9 @@
           ease: "power2.out",
           delay
         });
-      } else {
-        console.warn('GSAP not loaded, skipping animation for', selector);
       }
     };
 
-    // Initialize animations
-    const initAnimations = () => {
-      animateElement("main", { opacity: 0, y: 30 }, 0.1);
-      animateElement(".logo-container", { scale: 0.9, opacity: 0, ease: "back.out(1.5)" }, 0.2);
-      animateElement("h1", { x: -20, opacity: 0, ease: "power2.out" }, 0.3);
-      animateElement("#enterApp", { scale: 0.9, opacity: 0, ease: "back.out(1.5)" }, 0.5);
-      animateElement("#themeToggle", { scale: 0.9, opacity: 0, ease: "back.out(1.5)" }, 0.6);
-    };
-
-    // Theme toggle logic with icon switch
     const toggleTheme = () => {
       try {
         const html = document.documentElement;
@@ -221,29 +76,34 @@
         const sunPaths = document.querySelectorAll('.sun');
         const moonPath = document.querySelector('.moon');
         const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        
+
         html.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        
-        // Update theme icon
+
         if (newTheme === 'dark') {
-          sunPaths.forEach(path => path.style.display = '');
+          sunPaths.forEach(path => path.style.display = 'block');
           moonPath.style.display = 'none';
         } else {
           sunPaths.forEach(path => path.style.display = 'none');
-          moonPath.style.display = '';
+          moonPath.style.display = 'block';
         }
 
-        // Announce theme change for screen readers
         if (themeAnnouncer) {
           themeAnnouncer.textContent = `Theme switched to ${newTheme} mode`;
         }
 
         if (window.gsap) {
           gsap.to("body", {
-            background: newTheme === 'dark' ? 'var(--background-gradient)' : 'var(--background-gradient)',
+            background: 'var(--background-gradient)',
             duration: 0.4,
             ease: "power2.inOut"
+          });
+          gsap.to('.theme-icon', {
+            scale: 1.2,
+            duration: 0.2,
+            ease: "power2.out",
+            yoyo: true,
+            repeat: 1
           });
         }
       } catch (error) {
@@ -251,7 +111,6 @@
       }
     };
 
-    // Debounce utility
     const debounce = (func, wait) => {
       let timeout;
       return (...args) => {
@@ -260,7 +119,6 @@
       };
     };
 
-    // Navigation with animation and loading state
     const navigateWithAnimation = (url) => {
       const enterApp = document.getElementById('enterApp');
       if (enterApp) {
@@ -273,16 +131,13 @@
           y: -30,
           duration: 0.4,
           ease: "power2.in",
-          onComplete: () => {
-            window.location.href = url;
-          }
+          onComplete: () => window.location.href = url
         });
       } else {
         window.location.href = url;
       }
     };
 
-    // Touch-based 3D Tilt Effect
     const initTiltEffect = () => {
       const card = document.querySelector('main');
       if (!card) return;
@@ -332,26 +187,22 @@
       });
     };
 
-    // Initialize page
     const initPage = () => {
       try {
-        // Load saved theme
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
           document.documentElement.setAttribute('data-theme', savedTheme);
-          const themeIcon = document.querySelector('.theme-icon');
           const sunPaths = document.querySelectorAll('.sun');
           const moonPath = document.querySelector('.moon');
           if (savedTheme === 'dark') {
-            sunPaths.forEach(path => path.style.display = '');
+            sunPaths.forEach(path => path.style.display = 'block');
             moonPath.style.display = 'none';
           } else {
             sunPaths.forEach(path => path.style.display = 'none');
-            moonPath.style.display = '';
+            moonPath.style.display = 'block';
           }
         }
 
-        // Event listeners
         const enterApp = document.getElementById('enterApp');
         const themeToggle = document.getElementById('themeToggle');
         const debouncedNavigate = debounce(() => navigateWithAnimation('select.html'), 300);
@@ -376,15 +227,17 @@
           });
         }
 
-        // Initialize animations and tilt effect
-        initAnimations();
+        animateElement("main", { opacity: 0, y: 30 }, 0.1);
+        animateElement(".logo-container", { scale: 0.9, opacity: 0, ease: "back.out(1.5)" }, 0.2);
+        animateElement("h1", { x: -20, opacity: 0, ease: "power2.out" }, 0.3);
+        animateElement("#enterApp", { scale: 0.9, opacity: 0, ease: "back.out(1.5)" }, 0.5);
+        animateElement("#themeToggle", { scale: 0.9, opacity: 0, ease: "back.out(1.5)" }, 0.6);
         initTiltEffect();
       } catch (error) {
         console.error('Page initialization failed:', error);
       }
     };
 
-    // Run initialization on DOM load
     document.addEventListener('DOMContentLoaded', initPage);
   </script>
 </body>

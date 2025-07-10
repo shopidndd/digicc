@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Citibank Card</title>
   <style>
-    @font-face {
-      font-family: 'CreditCard';
-      src: url('../assets/fonts/CREDC_.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
     :root {
       --citi-blue: #153491;
       --gray-bg: #f5f7fa;
@@ -19,33 +12,24 @@
       --text: #1a1a1a;
       --subtext: #6e6e73;
       --light-border: #e1e4e8;
-      --radius: 16px;
+      --radius: 1rem;
     }
 
-    .citi-header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      max-width: 430px;
-      height: 2rem;
-      background-color: #1aa150;
-      color: white;
-      text-align: center;
-      padding: 10px 0;
-      z-index: 999;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--gray-bg);
       color: var(--text);
+      overscroll-behavior: none;
     }
 
     .app {
-      max-width: 430px;
+      max-width: 100%;
       margin: 0 auto;
       min-height: 100vh;
       display: flex;
@@ -53,106 +37,101 @@
       background: var(--white);
     }
 
+
     header {
-      padding: 1rem;
-      font-weight: bold;
-      font-size: 1.2rem;
+      padding: 0.75rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .edit-link {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #007aff;
       text-decoration: none;
+      padding: 0.5rem;
     }
 
     .section {
-      padding: 1rem;
+      padding: 0.5rem;
+    }
+
+    .card-wrapper {
+      width: 100%;
+      padding: 0.5rem;
     }
 
     .card {
-      background-image: url('../assets/westpac.png');
+      background-image: url('../../assets/citirewards2.png');
       background-size: cover;
       background-position: center;
       border-radius: var(--radius);
-      padding: 1.2rem;
+      padding: 1rem;
       color: var(--white);
+      height: 12rem;
       position: relative;
-      margin-bottom: 1rem;
-      height: 210px;
-      overflow: hidden;
+      margin-bottom: 0.5rem;
       transition: background-image 0.3s ease;
+      touch-action: manipulation;
     }
 
     .card-number {
-      font-size: 1.3rem;
+      font-size: clamp(1.2rem, 4vw, 1rem);
       text-align: center;
-      margin-top: 7rem;
-      letter-spacing: 1px;
-      margin-bottom: .5rem;
-      font-family: 'CreditCard', monospace;
+      margin-top: 6rem;
+      letter-spacing: 0.05rem;
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--white);
     }
 
-    .card-label {
-      font-size: 0.8rem;
-      margin-bottom: 0.3rem;
+    .card-exp {
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 0.5rem;
+      font-family: monospace;
+
     }
 
     .card-name {
       font-size: 0.9rem;
       font-weight: 600;
-      margin-top: 1rem;
-      font-family: 'CreditCard', monospace;
-
-    }
-
-    .card-exp {
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-top: 1rem;
-      padding-bottom: .5rem;
-      text-align: center;
-
-    }
-
-    .card-exp_d {
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-top: 1rem;
-      padding-bottom: .5rem;
-      text-align: center;
-
+      margin-top: 0.5rem;
+      font-family: monospace;
     }
 
     .account-balance {
-      font-size: 0.95rem;
-      font-weight: 500;
-      padding-bottom: 1rem;
+      font-size: 0.9rem;
+      padding: 0.5rem 0;
       border-bottom: 1px solid var(--light-border);
+    }
+
+    .account-balance span {
+      font-weight: 400;
     }
 
     .list {
       list-style: none;
-      margin: 0;
-      padding: 0;
     }
 
     .list li {
-      padding: 1rem;
+      padding: 0.75rem 1rem;
       border-bottom: 1px solid var(--light-border);
       font-size: 0.9rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      min-height: 3rem;
+      touch-action: manipulation;
     }
 
     .apple-pay {
-      background: black;
-      color: white;
-      padding: 0.3rem 0.7rem;
-      border-radius: 4px;
+      background: #000;
+      color: var(--white);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.25rem;
       font-size: 0.8rem;
     }
 
@@ -161,45 +140,47 @@
       display: flex;
       justify-content: space-around;
       border-top: 1px solid var(--light-border);
-      background: #fff;
+      background: var(--white);
       padding: 0.5rem 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 1000;
     }
 
     .tab-item {
+      flex: 1;
       text-align: center;
       font-size: 0.7rem;
-      color: #888;
+      color: var(--subtext);
+      padding: 0.25rem;
     }
 
     .tab-item .icon {
-      width: 24px;
-      height: 24px;
-      background: #ccc;
-      border-radius: 6px;
-      margin: 0 auto 0.3rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin: 0 auto 0.2rem;
     }
-    
-    @media (max-width: 600px) {
-      .section {
-        padding: 0.2rem;
-      }
-      .card-wrapper {
-        max-width: 98vw;
-      }
+
+    .tab-item svg {
+      width: 100%;
+      height: 100%;
+      stroke: #666;
+    }
+
+    @media (max-width: 400px) {
       .card {
-        padding: 0.2rem;
+        height: 10rem;
       }
       .card-number {
-        font-size: 1rem;
+        margin-top: 4rem;
       }
     }
-    
-    /* Animation for card number */
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    
+
     .animated {
       animation: fadeIn 0.5s ease-in;
     }
@@ -207,52 +188,45 @@
 </head>
 <body>
   <div class="app">
-    <!-- Header -->
     <header>
       My Cards
-      <a href="form.html" class="edit-link">Edit Card</a>
+      <a href="../form.html" class="edit-link" aria-label="Edit card details">Edit Card</a>
     </header>
 
-    <!-- Card Display -->
     <div class="section">
       <div class="card-wrapper">
-        <div class="card">
-          <div class="card-number" id="cardNumber">5534 2205 6001 4977</div>
-          <div class="card-exp" id="cardExp"> "card-exp_d id=id="cardExp" <EXPIRY> 05/28</EXPIRY></div>
-          <div class="card-name" id="cardName">MR JARROD MUNDAY</div>
+        <div class="card" role="img" aria-label="Credit card">
+          <div class="card-number" id="cardNumber" aria-label="Card number">5534 2205 6001 4977</div>
+          <div class="card-exp" id="cardExp" aria-label="Expiration date">EXPIRY 05/28</div>
+          <div class="card-name" id="cardName" aria-label="Cardholder name">MR JARROD MUNDAY</div>
         </div>
       </div>
       <div class="account-balance">
-        Everyday Account<br><span style="font-weight: normal;">$65,490.10 available</span>
+        Everyday Account<br><span>$65,490.10 available</span>
       </div>
     </div>
 
-    <!-- Actions -->
-    <ul class="list">
-      <li>
+    <ul class="list" role="list">
+      <li role="listitem">
         Add to Apple Wallet
         <span class="apple-pay">Pay</span>
       </li>
-      <li>Lock card temporarily</li>
-      <li>Report lost, stolen or damaged card</li>
-      <li>Go to card settings</li>
+      <li role="listitem">Lock card temporarily</li>
+      <li role="listitem">Report lost, stolen or damaged card</li>
+      <li role="listitem">Go to card settings</li>
     </ul>
 
-    <!-- Bottom Navigation -->
-    <div class="tab-bar" style="display: flex; justify-content: space-around; background: #f0f0f0; padding: 10px 0;">
-      <div class="tab-item" style="text-align: center;">
+    <div class="tab-bar" role="navigation" aria-label="Bottom navigation">
+      <div class="tab-item" aria-label="Home">
         <div class="icon">
-          <!-- Home Icon -->
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 9L12 2l9 7v11a2 2 0 0 1-2 2h-5v-7H10v7H5a2 2 0 0 1-2-2V9z"/>
           </svg>
         </div>
         Home
       </div>
-    
-      <div class="tab-item" style="text-align: center;">
+      <div class="tab-item" aria-label="Accounts">
         <div class="icon">
-          <!-- Accounts Icon -->
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="7" r="4"/>
             <path d="M5.5 21a8.38 8.38 0 0 1 13 0"/>
@@ -260,20 +234,16 @@
         </div>
         Accounts
       </div>
-    
-      <div class="tab-item" style="text-align: center;">
+      <div class="tab-item" aria-label="Pay">
         <div class="icon">
-          <!-- Pay Icon -->
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 8v8M8 12h8M20.5 12A8.5 8.5 0 1 1 12 3.5"/>
           </svg>
         </div>
         Pay
       </div>
-    
-      <div class="tab-item" style="text-align: center;">
+      <div class="tab-item" aria-label="Cards">
         <div class="icon">
-          <!-- Cards Icon -->
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
             <line x1="1" y1="10" x2="23" y2="10"/>
@@ -281,10 +251,8 @@
         </div>
         Cards
       </div>
-    
-      <div class="tab-item" style="text-align: center;">
+      <div class="tab-item" aria-label="More">
         <div class="icon">
-          <!-- More Icon -->
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="1"/>
             <circle cx="19" cy="12" r="1"/>
@@ -295,30 +263,23 @@
       </div>
     </div>
   </div>
-  
+
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Get card details from localStorage or use defaults
+    document.addEventListener('DOMContentLoaded', () => {
       const cardName = localStorage.getItem('citibank_name') || 'MR JARROD MUNDAY';
       const cardNumberRaw = localStorage.getItem('citibank_number') || '5534220560014977';
       const cardExpiry = localStorage.getItem('citibank_expiry') || '05/28';
-      const cardCvv = localStorage.getItem('citibank_cvv') || '123';
 
-      // Format card number
-      function formatCardNumber(num) {
-        return num.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
-      }
+      const formatCardNumber = num => num.replace(/\D/g, '').match(/.{1,4}/g).join(' ').trim();
       const cardNumber = formatCardNumber(cardNumberRaw);
 
-      // Update card display
       document.getElementById('cardName').textContent = cardName;
       document.getElementById('cardNumber').textContent = cardNumber;
-      document.getElementById('cardExp').textContent = `EXPIRY    ${cardExpiry}`;
+      document.getElementById('cardExp').textContent = `EXPIRY ${cardExpiry}`;
 
-      // Array of background images
       const cardBackgrounds = [
-        '../../assets/citirewards3.png',
         '../../assets/citirewards2.png',
+        '../../assets/citirewards3.png',
         '../../assets/citi_rewards.png',
         '../../assets/citibank.png',
         '../../assets/commbank.png',
@@ -331,65 +292,32 @@
       let currentBackgroundIndex = 0;
       const cardElement = document.querySelector('.card');
 
-      // Double-click handler for card background
-      cardElement.addEventListener('dblclick', function() {
-        // Increment index and loop back to 0 if at the end
+      cardElement.addEventListener('dblclick', () => {
         currentBackgroundIndex = (currentBackgroundIndex + 1) % cardBackgrounds.length;
-        
-        // Update background image
-        cardElement.style.backgroundImage = `url('${cardBackgrounds[currentBackgroundIndex]}')`;
-        
-        // Ensure transition is applied
-        cardElement.style.transition = 'background-image 0.3s ease';
-        
-        // Remove transition after animation
-        setTimeout(() => {
-          cardElement.style.transition = '';
-        }, 300);
+        cardElement.style.backgroundImage = `url(${cardBackgrounds[currentBackgroundIndex]})`;
       });
 
-      // Double tap on card number to mask/unmask
       let lastTap = 0;
+      const cardNumberElement = document.getElementById('cardNumber');
       const originalNumber = cardNumber;
       const maskedNumber = originalNumber.replace(/\d(?=\d{4})/g, "•");
       let isNumberVisible = true;
 
-      document.getElementById('cardNumber').addEventListener('click', function(e) {
-        const currentTime = new Date().getTime();
-        const tapLength = currentTime - lastTap;
-
-        if (tapLength < 300 && tapLength > 0) {
-          this.classList.add('animated');
-
-          if (isNumberVisible) {
-            this.textContent = maskedNumber;
-          } else {
-            this.textContent = originalNumber;
-          }
+      cardNumberElement.addEventListener('touchstart', e => {
+        e.preventDefault(); // Prevent scrolling or zooming
+        const currentTime = Date.now();
+        if (currentTime - lastTap < 300 && lastTap > 0) {
+          cardNumberElement.classList.add('animated');
+          cardNumberElement.textContent = isNumberVisible ? maskedNumber : originalNumber;
           isNumberVisible = !isNumberVisible;
-
-          setTimeout(() => {
-            this.classList.remove('animated');
-          }, 500);
+          setTimeout(() => cardNumberElement.classList.remove('animated'), 500);
         }
         lastTap = currentTime;
       });
 
-      // Handle orientation change
-      window.addEventListener('orientationchange', function() {
-        // Adjust card display for better visibility
-        setTimeout(() => {
-          const card = document.querySelector('.card');
-          if (window.orientation === 90 || window.orientation === -90) {
-            // Landscape
-            card.style.height = '150px';
-          } else {
-            // Portrait
-            card.style.height = '210px';
-          }
-       izational
-
-        });
+      window.addEventListener('orientationchange', () => {
+        const card = document.querySelector('.card');
+        card.style.height = window.innerWidth > window.innerHeight ? '10rem' : '12rem';
       });
     });
   </script>

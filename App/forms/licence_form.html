@@ -1,21 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Enter your driver's license details to create a personalized digital license with AusGen.">
+  <meta name="keywords" content="driver's license, license generator, digital license, personalized license">
+  <meta name="author" content="xAI">
+  <meta name="robots" content="index, follow">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>AusGen - Enter Driver's License Details</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
+  <div aria-live="polite" class="sr-only" id="form-announcer"></div>
   <div id="root"></div>
   <script type="text/babel">
     const { useState, useEffect } = React;
 
     const App = () => {
-      const [isDark, setIsDark] = useState(true);
+      const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') === 'dark' || true);
       const [isLoaded, setIsLoaded] = useState(false);
       const [formData, setFormData] = useState({
         licenseNumber: '',
@@ -27,18 +37,40 @@
         classType: 'C',
         conditions: '—',
         photoDataUrl: '',
-        signatureDataUrl: '../../assets/signature.png', // Default path
+        signatureDataUrl: '../../assets/signature.png',
         addressPhotoDataUrl: ''
       });
       const [errors, setErrors] = useState({});
+      const [isSubmitting, setIsSubmitting] = useState(false);
       const [showOverlay, setShowOverlay] = useState(false);
 
       useEffect(() => {
-        setTimeout(() => setIsLoaded(true), 300);
+        if (window.gsap) {
+          gsap.fromTo('main', 
+            { opacity: 0, y: 30 }, 
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', onComplete: () => setIsLoaded(true) }
+          );
+        } else {
+          setTimeout(() => setIsLoaded(true), 300);
+        }
       }, []);
 
       const toggleTheme = () => {
-        setIsDark(!isDark);
+        const newTheme = !isDark;
+        setIsDark(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme ? 'dark' : 'light');
+        localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+        const announcer = document.getElementById('form-announcer');
+        if (announcer) {
+          announcer.textContent = `Theme switched to ${newTheme ? 'dark' : 'light'} mode`;
+        }
+        if (window.gsap) {
+          gsap.to('body', {
+            background: newTheme ? 'var(--background-gradient)' : 'var(--background-gradient)',
+            duration: 0.4,
+            ease: 'power2.inOut'
+          });
+        }
       };
 
       const handleInputChange = (e) => {
@@ -47,10 +79,12 @@
           const reader = new FileReader();
           reader.onload = (ev) => {
             setFormData(prev => ({ ...prev, [name]: ev.target.result }));
+            setErrors(prev => ({ ...prev, [name]: '' }));
           };
           reader.readAsDataURL(files[0]);
         } else {
           setFormData(prev => ({ ...prev, [name]: value }));
+          setErrors(prev => ({ ...prev, [name]: '' }));
         }
       };
 
@@ -59,8 +93,8 @@
         if (!/^[A-Z0-9]{6,12}$/.test(formData.licenseNumber)) {
           newErrors.licenseNumber = 'Please enter a valid license number (6-12 alphanumeric characters)';
         }
-        if (!formData.licenseName.trim()) {
-          newErrors.licenseName = 'Please enter full name';
+        if (!formData.licenseName.trim() || !/^[a-zA-Z\s]+$/.test(formData.licenseName)) {
+          newErrors.licenseName = 'Please enter a valid full name';
         }
         if (!/^\d{2}\/\d{2}\/\d{4}$/.test(formData.dateOfBirth)) {
           newErrors.dateOfBirth = 'Please enter a valid date of birth (DD/MM/YYYY)';
@@ -72,61 +106,71 @@
           newErrors.address = 'Please enter an address';
         }
         setErrors(newErrors);
+        const announcer = document.getElementById('form-announcer');
+        if (announcer && Object.keys(newErrors).length > 0) {
+          announcer.textContent = 'Please correct the errors in the form';
+        }
         return Object.keys(newErrors).length === 0;
       };
 
-      const handleSubmit = (e) => {
+      const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateForm()) {
-          const data = {
-            licenseNumber: formData.licenseNumber,
-            licenseName: formData.licenseName,
-            dateOfBirth: formData.dateOfBirth,
-            expiryDate: formData.expiryDate,
-            address: formData.address,
-            cardNumber: formData.cardNumber,
-            classType: formData.classType,
-            conditions: formData.conditions,
-            photoDataUrl: formData.photoDataUrl,
-            signatureDataUrl: formData.signatureDataUrl,
-            addressPhotoDataUrl: formData.addressPhotoDataUrl
-          };
-          localStorage.setItem('nswLicenceData', JSON.stringify(data));
-          window.location.href = '../cards/licence_cards/nsw.html';
+        if (!validateForm()) return;
+        setIsSubmitting(true);
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          setShowOverlay(true);
+          const announcer = document.getElementById('form-announcer');
+          if (announcer) {
+            announcer.textContent = 'Form submitted successfully';
+          }
+        } catch (error) {
+          console.error('Submission failed:', error);
+          const announcer = document.getElementById('form-announcer');
+          if (announcer) {
+            announcer.textContent = 'Submission failed, please try again';
+          }
+        } finally {
+          setIsSubmitting(false);
         }
       };
 
       const handleStateSelect = (state) => {
-        let url = '';
-        switch (state) {
-          case 'nsw': url = '../cards/licence_cards/nsw.html'; break;
-          case 'vic': url = '../cards/licence_cards/vic.html'; break;
-          case 'qld': url = '../cards/licence_cards/qld.html'; break;
-          case 'wa': url = '../cards/licence_cards/wa.html'; break;
+        const data = { ...formData };
+        localStorage.setItem('nswLicenceData', JSON.stringify(data));
+        const stateRoutes = {
+          nsw: '../cards/licence_cards/nsw.html',
+          vic: '../cards/licence_cards/vic.html',
+          qld: '../cards/licence_cards/qld.html',
+          wa: '../cards/licence_cards/wa.html'
+        };
+        const url = stateRoutes[state.toLowerCase()];
+        if (url) {
+          if (window.gsap) {
+            gsap.to('main', {
+              opacity: 0,
+              y: -30,
+              duration: 0.4,
+              ease: 'power2.in',
+              onComplete: () => window.location.href = url
+            });
+          } else {
+            window.location.href = url;
+          }
         }
-        if (url) window.location.href = url;
       };
 
       return (
-        <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
-          isDark ? 'bg-gray-900' : 'bg-gray-100'
-        } overflow-hidden`}>
-          <div className={`w-full max-w-sm mx-auto flex-1 flex flex-col ${
-            isDark ? 'bg-gray-800' : 'bg-white'
-          } rounded-2xl shadow-xl transition-all duration-500 ${
+        <div className="min-h-screen flex flex-col items-center justify-center">
+          <main className={`w-full max-w-sm mx-auto flex-1 flex flex-col glass rounded-2xl shadow-xl transition-all duration-500 ${
             isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          } p-4 sm:p-6`}>
-            <h1 className={`text-xl sm:text-2xl font-bold text-center ${
-              isDark ? 'text-white' : 'text-gray-900'
-            } animate-[fadeUp_0.6s_0.2s_forwards]`}>
-              Enter Driver's License Details
-            </h1>
-
+          } p-4 sm:p-6`} role="main" aria-labelledby="main-heading">
+            <header className="flex flex-col items-center text-center gap-3">
+              <h1 id="main-heading" className="text-xl sm:text-2xl font-bold">Enter Driver's License Details</h1>
+            </header>
             <form id="licenceForm" className="flex-1 flex flex-col gap-4 sm:gap-5 mt-4 sm:mt-6" onSubmit={handleSubmit}>
               <div className="flex flex-col">
-                <label htmlFor="licenseNumber" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>License Number</label>
+                <label htmlFor="licenseNumber" className="text-sm sm:text-base font-medium mb-1">License Number</label>
                 <input
                   type="text"
                   id="licenseNumber"
@@ -134,21 +178,17 @@
                   value={formData.licenseNumber}
                   onChange={handleInputChange}
                   placeholder="Enter license number"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 ${
-                    errors.licenseNumber ? 'border-red-500 focus:ring-red-500' : 'focus:ring-orange-500'
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.licenseNumber ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
                   } transition-all`}
+                  aria-describedby="licenseNumber-error"
                 />
                 {errors.licenseNumber && (
-                  <span className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.licenseNumber}</span>
+                  <span id="licenseNumber-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.licenseNumber}</span>
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="licenseName" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Full Name</label>
+                <label htmlFor="licenseName" className="text-sm sm:text-base font-medium mb-1">Full Name</label>
                 <input
                   type="text"
                   id="licenseName"
@@ -156,21 +196,17 @@
                   value={formData.licenseName}
                   onChange={handleInputChange}
                   placeholder="Full Name"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 ${
-                    errors.licenseName ? 'border-red-500 focus:ring-red-500' : 'focus:ring-orange-500'
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.licenseName ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
                   } transition-all`}
+                  aria-describedby="licenseName-error"
                 />
                 {errors.licenseName && (
-                  <span className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.licenseName}</span>
+                  <span id="licenseName-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.licenseName}</span>
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="dateOfBirth" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Date of Birth</label>
+                <label htmlFor="dateOfBirth" className="text-sm sm:text-base font-medium mb-1">Date of Birth</label>
                 <input
                   type="text"
                   id="dateOfBirth"
@@ -178,21 +214,17 @@
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
                   placeholder="DD/MM/YYYY"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 ${
-                    errors.dateOfBirth ? 'border-red-500 focus:ring-red-500' : 'focus:ring-orange-500'
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.dateOfBirth ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
                   } transition-all`}
+                  aria-describedby="dateOfBirth-error"
                 />
                 {errors.dateOfBirth && (
-                  <span className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.dateOfBirth}</span>
+                  <span id="dateOfBirth-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.dateOfBirth}</span>
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="expiryDate" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Expiry Date</label>
+                <label htmlFor="expiryDate" className="text-sm sm:text-base font-medium mb-1">Expiry Date</label>
                 <input
                   type="text"
                   id="expiryDate"
@@ -200,43 +232,35 @@
                   value={formData.expiryDate}
                   onChange={handleInputChange}
                   placeholder="DD/MM/YYYY"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 ${
-                    errors.expiryDate ? 'border-red-500 focus:ring-red-500' : 'focus:ring-orange-500'
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.expiryDate ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
                   } transition-all`}
+                  aria-describedby="expiryDate-error"
                 />
                 {errors.expiryDate && (
-                  <span className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.expiryDate}</span>
+                  <span id="expiryDate-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.expiryDate}</span>
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="address" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Address</label>
+                <label htmlFor="address" className="text-sm sm:text-base font-medium mb-1">Address</label>
                 <textarea
                   id="address"
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="e.g. 47 WARATAH AVE,\nRANDWICK NSW 2031"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 ${
-                    errors.address ? 'border-red-500 focus:ring-red-500' : 'focus:ring-orange-500'
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 ${
+                    errors.address ? 'border-red-500 focus:ring-red-500' : 'focus:ring-[#38B2AC]/50'
                   } transition-all`}
                   rows={3}
+                  aria-describedby="address-error"
                 />
                 {errors.address && (
-                  <span className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.address}</span>
+                  <span id="address-error" className="text-red-500 text-xs mt-1 animate-[shake_0.3s]">{errors.address}</span>
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="cardNumber" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Card Number</label>
+                <label htmlFor="cardNumber" className="text-sm sm:text-base font-medium mb-1">Card Number</label>
                 <input
                   type="text"
                   id="cardNumber"
@@ -244,16 +268,11 @@
                   value={formData.cardNumber}
                   onChange={handleInputChange}
                   placeholder="Enter card number"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 focus:ring-orange-500 transition-all`}
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 focus:ring-[#38B2AC]/50 transition-all`}
                 />
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="classType" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Class</label>
+                <label htmlFor="classType" className="text-sm sm:text-base font-medium mb-1">Class</label>
                 <input
                   type="text"
                   id="classType"
@@ -261,16 +280,11 @@
                   value={formData.classType}
                   onChange={handleInputChange}
                   placeholder="e.g. C"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 focus:ring-orange-500 transition-all`}
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 focus:ring-[#38B2AC]/50 transition-all`}
                 />
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="conditions" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Conditions</label>
+                <label htmlFor="conditions" className="text-sm sm:text-base font-medium mb-1">Conditions</label>
                 <input
                   type="text"
                   id="conditions"
@@ -278,16 +292,11 @@
                   value={formData.conditions}
                   onChange={handleInputChange}
                   placeholder="e.g. —"
-                  className={`w-full p-3 rounded-lg text-sm sm:text-base ${
-                    isDark ? 'bg-gray-700 text-white border-gray-600' : 'bg-gray-200 text-gray-900 border-gray-300'
-                  } border focus:ring-2 focus:ring-orange-500 transition-all`}
+                  className={`w-full p-3 rounded-lg text-sm sm:text-base glass focus:outline-none focus:ring-2 focus:ring-[#38B2AC]/50 transition-all`}
                 />
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="photoDataUrl" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Headshot Photo</label>
+                <label htmlFor="photoDataUrl" className="text-sm sm:text-base font-medium mb-1">Headshot Photo</label>
                 <input
                   type="file"
                   id="photoDataUrl"
@@ -300,11 +309,8 @@
                   <img src={formData.photoDataUrl} alt="Preview" className="mt-2 rounded-lg max-h-32 object-cover border" />
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="signatureDataUrl" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Signature (URL or File)</label>
+                <label htmlFor="signatureDataUrl" className="text-sm sm:text-base font-medium mb-1">Signature</label>
                 <input
                   type="file"
                   id="signatureDataUrl"
@@ -317,11 +323,8 @@
                   <img src={formData.signatureDataUrl} alt="Signature Preview" className="mt-2 rounded-lg max-h-32 object-cover border" />
                 )}
               </div>
-
               <div className="flex flex-col">
-                <label htmlFor="addressPhotoDataUrl" className={`text-sm sm:text-base font-medium ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
-                } mb-1`}>Address Background Photo</label>
+                <label htmlFor="addressPhotoDataUrl" className="text-sm sm:text-base font-medium mb-1">Address Background Photo</label>
                 <input
                   type="file"
                   id="addressPhotoDataUrl"
@@ -334,84 +337,79 @@
                   <img src={formData.addressPhotoDataUrl} alt="Address Preview" className="mt-2 rounded-lg max-h-32 object-cover border" />
                 )}
               </div>
-
               <button
                 type="submit"
-                className={`w-full p-3 sm:p-4 rounded-lg text-sm sm:text-base font-semibold text-white bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all mt-4 shadow-md animate-[fadeUp_0.6s_0.5s_forwards]`}
+                disabled={isSubmitting}
+                className={`cta-button w-full p-3 sm:p-4 rounded-lg text-sm sm:text-base font-semibold text-white shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50 ${
+                  isSubmitting ? 'loading' : ''
+                }`}
               >
-                Submit
+                <span>Submit</span>
               </button>
             </form>
-
             <div className="p-4 sm:p-6 flex justify-center">
               <button
                 onClick={toggleTheme}
-                className="p-3 rounded-full bg-gray-700 text-white hover:bg-gray-600 transition-colors text-lg active:scale-95"
-                aria-label="Toggle theme"
+                className="p-3 rounded-full glass focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
               >
-                {isDark ? '☀️' : '🌙'}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="theme-icon">
+                  <path className="sun" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" style={{ display: isDark ? 'block' : 'none' }} />
+                  <circle className="sun" cx="12" cy="12" r="5" style={{ display: isDark ? 'block' : 'none' }} />
+                  <path className="moon" d="M12 3a9 9 0 0 0 9 9c0-4.97-4.03-9-9-9z" fill="currentColor" style={{ display: isDark ? 'none' : 'block' }} />
+                </svg>
               </button>
             </div>
-
-            <div className="flex justify-between px-4 sm:px-6 pb-4 sm:pb-6 text-sm sm:text-base animate-[fadeUp_0.6s_0.6s_forwards]">
-              <a href="../licence_cards/nsw.html" className={`${isDark ? 'text-gray-300 hover:text-gray-100' : 'text-gray-600 hover:text-gray-800'} transition-colors`}>NSW</a>
-              <a href="../licence_cards/vic.html" className={`${isDark ? 'text-gray-300 hover:text-gray-100' : 'text-gray-600 hover:text-gray-800'} transition-colors`}>VIC</a>
-              <a href="../licence_cards/qld.html" className={`${isDark ? 'text-gray-300 hover:text-gray-100' : 'text-gray-600 hover:text-gray-800'} transition-colors`}>QLD</a>
-              <a href="../licence_cards/wa.html" className={`${isDark ? 'text-gray-300 hover:text-gray-100' : 'text-gray-600 hover:text-gray-800'} transition-colors`}>WA</a>
+            <div className="flex justify-between px-4 sm:px-6 pb-4 sm:pb-6 text-sm sm:text-base">
+              <a href="../licence_cards/nsw.html" className="hover:underline">NSW</a>
+              <a href="../licence_cards/vic.html" className="hover:underline">VIC</a>
+              <a href="../licence_cards/qld.html" className="hover:underline">QLD</a>
+              <a href="../licence_cards/wa.html" className="hover:underline">WA</a>
             </div>
-
-            <footer className={`p-4 sm:p-6 text-center text-xs sm:text-sm ${
-              isDark ? 'text-gray-400' : 'text-gray-600'
-            } animate-[fadeUp_0.6s_0.7s_forwards]`}>
+            <footer className="p-4 sm:p-6 text-center text-xs sm:text-sm">
               AusGen - Digital License Generator
             </footer>
-          </div>
-
+          </main>
           {showOverlay && (
             <div className="fixed inset-0 bg-gray-900/95 flex items-center justify-center z-[1000] animate-[fadeIn_0.3s]">
-              <div className={`bg-gray-700 rounded-2xl p-4 sm:p-6 max-w-xs w-[90%] text-center shadow-2xl ${
-                isDark ? 'text-white' : 'text-gray-900'
-              }`}>
-                <h2 className="text-base sm:text-lg font-semibold mb-4">Choose your state</h2>
+              <div className="glass rounded-2xl p-4 sm:p-6 max-w-xs w-[90%] text-center shadow-2xl">
+                <h2 className="text-base sm:text-lg font-semibold mb-4">Choose Your State</h2>
                 <button
                   onClick={() => handleStateSelect('nsw')}
-                  className="w-full p-3 mb-2 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 active:scale-95 transition-all"
+                  className="cta-button w-full p-3 mb-2 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
                 >
                   NSW
                 </button>
                 <button
                   onClick={() => handleStateSelect('vic')}
-                  className="w-full p-3 mb-2 rounded-lg bg-yellow-400 text-gray-900 font-semibold hover:bg-yellow-500 active:scale-95 transition-all"
+                  className="cta-button w-full p-3 mb-2 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
                 >
                   VIC
                 </button>
                 <button
                   onClick={() => handleStateSelect('qld')}
-                  className="w-full p-3 mb-2 rounded-lg bg-blue-900 text-white font-semibold hover:bg-blue-800 active:scale-95 transition-all"
+                  className="cta-button w-full p-3 mb-2 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
                 >
                   QLD
                 </button>
                 <button
                   onClick={() => handleStateSelect('wa')}
-                  className="w-full p-3 mb-2 rounded-lg bg-orange-600 text-white font-semibold hover:bg-orange-700 active:scale-95 transition-all"
+                  className="cta-button w-full p-3 mb-2 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
                 >
                   WA
                 </button>
                 <button
                   onClick={() => setShowOverlay(false)}
-                  className={`w-full p-3 rounded-lg bg-transparent ${
-                    isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-800'
-                  } font-semibold transition-colors`}
+                  className="w-full p-3 rounded-lg bg-transparent font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
                 >
                   Cancel
                 </button>
               </div>
             </div>
           )}
-
           <div className="fixed inset-0 pointer-events-none hidden sm:block">
-            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -top-40 -left-40"></div>
-            <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl animate-pulse opacity-10 -bottom-40 -right-40"></div>
+            <div className="absolute w-80 h-80 bg-blue-500/10 rounded-full filter blur-2xl opacity-10 -top-40 -left-40"></div>
+            <div className="absolute w-80 h-80 bg-orange-500/10 rounded-full filter blur-2xl opacity-10 -bottom-40 -right-40"></div>
           </div>
         </div>
       );
@@ -420,33 +418,5 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
-
-  <style>
-    @keyframes fadeUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      50% { transform: translateX(5px); }
-      75% { transform: translateX(-5px); }
-    }
-
-    @media (max-width: 640px) {
-      input, button, a {
-        -webkit-tap-highlight-color: transparent;
-      }
-    }
-  </style>
 </body>
 </html>
