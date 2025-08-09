@@ -60,46 +60,82 @@
 
     .card-wrapper {
       width: 100%;
-      padding: 0.5rem;
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
     }
 
     .card {
       background-image: url('../../assets/citirewards2.png');
       background-size: cover;
       background-position: center;
-      border-radius: var(--radius);
-      padding: 1rem;
+      border-radius: 12px;
+      padding: 1.2rem;
       color: var(--white);
-      height: 12rem;
+      /* Standard credit card aspect ratio: 85.6mm x 53.98mm (1.586:1) */
+      width: 100%;
+      max-width: 350px;
+      aspect-ratio: 1.586;
       position: relative;
       margin-bottom: 0.5rem;
       transition: background-image 0.3s ease;
       touch-action: manipulation;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card-chip {
+      width: 2rem;
+      height: 1.5rem;
+      background: linear-gradient(145deg, #ffd700, #ffed4a);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .card-middle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .card-number {
-      font-size: clamp(1.2rem, 4vw, 1rem);
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
       text-align: center;
-      margin-top: 6rem;
-      letter-spacing: 0.05rem;
-      font-family: monospace;
+      letter-spacing: 0.1rem;
+      font-family: 'Courier New', monospace;
       font-weight: 600;
       color: var(--white);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
     }
 
     .card-exp {
-      font-size: 0.85rem;
-      text-align: center;
-      margin-top: 0.5rem;
-      font-family: monospace;
-
+      font-size: 0.75rem;
+      font-family: 'Courier New', monospace;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .card-name {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      margin-top: 0.5rem;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      text-transform: uppercase;
     }
 
     .account-balance {
@@ -169,10 +205,10 @@
 
     @media (max-width: 400px) {
       .card {
-        height: 10rem;
+        max-width: 280px;
       }
-      .card-number {
-        margin-top: 4rem;
+      .card-wrapper {
+        padding: 0.5rem;
       }
     }
 
@@ -196,9 +232,20 @@
     <div class="section">
       <div class="card-wrapper">
         <div class="card" role="img" aria-label="Credit card">
-          <div class="card-number" id="cardNumber" aria-label="Card number">5534 2205 6001 4977</div>
-          <div class="card-exp" id="cardExp" aria-label="Expiration date">EXPIRY 05/28</div>
-          <div class="card-name" id="cardName" aria-label="Cardholder name">MR JARROD MUNDAY</div>
+          <div class="card-top">
+            <div class="card-chip"></div>
+          </div>
+          <div class="card-middle">
+            <div class="card-number" id="cardNumber" aria-label="Card number">5534 2205 6001 4977</div>
+          </div>
+          <div class="card-bottom">
+            <div>
+              <div class="card-name" id="cardName" aria-label="Cardholder name">MR JARROD MUNDAY</div>
+            </div>
+            <div>
+              <div class="card-exp" id="cardExp" aria-label="Expiration date">EXPIRY 05/28</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="account-balance">
@@ -315,10 +362,7 @@
         lastTap = currentTime;
       });
 
-      window.addEventListener('orientationchange', () => {
-        const card = document.querySelector('.card');
-        card.style.height = window.innerWidth > window.innerHeight ? '10rem' : '12rem';
-      });
+      // Card now uses CSS aspect-ratio for proper proportions
     });
   </script>
 </body>
