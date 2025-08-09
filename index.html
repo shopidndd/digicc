@@ -73,6 +73,149 @@
       border-radius: 50%;
       border: 2px solid white;
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .digital-card-container {
+      perspective: 1000px;
+      width: 350px;
+      height: 220px;
+      position: relative;
+    }
+
+    .digital-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+
+    .digital-card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #000000 0%, #FFCD00 100%);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      color: white;
+      position: relative;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background-image: url('App/assets/comm_visa_back.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card-logo {
+      width: 60px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .card-number {
+      font-family: 'Courier New', monospace;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-top: auto;
+    }
+
+    .card-exp {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .card-type {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .cvv-area {
+      position: absolute;
+      top: 110px;
+      right: 40px;
+      background: white;
+      color: black;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .card-instruction {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -138,7 +281,7 @@
       <!-- Platinum Rewards Button -->
       <section>
         <div class="mb-6">
-          <button class="w-full commbank-platinum text-white rounded-2xl p-6 card-shadow action-btn block text-left">
+          <button id="platinumRewardsBtn" class="w-full commbank-platinum text-white rounded-2xl p-6 card-shadow action-btn block text-left">
             <div class="flex items-center space-x-4">
               <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <i class="fas fa-gem text-white text-lg"></i>
@@ -280,6 +423,37 @@
       </div>
     </nav>
   </div>
+
+  <!-- Digital Card Modal -->
+  <div id="cardModal" class="modal-overlay">
+    <button class="close-modal" onclick="closeCardModal()">&times;</button>
+    <div class="digital-card-container">
+      <div id="digitalCard" class="digital-card" ondblclick="flipCard()">
+        <!-- Front of Card -->
+        <div class="card-face card-front">
+          <img src="App/assets/commbank.png" alt="CommBank" class="card-logo">
+          <div class="card-number">4065 8713 1648 9176</div>
+          <div class="card-details">
+            <div>
+              <div class="card-type">PLATINUM REWARDS</div>
+              <div class="card-exp">EXP 01/28</div>
+            </div>
+            <div class="text-right">
+              <div class="card-type">VISA</div>
+            </div>
+          </div>
+        </div>
+        <!-- Back of Card -->
+        <div class="card-face card-back">
+          <div class="cvv-area">426</div>
+        </div>
+      </div>
+      <div class="card-instruction">
+        Double-click to flip card
+      </div>
+    </div>
+  </div>
+
   <script>
     const animateElement = (selector, props, delay = 0) => {
       if (window.gsap) {
@@ -462,7 +636,70 @@
       }
     };
 
+    // Card Modal Functions
+    const showCardModal = () => {
+      const modal = document.getElementById('cardModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Reset card to front side
+      const card = document.getElementById('digitalCard');
+      card.classList.remove('flipped');
+      
+      // Add entrance animation
+      if (window.gsap) {
+        gsap.fromTo('.digital-card-container', 
+          { scale: 0.5, opacity: 0, rotationY: -180 },
+          { scale: 1, opacity: 1, rotationY: 0, duration: 0.6, ease: 'back.out(1.7)' }
+        );
+      }
+    };
+
+    const closeCardModal = () => {
+      const modal = document.getElementById('cardModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    };
+
+    const flipCard = () => {
+      const card = document.getElementById('digitalCard');
+      card.classList.toggle('flipped');
+      
+      // Add flip sound effect or haptic feedback could be added here
+      if (window.gsap) {
+        gsap.to(card, {
+          scale: 1.05,
+          duration: 0.1,
+          yoyo: true,
+          repeat: 1,
+          ease: 'power2.inOut'
+        });
+      }
+    };
+
+    // Close modal when clicking outside the card
+    document.getElementById('cardModal').addEventListener('click', (e) => {
+      if (e.target.id === 'cardModal') {
+        closeCardModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeCardModal();
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', initPage);
+    
+    // Initialize platinum rewards button
+    document.addEventListener('DOMContentLoaded', () => {
+      const platinumBtn = document.getElementById('platinumRewardsBtn');
+      if (platinumBtn) {
+        platinumBtn.addEventListener('click', showCardModal);
+      }
+    });
   </script>
 </body>
 </html>
