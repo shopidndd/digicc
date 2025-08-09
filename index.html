@@ -430,7 +430,7 @@
   <div id="cardModal" class="modal-overlay">
     <button class="close-modal" onclick="closeCardModal()">&times;</button>
     <div class="digital-card-container">
-      <div id="digitalCard" class="digital-card" ondblclick="flipCard()">
+      <div id="digitalCard" class="digital-card">
         <!-- Front of Card -->
         <div class="card-face card-front">
           <img src="App/assets/commbank.png" alt="CommBank" class="card-logo">
@@ -452,7 +452,7 @@
         </div>
       </div>
       <div class="card-instruction">
-        Double-click to flip card
+        Double-click or tap to flip card
       </div>
     </div>
   </div>
@@ -665,19 +665,50 @@
     };
 
     const flipCard = () => {
+      console.log('Flip card function called'); // Debug log
       const card = document.getElementById('digitalCard');
-      card.classList.toggle('flipped');
-      
-      // Add flip sound effect or haptic feedback could be added here
-      if (window.gsap) {
-        gsap.to(card, {
-          scale: 1.05,
-          duration: 0.1,
-          yoyo: true,
-          repeat: 1,
-          ease: 'power2.inOut'
-        });
+      if (card) {
+        card.classList.toggle('flipped');
+        console.log('Card flipped:', card.classList.contains('flipped')); // Debug log
+        
+        // Add flip animation feedback
+        if (window.gsap) {
+          gsap.to(card, {
+            scale: 1.05,
+            duration: 0.1,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.inOut'
+          });
+        }
       }
+    };
+
+    // Add click counter for double-click detection
+    let clickCount = 0;
+    let clickTimer = null;
+    
+    const handleCardClick = (event) => {
+      clickCount++;
+      
+      if (clickCount === 1) {
+        // Start timer for double-click detection
+        clickTimer = setTimeout(() => {
+          // Single click - do nothing or add single click behavior
+          clickCount = 0;
+        }, 300); // 300ms window for double-click
+      } else if (clickCount === 2) {
+        // Double click detected
+        clearTimeout(clickTimer);
+        clickCount = 0;
+        flipCard();
+      }
+    };
+    
+    // Alternative touch-based flip for mobile
+    const handleCardTouch = (event) => {
+      event.preventDefault();
+      flipCard();
     };
 
     // Close modal when clicking outside the card
@@ -696,12 +727,25 @@
 
     document.addEventListener('DOMContentLoaded', initPage);
     
-    // Initialize platinum rewards button
+    // Initialize platinum rewards button and card interactions
     document.addEventListener('DOMContentLoaded', () => {
       const platinumBtn = document.getElementById('platinumRewardsBtn');
       if (platinumBtn) {
         platinumBtn.addEventListener('click', showCardModal);
       }
+      
+      // Initialize card flip functionality after modal is shown
+      setTimeout(() => {
+        const digitalCard = document.getElementById('digitalCard');
+        if (digitalCard) {
+          // Add multiple event listeners for better compatibility
+          digitalCard.addEventListener('dblclick', flipCard);
+          digitalCard.addEventListener('click', handleCardClick);
+          digitalCard.addEventListener('touchstart', handleCardTouch, { passive: false });
+          
+          console.log('Card event listeners attached');
+        }
+      }, 100);
     });
   </script>
 </body>
