@@ -1,0 +1,195 @@
+:root {
+  --background-gradient: linear-gradient(135deg, #46c159, #6f822c);
+  --text-color: #F7FAFC;
+  --cta-gradient: linear-gradient(90deg, #64bbed, #fb5959);
+  --hover-color: #384cb2;
+  --card-bg: rgba(179, 192, 218, 0.3);
+  --glass-overlay: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  --shadow-color: rgba(0, 0, 0, 0.25);
+  --border-color: rgba(255, 255, 255, 0.2);
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-base: 15px;
+  --transition-all: all 0.2s ease-in-out;
+}
+
+[data-theme="light"] {
+  --background-gradient: linear-gradient(135deg, #ffffff, #c7c7c7);
+  --text-color: #2D3748;
+  --cta-gradient: linear-gradient(90deg, #ED64A6, #F56565);
+  --card-bg: rgba(255, 255, 255, 0.4);
+  --glass-overlay: linear-gradient(145deg, rgba(200, 200, 200, 0.2), rgba(200, 200, 200, 0.05));
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --border-color: rgba(0, 0, 0, 0.15);
+}
+
+body {
+  background: var(--background-gradient);
+  color: var(--text-color);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  transition: background 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1), transparent 50%);
+  opacity: 0.5;
+  animation: subtleMove 20s infinite linear;
+  z-index: -1;
+}
+
+@keyframes subtleMove {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(20px, 20px); }
+  100% { transform: translate(0, 0); }
+}
+
+.glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px) saturate(110%);
+  -webkit-backdrop-filter: blur(10px) saturate(110%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px var(--shadow-color);
+  transition: var(--transition-all);
+  position: relative;
+}
+
+.glass:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow-color);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+}
+
+.glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--glass-overlay);
+  pointer-events: none;
+  opacity: 0.8;
+  transition: var(--transition-all);
+  border-radius: inherit;
+}
+
+.glass:hover::before {
+  opacity: 1;
+}
+
+.cta-button {
+  background: var(--cta-gradient);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+
+.cta-button:hover {
+  background: var(--hover-color);
+  transform: scale(1.05);
+}
+
+.cta-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cta-button::after {
+  content: 'Loading...';
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-color);
+}
+
+.cta-button.loading::after {
+  display: block;
+}
+
+.cta-button.loading span {
+  visibility: hidden;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, .glass, .glass::before, .cta-button, body::before {
+    transition: none;
+    animation: none;
+  }
+  .glass:hover, .cta-button:hover {
+    transform: none;
+    box-shadow: 0 4px 16px var(--shadow-color);
+  }
+}
+
+@media (max-width: 640px) {
+  :root { --font-size-base: 13px; }
+  .glass {
+    border-radius: 8px;
+    box-shadow: 0 2px 12px var(--shadow-color);
+    backdrop-filter: blur(8px) saturate(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(100%);
+  }
+  main {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  .logo-container { max-width: 100px; }
+  .cta-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    max-width: 160px;
+  }
+  #themeToggle {
+    padding: 0.5rem;
+  }
+  #themeToggle svg {
+    width: 16px;
+    height: 16px;
+  }
+  input, button, a { -webkit-tap-highlight-color: transparent; }
+}

