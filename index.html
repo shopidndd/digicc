@@ -750,21 +750,38 @@
     document.addEventListener('DOMContentLoaded', () => {
       const platinumBtn = document.getElementById('platinumRewardsBtn');
       if (platinumBtn) {
-        platinumBtn.addEventListener('click', showCardModal);
-      }
-      
-      // Initialize card flip functionality after modal is shown
-      setTimeout(() => {
-        const digitalCard = document.getElementById('digitalCard');
-        if (digitalCard) {
-          // Add multiple event listeners for better compatibility
-          digitalCard.addEventListener('dblclick', flipCard);
-          digitalCard.addEventListener('click', handleCardClick);
-          digitalCard.addEventListener('touchstart', handleCardTouch, { passive: false });
+        platinumBtn.addEventListener('click', () => {
+          showCardModal();
           
-          console.log('Card event listeners attached');
-        }
-      }, 100);
+          // Initialize card flip functionality immediately after modal is shown
+          setTimeout(() => {
+            const digitalCard = document.getElementById('digitalCard');
+            if (digitalCard) {
+              // Remove any existing listeners to prevent duplicates
+              digitalCard.replaceWith(digitalCard.cloneNode(true));
+              const freshCard = document.getElementById('digitalCard');
+              
+              // Add multiple event listeners for better compatibility
+              freshCard.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                flipCard();
+              });
+              
+              freshCard.addEventListener('click', handleCardClick);
+              
+              // Touch events for mobile
+              freshCard.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (e.touches.length === 0) { // Single finger lift
+                  flipCard();
+                }
+              }, { passive: false });
+              
+              console.log('Card event listeners attached and ready');
+            }
+          }, 200); // Slightly longer delay to ensure modal is fully rendered
+        });
+      }
     });
   </script>
 </body>
