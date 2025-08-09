@@ -16,19 +16,19 @@
   <style>
     :root {
       --primary-yellow: #FFCD00;
-      --secondary-black: #000000;
-      --accent-gray: #666666;
-      --background: #f8fafc;
+      --secondary-yellow: #FFE55C;
+      --accent-white: #FFFFFF;
+      --background: #FFFEF7;
       --card-white: #ffffff;
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
-      --border-light: #e2e8f0;
-      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --text-primary: #8B7355;
+      --text-secondary: #B8860B;
+      --border-light: #F5F5DC;
+      --shadow: 0 1px 3px 0 rgb(255 215 0 / 0.2);
+      --shadow-lg: 0 10px 15px -3px rgb(255 215 0 / 0.3);
     }
 
     body {
-      background: var(--background);
+      background: linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
       color: var(--text-primary);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       margin: 0;
@@ -36,15 +36,15 @@
     }
 
     .banking-gradient {
-      background: linear-gradient(135deg, var(--secondary-black) 0%, var(--accent-gray) 100%);
+      background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--accent-white) 100%);
     }
 
     .commbank-gradient {
-      background: linear-gradient(135deg, #000000 0%, #FFCD00 100%);
+      background: linear-gradient(135deg, #FFCD00 0%, #FFFFFF 100%);
     }
 
     .commbank-platinum {
-      background: linear-gradient(135deg, #2C3E50 0%, #FFCD00 50%, #E8E8E8 100%);
+      background: linear-gradient(135deg, #FFD700 0%, #FFCD00 50%, #FFFFFF 100%);
     }
 
     .card-shadow {
@@ -52,7 +52,7 @@
     }
 
     .balance-card {
-      background: linear-gradient(135deg, #000000 0%, #FFCD00 100%);
+      background: linear-gradient(135deg, #FFCD00 0%, #FFFFFF 100%);
     }
 
     .action-btn {
@@ -127,11 +127,11 @@
     }
 
     .card-front {
-      background: linear-gradient(135deg, #000000 0%, #FFCD00 100%);
+      background: linear-gradient(135deg, #FFCD00 0%, #FFFFFF 100%);
       display: flex;
       flex-direction: column;
       padding: 20px;
-      color: white;
+      color: #8B7355;
       position: relative;
     }
 
@@ -154,7 +154,8 @@
       font-weight: bold;
       letter-spacing: 4px;
       margin-bottom: 15px;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+      color: #8B4513;
     }
 
     .card-details {
@@ -178,13 +179,14 @@
       position: absolute;
       top: 110px;
       right: 40px;
-      background: white;
-      color: black;
+      background: #FFCD00;
+      color: #8B4513;
       padding: 8px 12px;
       border-radius: 4px;
       font-family: 'Courier New', monospace;
       font-weight: bold;
       font-size: 16px;
+      border: 2px solid #FFFFFF;
     }
 
     .close-modal {
@@ -220,7 +222,7 @@
 </head>
 <body>
   <!-- Mobile Banking App Interface -->
-  <div class="min-h-screen bg-gray-50 flex flex-col max-w-sm mx-auto relative overflow-hidden">
+  <div class="min-h-screen bg-gradient-to-br from-yellow-50 to-white flex flex-col max-w-sm mx-auto relative overflow-hidden">
     
     <!-- Header -->
     <header class="commbank-gradient text-white p-6 pb-8 relative">
@@ -230,8 +232,8 @@
             <img src="App/assets/commbank.png" alt="Commonwealth Bank" class="w-8 h-8 object-contain">
           </div>
           <div>
-            <h1 class="text-xl font-semibold">CommBank</h1>
-            <p class="text-yellow-100 text-sm">Welcome back, John</p>
+            <h1 class="text-xl font-semibold text-amber-800">CommBank</h1>
+            <p class="text-amber-700 text-sm">Welcome back, John</p>
           </div>
         </div>
         <div class="flex items-center space-x-4">
@@ -239,8 +241,8 @@
             <i class="fas fa-bell text-white text-lg cursor-pointer"></i>
             <div class="notification-dot"></div>
           </div>
-          <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center cursor-pointer">
-            <i class="fas fa-user text-sm"></i>
+          <div class="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center cursor-pointer">
+            <i class="fas fa-user text-sm text-amber-800"></i>
           </div>
         </div>
       </div>
@@ -249,27 +251,27 @@
       <div class="balance-card rounded-2xl p-6 text-white card-shadow">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <p class="text-white/80 text-sm">Total Balance</p>
-            <h2 class="text-3xl font-bold">$24,580.50</h2>
-            <p class="text-white/80 text-sm mt-1">+$1,240 this month</p>
+            <p class="text-amber-800/80 text-sm">Total Balance</p>
+            <h2 class="text-3xl font-bold text-amber-900">$24,580.50</h2>
+            <p class="text-amber-800/80 text-sm mt-1">+$1,240 this month</p>
           </div>
           <div class="text-right">
-            <p class="text-white/80 text-xs">Account</p>
-            <p class="text-sm font-medium">•••• 4526</p>
+            <p class="text-amber-800/80 text-xs">Account</p>
+            <p class="text-sm font-medium text-amber-900">•••• 4526</p>
           </div>
         </div>
         <div class="flex space-x-4 mt-6">
-          <button class="flex-1 bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center action-btn">
-            <i class="fas fa-arrow-up text-lg mb-2 block"></i>
-            <span class="text-sm font-medium">Send</span>
+          <button class="flex-1 bg-white/30 backdrop-blur-sm rounded-xl p-3 text-center action-btn">
+            <i class="fas fa-arrow-up text-lg mb-2 block text-amber-800"></i>
+            <span class="text-sm font-medium text-amber-800">Send</span>
           </button>
-          <button class="flex-1 bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center action-btn">
-            <i class="fas fa-arrow-down text-lg mb-2 block"></i>
-            <span class="text-sm font-medium">Receive</span>
+          <button class="flex-1 bg-white/30 backdrop-blur-sm rounded-xl p-3 text-center action-btn">
+            <i class="fas fa-arrow-down text-lg mb-2 block text-amber-800"></i>
+            <span class="text-sm font-medium text-amber-800">Receive</span>
           </button>
-          <button class="flex-1 bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center action-btn">
-            <i class="fas fa-exchange-alt text-lg mb-2 block"></i>
-            <span class="text-sm font-medium">Transfer</span>
+          <button class="flex-1 bg-white/30 backdrop-blur-sm rounded-xl p-3 text-center action-btn">
+            <i class="fas fa-exchange-alt text-lg mb-2 block text-amber-800"></i>
+            <span class="text-sm font-medium text-amber-800">Transfer</span>
           </button>
         </div>
       </div>
@@ -287,11 +289,11 @@
                 <i class="fas fa-gem text-white text-lg"></i>
               </div>
               <div class="flex-1">
-                <h4 class="font-semibold text-white mb-1">View Platinum Credit Rewards</h4>
-                <p class="text-white/80 text-sm">Explore your exclusive rewards and benefits</p>
+                <h4 class="font-semibold text-amber-800 mb-1">View Platinum Credit Rewards</h4>
+                <p class="text-amber-700 text-sm">Explore your exclusive rewards and benefits</p>
               </div>
               <div>
-                <i class="fas fa-arrow-right text-white text-lg"></i>
+                <i class="fas fa-arrow-right text-amber-800 text-lg"></i>
               </div>
             </div>
           </button>
@@ -308,8 +310,8 @@
             <div class="w-12 h-12 commbank-gradient rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-credit-card text-white text-lg"></i>
             </div>
-            <h4 class="font-semibold text-gray-900 mb-2">CommBank Card</h4>
-            <p class="text-gray-600 text-sm">Create CommBank virtual cards</p>
+            <h4 class="font-semibold text-amber-800 mb-2">CommBank Card</h4>
+            <p class="text-amber-600 text-sm">Create CommBank virtual cards</p>
           </a>
           
           <!-- Driver's License -->
@@ -317,8 +319,8 @@
             <div class="w-12 h-12 bg-gray-600 rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-id-card text-white text-lg"></i>
             </div>
-            <h4 class="font-semibold text-gray-900 mb-2">Digital ID</h4>
-            <p class="text-gray-600 text-sm">Secure ID management</p>
+            <h4 class="font-semibold text-amber-800 mb-2">Digital ID</h4>
+            <p class="text-amber-600 text-sm">Secure ID management</p>
           </a>
           
           <!-- Medicare Card -->
@@ -326,8 +328,8 @@
             <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-notes-medical text-white text-lg"></i>
             </div>
-            <h4 class="font-semibold text-gray-900 mb-2">Health Services</h4>
-            <p class="text-gray-600 text-sm">Medical card access</p>
+            <h4 class="font-semibold text-amber-800 mb-2">Health Services</h4>
+            <p class="text-amber-600 text-sm">Medical card access</p>
           </a>
           
           <!-- Card Settings -->
@@ -335,8 +337,8 @@
             <div class="w-12 h-12 commbank-gradient rounded-xl flex items-center justify-center mb-4">
               <i class="fas fa-cog text-white text-lg"></i>
             </div>
-            <h4 class="font-semibold text-gray-900 mb-2">Account Settings</h4>
-            <p class="text-gray-600 text-sm">CommBank services</p>
+            <h4 class="font-semibold text-amber-800 mb-2">Account Settings</h4>
+            <p class="text-amber-600 text-sm">CommBank services</p>
           </a>
         </div>
       </section>
@@ -344,8 +346,8 @@
       <!-- Recent Transactions -->
       <section>
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
-          <button class="text-blue-600 text-sm font-medium">View All</button>
+          <h3 class="text-lg font-semibold text-amber-800">Recent Activity</h3>
+          <button class="text-amber-600 text-sm font-medium">View All</button>
         </div>
         <div class="bg-white rounded-2xl card-shadow overflow-hidden">
           
@@ -355,12 +357,12 @@
                 <i class="fas fa-arrow-down text-green-600"></i>
               </div>
               <div class="flex-1">
-                <p class="font-semibold text-gray-900">CommBank Card Created</p>
-                <p class="text-gray-600 text-sm">Awards Credit Card</p>
+                <p class="font-semibold text-amber-800">CommBank Card Created</p>
+                <p class="text-amber-600 text-sm">Awards Credit Card</p>
               </div>
               <div class="text-right">
-                <p class="font-semibold text-gray-900">Today</p>
-                <p class="text-gray-600 text-sm">2:30 PM</p>
+                <p class="font-semibold text-amber-800">Today</p>
+                <p class="text-amber-600 text-sm">2:30 PM</p>
               </div>
             </div>
           </div>
@@ -371,12 +373,12 @@
                 <i class="fas fa-id-card text-blue-600"></i>
               </div>
               <div class="flex-1">
-                <p class="font-semibold text-gray-900">License Updated</p>
-                <p class="text-gray-600 text-sm">NSW Driver License</p>
+                <p class="font-semibold text-amber-800">License Updated</p>
+                <p class="text-amber-600 text-sm">NSW Driver License</p>
               </div>
               <div class="text-right">
-                <p class="font-semibold text-gray-900">Yesterday</p>
-                <p class="text-gray-600 text-sm">4:15 PM</p>
+                <p class="font-semibold text-amber-800">Yesterday</p>
+                <p class="text-amber-600 text-sm">4:15 PM</p>
               </div>
             </div>
           </div>
@@ -387,12 +389,12 @@
                 <i class="fas fa-notes-medical text-red-600"></i>
               </div>
               <div class="flex-1">
-                <p class="font-semibold text-gray-900">Medicare Access</p>
-                <p class="text-gray-600 text-sm">Digital card viewed</p>
+                <p class="font-semibold text-amber-800">Medicare Access</p>
+                <p class="text-amber-600 text-sm">Digital card viewed</p>
               </div>
               <div class="text-right">
-                <p class="font-semibold text-gray-900">2 days ago</p>
-                <p class="text-gray-600 text-sm">10:22 AM</p>
+                <p class="font-semibold text-amber-800">2 days ago</p>
+                <p class="text-amber-600 text-sm">10:22 AM</p>
               </div>
             </div>
           </div>
